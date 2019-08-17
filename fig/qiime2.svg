@@ -1,0 +1,55 @@
+<?xml version="1.0" standalone="no"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="154">
+  <defs>
+    <clipPath id="cut-bottom">
+      <rect x="217" y="177" width="108" height="30" />
+    </clipPath>
+    <clipPath id="cut-e">
+      <rect x="355" y="-160" width="50" height="90" transform="rotate(45)" />
+      <rect x="355" y="-112" width="90" height="50" transform="rotate(45)" />
+    </clipPath>
+    <clipPath id="cut-two">
+      <rect x="365" y="-50" width="40" height="80" transform="rotate(45)" />
+      <rect x="365" y="-50" width="80" height="40" transform="rotate(45)" />
+    </clipPath>
+  </defs>
+  <g transform="translate(-118,-105)">
+    <!-- tree -->
+    <rect x="169" y="106" width="12" height="20" fill="#7F7F7F" />
+    <rect x="144" y="126" width="62" height="12" fill="#7F7F7F" />
+    <rect x="144" y="126" width="12" height="44" fill="#7F7F7F" />
+    <rect x="187" y="153" width="27" height="12" fill="#7F7F7F" />
+    <rect x="195" y="129" width="11" height="36" fill="#7F7F7F" />
+
+    <rect x="138" y="185" width="24" height="20" fill="#FF0000" />
+    <rect x="144" y="170" width="12" height="12" fill="#FF0000" />
+
+    <rect x="187" y="165" width="12" height="12" fill="#00FF00" />
+
+    <rect x="202" y="165" width="12" height="12" fill="#0000FF" />
+
+    <!-- Q (magnifying glass) -->
+    <circle cx="150" cy="209" r="24" stroke="#000000" stroke-width="12" fill="none" />
+    <line x1="163" y1="222" x2="190" y2="254" stroke-width="10" stroke="#000000"/>
+    <!-- ii -->
+    <line x1="193" y1="179" x2="193" y2="237" stroke-width="12" stroke="#000000"/>
+    <line x1="208" y1="179" x2="208" y2="237" stroke-width="12" stroke="#000000"/>
+    <!-- m -->
+    <circle cx="247" cy="209" r="24" stroke="#000000" stroke-width="12" fill="none" clip-path="url(#cut-bottom)" />
+    <circle cx="295" cy="209" r="24" stroke="#000000" stroke-width="12" fill="none" clip-path="url(#cut-bottom)" />
+    <line x1="223" y1="206.5" x2="223" y2="237" stroke-width="12" stroke="#000000"/>
+    <line x1="271" y1="206.5" x2="271" y2="237" stroke-width="12" stroke="#000000"/>
+    <line x1="319" y1="206.5" x2="319" y2="237" stroke-width="12" stroke="#000000"/>
+    <!-- e -->
+    <circle cx="358" cy="209" r="24" stroke="#000000" stroke-width="12" fill="none" clip-path="url(#cut-e)" />
+    <line x1="377" y1="187" x2="339" y2="228" stroke-width="12" stroke="#000000"/>
+
+    <!-- 2 -->
+    <g transform="translate(130,-108)">
+      <circle cx="295" cy="280" r="24" stroke="#000000" stroke-width="12" fill="none" clip-path="url(#cut-two)" />
+      <line x1="312" y1="297" x2="270" y2="339" stroke="#000000" stroke-width="12" />
+      <line x1="266" y1="340" x2="325" y2="340" stroke="#000000" stroke-width="12" />
+    </g>
+  </g>
+</svg>
