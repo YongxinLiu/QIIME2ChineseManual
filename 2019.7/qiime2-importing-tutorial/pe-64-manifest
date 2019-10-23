@@ -1,0 +1,3 @@
+sample-id	forward-absolute-filepath	reverse-absolute-filepath
+sample1	$PWD/pe-64/s1-phred64-r1.fastq.gz	$PWD/pe-64/s1-phred64-r2.fastq.gz
+sample2	$PWD/pe-64/s2-phred64-r1.fastq.gz	$PWD/pe-64/s2-phred64-r2.fastq.gz
