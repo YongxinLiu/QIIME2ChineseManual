@@ -1,37 +1,19 @@
 [TOC]
 
-# 前情提要
-
-以下是前面几节的微信推送文章：
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [7帕金森小鼠教程Parkinson's Mouse](https://mp.weixin.qq.com/s/cN1sfcWFME7S4OJy4VIREg)，[Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-- [8差异丰度分析gneiss](https://mp.weixin.qq.com/s/wx9dr5e2B_YyqTdPJ7dVsQ)
-- [9数据导入Importing data](https://mp.weixin.qq.com/s/u0k38x4lAUaghua2FDD1mQ)
-- [10数据导出Exporting data](https://mp.weixin.qq.com/s/pDxDsm8vabpe9KtcLRYWxg)
-- [11元数据Metadata](https://mp.weixin.qq.com/s/Q-YTeXH84lgBbRwuzc1bsg)
-- [12数据筛选Filtering data](https://mp.weixin.qq.com/s/zk-pXJs4GNwb1AOBPzCaHA)
-
 # 训练特征分类器
 
 **Training feature classifiers with q2-feature-classifier**
 
-https://docs.qiime2.org/2020.2/tutorials/feature-classifier/
+https://docs.qiime2.org/2021.2/tutorials/feature-classifier/
 
-> 注：最好按本教程顺序学习，想直接学习本章，至少完成本系列[1简介和安装](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)。
+> 注：最好按本教程顺序学习，想直接学习本章，至少完成本系列[1简介和安装](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)。
 
 > 详者注：为什么要训练分类集？
 因为不同实验的扩增区域不同，鉴定物种分类的精度不同，提前的训练可以让分类结果更准确。但目前ITS区域训练对结果准确性提高不大，可以不用训练。
 
-本教程将演示如何为特定数据集训练`q2-feature-classifier`。我们将使用`Greengenes`参考数据库序列来训练`Naive Bayes`分类器，并从[《4人体各部位微生物组分析》](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)中获得的代表性序列进行分类。
+本教程将演示如何为特定数据集训练`q2-feature-classifier`。我们将使用`Greengenes`参考数据库序列来训练`Naive Bayes`分类器，并从[《4人体各部位微生物组分析》](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)中获得的代表性序列进行分类。
 
-请注意，QIIME 2数据资源中提供了几个经过预先训练的分类器。这些基因可用于一些常见的标记基因（如16S rRNA基因）注释。其他标记基因的预训练分类器也可以在QIIME2论坛上找到。详见 https://docs.qiime2.org/2020.2/data-resources/ ，**里面有Silva和Greengenes的全长和V4区的分类器供下载直接使用**。
+请注意，QIIME 2数据资源中提供了几个经过预先训练的分类器。这些基因可用于一些常见的标记基因（如16S rRNA基因）注释。其他标记基因的预训练分类器也可以在QIIME2论坛上找到。详见 https://docs.qiime2.org/2021.2/data-resources/ ，**里面有Silva和Greengenes的全长和V4区的分类器供下载直接使用**。
 
 ## 下载并导入参考序列
 
@@ -45,32 +27,26 @@ mkdir -p training-feature-classifiers
 cd training-feature-classifiers
 
 # 下载参考OTU数据集，7M
-wget \
-  -O "85_otus.fasta" \
-  "https://data.qiime2.org/2020.2/tutorials/training-feature-classifiers/85_otus.fasta"
+wget -c https://data.qiime2.org/2021.2/tutorials/training-feature-classifiers/85_otus.fasta
 
 # 下载参考数据集的物种分类信息，442K
-wget \
-  -O "85_otu_taxonomy.txt" \
-  "https://data.qiime2.org/2020.2/tutorials/training-feature-classifiers/85_otu_taxonomy.txt"
+wget -c https://data.qiime2.org/2021.2/tutorials/training-feature-classifiers/85_otu_taxonomy.txt
 
 # 下载代表性序列文件，1.7M
-wget \
-  -O "rep-seqs.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/training-feature-classifiers/rep-seqs.qza"
+wget -c https://data.qiime2.org/2021.2/tutorials/training-feature-classifiers/rep-seqs.qza
 ```
 
 接下来，我们将这些数据导入到QIIME 2对象中。由于Greengenes序列物种注释文件（`85_otu_Taxonomy.txt`）是一个不带标题的制表符分隔文件（tsv），因此必须指定`HeaderlessTSVTaxonomyFormat`作为源格式，因为默认源格式需要标题。
 
 ```
-# 导入参考序列，7s
-time qiime tools import \
+# 导入参考序列
+qiime tools import \
   --type 'FeatureData[Sequence]' \
   --input-path 85_otus.fasta \
   --output-path 85_otus.qza
 
-# 导入物种分类信息, 5s
-time qiime tools import \
+# 导入物种分类信息
+qiime tools import \
   --type 'FeatureData[Taxonomy]' \
   --input-format HeaderlessTSVTaxonomyFormat \
   --input-path 85_otu_taxonomy.txt \
@@ -79,9 +55,9 @@ time qiime tools import \
 
 **输出对象**：
 
-- `85_otus.qza`: 按85%聚类的参考数据库。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffeature-classifier%2F85_otus.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/feature-classifier/85_otus.qza)
-- `rep-seqs.qza`: 预训练的参考数据库。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/feature-classifier/rep-seqs.qza)
-- `ref-taxonomy.qza`: 按85%聚类的参考数据库。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Fref-taxonomy.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/feature-classifier/ref-taxonomy.qza)
+- `85_otus.qza`: 按85%聚类的参考数据库。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffeature-classifier%2F85_otus.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/feature-classifier/85_otus.qza)
+- `rep-seqs.qza`: 预训练的参考数据库。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/feature-classifier/rep-seqs.qza)
+- `ref-taxonomy.qza`: 按85%聚类的参考数据库。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Fref-taxonomy.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/feature-classifier/ref-taxonomy.qza)
 
 ## 提取参考序列
 
@@ -103,7 +79,7 @@ time qiime feature-classifier extract-reads \
 
 **输出对象**：
 
-- `ref-seqs.qza`: 提取的扩增区域。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Fref-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/feature-classifier/ref-seqs.qza)
+- `ref-seqs.qza`: 提取的扩增区域。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Fref-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/feature-classifier/ref-seqs.qza)
 
 > 注释：`-p-trunc-len`参数只能用于比对序列被剪裁成相同长度或更短的长度时，才需要剪裁参考序列。成功双端合并序列的长度通常是可变的。未在特定长度截断的单端读取的长度也可能是可变的。对于双端和未经修剪的单端读的物种分类，我们建议对在适当的引物位置提取但不修剪为等长的序列进行分类器训练。
 
@@ -127,7 +103,7 @@ time qiime feature-classifier fit-classifier-naive-bayes \
 
 **输出对象**：
 
-- `classifier.qza`: 生成分类器文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Fclassifier.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/feature-classifier/classifier.qza)
+- `classifier.qza`: 生成分类器文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Fclassifier.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/feature-classifier/classifier.qza)
 
 ## 测试分类集
 
@@ -150,11 +126,11 @@ time qiime metadata tabulate \
 
 **输出对象**：
 
-- `taxonomy.qza`: 生成物种注释结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Ftaxonomy.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/feature-classifier/taxonomy.qza)
+- `taxonomy.qza`: 生成物种注释结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Ftaxonomy.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/feature-classifier/taxonomy.qza)
 
 **输出可视化**：
 
-- `taxonomy.qzv`: 生成物种注释可视化网页结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Ftaxonomy.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/feature-classifier/taxonomy.qzv)
+- `taxonomy.qzv`: 生成物种注释可视化网页结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffeature-classifier%2Ftaxonomy.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/feature-classifier/taxonomy.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/QIIME2/80_classify.jpg)
 
@@ -168,11 +144,13 @@ time qiime metadata tabulate \
 
 ## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为微生物组数据分析、分析方法开发与优化和科学传播，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20余篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1300万+。
+## 译者简介
+
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
 
 ## Reference
 
-https://docs.qiime2.org/2020.2/
+https://docs.qiime2.org/2021.2/
 
 Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 

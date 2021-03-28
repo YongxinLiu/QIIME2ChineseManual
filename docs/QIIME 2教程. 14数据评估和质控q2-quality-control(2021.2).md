@@ -1,63 +1,30 @@
 [TOC]
 
-# 前情提要
-
-以下是前面几节的微信推送文章：
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [7帕金森小鼠教程Parkinson's Mouse](https://mp.weixin.qq.com/s/cN1sfcWFME7S4OJy4VIREg)，[Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-- [8差异丰度分析gneiss](https://mp.weixin.qq.com/s/wx9dr5e2B_YyqTdPJ7dVsQ)
-- [9数据导入Importing data](https://mp.weixin.qq.com/s/u0k38x4lAUaghua2FDD1mQ)
-- [10数据导出Exporting data](https://mp.weixin.qq.com/s/pDxDsm8vabpe9KtcLRYWxg)
-- [11元数据Metadata](https://mp.weixin.qq.com/s/Q-YTeXH84lgBbRwuzc1bsg)
-- [12数据筛选Filtering data](https://mp.weixin.qq.com/s/zk-pXJs4GNwb1AOBPzCaHA)
-- [13训练特征分类器Training feature classifiers](https://mp.weixin.qq.com/s/jTRUYgacH5WszsHJVbbh4g)
-
 # 数据评估和质控`q2-quality-control`
 
 **Evaluating and controlling data quality with q2-quality-control**
 
-https://docs.qiime2.org/2020.2/tutorials/quality-control/
+https://docs.qiime2.org/2021.2/tutorials/quality-control/
 
-> 注：最好按本教程顺序学习，想直接学习本章，至少完成本系列[《1简介和安装》](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)和[《4人体各部位微生物组分析Moving Pictures》](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)。
+> 注：本教程将演示如何为特定数据集训练`q2-feature-classifier`。我们将使用`Greengenes`参考数据库序列来训练`Naive Bayes`分类器，并从[《4人体各部位微生物组分析》](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)中获得的代表性序列进行分类。
 
 本教程将演示如何使用`q2-quality-control`根据模拟群体（mock communities，具有已知组成的样品）和序列数据过滤来评估数据质量。
 
-
 ## 下载数据
 
-首先创建一个工作目录，再下载并创建几个文件
+首先创建一个工作目录，再下载并创建几个文件：注意下载不稳定，可能需要多试几次
 
 ```
 # 创建工作目录
-mkdir -p quality-control-tutorial
-cd quality-control-tutorial
+mkdir -p quality-control
+cd quality-control
 
-wget -c \
-  -O "query-seqs.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/quality-control/query-seqs.qza"
-
-wget -c \
-  -O "reference-seqs.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/quality-control/reference-seqs.qza"
-
-wget -c \
-  -O "query-table.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/quality-control/query-table.qza"
-
-wget -c \
-  -O "qc-mock-3-expected.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/quality-control/qc-mock-3-expected.qza"
-
-wget -c \
-  -O "qc-mock-3-observed.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/quality-control/qc-mock-3-observed.qza"
+# 下载测试数据
+wget -c https://data.qiime2.org/2021.2/tutorials/quality-control/query-seqs.qza
+wget -c https://data.qiime2.org/2021.2/tutorials/quality-control/reference-seqs.qza
+wget -c https://data.qiime2.org/2021.2/tutorials/quality-control/query-table.qza
+wget -c https://data.qiime2.org/2021.2/tutorials/quality-control/qc-mock-3-expected.qza
+wget -c https://data.qiime2.org/2021.2/tutorials/quality-control/qc-mock-3-observed.qza
 ```
 
 ## 基于对齐过滤序列
@@ -69,8 +36,7 @@ wget -c \
 首先，我们将把一小部分查询序列分成可比对/无法比对参考序列的两类
 
 ```
-# 7s
-time qiime quality-control exclude-seqs \
+qiime quality-control exclude-seqs \
   --i-query-sequences query-seqs.qza \
   --i-reference-sequences reference-seqs.qza \
   --p-method blast \
@@ -82,21 +48,20 @@ time qiime quality-control exclude-seqs \
 
 **输出对象:**
 
-- `qc-mock-3-expected.qza`: 预期特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Fqc-mock-3-expected.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/qc-mock-3-expected.qza)
-- `hits.qza`: 比对结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Fhits.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/hits.qza)
-- `query-seqs.qza`: 输入序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Fquery-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/query-seqs.qza)
-- `query-table.qza`: 输入特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Fquery-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/query-table.qza)
-- `misses.qza`: 无法比对序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Fmisses.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/misses.qza)
-- `reference-seqs.qza`: 参考数据库。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Freference-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/reference-seqs.qza)
-- `qc-mock-3-observed.qza`: 观测特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Fqc-mock-3-observed.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/qc-mock-3-observed.qza)
+- `qc-mock-3-expected.qza`: 预期特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Fqc-mock-3-expected.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/qc-mock-3-expected.qza)
+- `hits.qza`: 比对结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Fhits.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/hits.qza)
+- `query-seqs.qza`: 输入序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Fquery-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/query-seqs.qza)
+- `query-table.qza`: 输入特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Fquery-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/query-table.qza)
+- `misses.qza`: 无法比对序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Fmisses.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/misses.qza)
+- `reference-seqs.qza`: 参考数据库。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Freference-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/reference-seqs.qza)
+- `qc-mock-3-observed.qza`: 观测特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Fqc-mock-3-observed.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/qc-mock-3-observed.qza)
 
 此方法目前支持将`blast`、`vsearch`和`blastn-short`三种序列比对方法。请注意，如果查询序列包含非常短的序列（<30 nt），则应使用`blastn-short`方法。
 
-既然您已经将序列拆分为一组`可比对/不可比对`参考序列的序列，那么您很可能希望在进一步分析之前筛选功能表以删除可比对或不可比对的序列。[过滤教程](https://docs.qiime2.org/2020.2/tutorials/filtering/)中介绍了从特征表中过滤特征，但这里我们将演示使用序列数据过滤特征表。在某些情况下，您可能希望从特征表中删除无法比对序列(no hit)，例如，**如您试图选择与细菌序列（或更具体的类）对齐的序列**。在其他情况下，您可能希望从特性表中删除比对序列，例如，你试图**过滤与宿主DNA相似的污染物或序列**。在这里，我们将筛选去除可比对，以演示如何从特征表中筛选序列；您可以在下面的命令中用`misses.qza`替换`hits.qza`，以筛选排除比对结果。
+既然您已经将序列拆分为一组`可比对/不可比对`参考序列的序列，那么您很可能希望在进一步分析之前筛选功能表以删除可比对或不可比对的序列。[过滤教程](https://docs.qiime2.org/2021.2/tutorials/filtering/)中介绍了从特征表中过滤特征，但这里我们将演示使用序列数据过滤特征表。在某些情况下，您可能希望从特征表中删除无法比对序列(no hit)，例如，**如您试图选择与细菌序列（或更具体的类）对齐的序列**。在其他情况下，您可能希望从特性表中删除比对序列，例如，你试图**过滤与宿主DNA相似的污染物或序列**。在这里，我们将筛选去除可比对，以演示如何从特征表中筛选序列；您可以在下面的命令中用`misses.qza`替换`hits.qza`，以筛选排除比对结果。
 
 ```
-# 6s
-time qiime feature-table filter-features \
+qiime feature-table filter-features \
   --i-table query-table.qza \
   --m-metadata-file hits.qza \
   --o-filtered-table no-hits-filtered-table.qza \
@@ -105,7 +70,7 @@ time qiime feature-table filter-features \
 
 **输出对象:**
 
-- `no-hits-filtered-table.qza`: 排除指定ID的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Fno-hits-filtered-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/no-hits-filtered-table.qza)
+- `no-hits-filtered-table.qza`: 排除指定ID的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Fno-hits-filtered-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/no-hits-filtered-table.qza)
 
 享受数据筛选的乐趣吧！
 
@@ -118,8 +83,7 @@ time qiime feature-table filter-features \
 `evaluate_composition`比较两个单独的特征表中包含相同样本ID的观察和预期样本对的特征组成。通常，特征注释将由物种注释或其他分号分隔的功能注释组成。让我们旋转一下。
 
 ```
-# 10s
-time qiime quality-control evaluate-composition \
+qiime quality-control evaluate-composition \
   --i-expected-features qc-mock-3-expected.qza \
   --i-observed-features qc-mock-3-observed.qza \
   --o-visualization qc-mock-3-comparison.qzv
@@ -127,7 +91,7 @@ time qiime quality-control evaluate-composition \
 
 **输出对象:**
 
-- `qc-mock-3-comparison.qzv`: 特征表比较图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Fqc-mock-3-comparison.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/qc-mock-3-comparison.qzv)
+- `qc-mock-3-comparison.qzv`: 特征表比较图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Fqc-mock-3-comparison.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/qc-mock-3-comparison.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.13.01.jpg)
 
@@ -140,8 +104,7 @@ time qiime quality-control evaluate-composition \
 `evaluate_seqs`将一组查询（例如，观察到的）序列与一组参考（例如，预期的）序列对齐，以评估比对质量。预期用途是将观察到的序列与预期序列（例如，来自模拟群落）比对，以确定观察到的序列与最相似的预期序列之间不匹配的频率，例如，作为测序/方法错误的定量评价。但是，可以提供任何序列作为输入，以根据一组参考序列生成比对质量报告。
 
 ```
-# 6s
-time qiime quality-control evaluate-seqs \
+qiime quality-control evaluate-seqs \
   --i-query-sequences query-seqs.qza \
   --i-reference-sequences reference-seqs.qza \
   --o-visualization eval-seqs-test.qzv
@@ -149,7 +112,7 @@ time qiime quality-control evaluate-seqs \
 
 **输出对象:**
 
-- `eval-seqs-test.qzv`: 序列比较图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fquality-control%2Feval-seqs-test.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/quality-control/eval-seqs-test.qzv)
+- `eval-seqs-test.qzv`: 序列比较图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fquality-control%2Feval-seqs-test.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/quality-control/eval-seqs-test.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.13.02.jpg)
 
@@ -157,14 +120,13 @@ time qiime quality-control evaluate-seqs \
 
 ## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为微生物组数据分析、分析方法开发与优化和科学传播，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20余篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1300万+。
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
 
 ## Reference
 
-https://docs.qiime2.org/2020.2/
+https://docs.qiime2.org/2021.2/
 
 Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
-
 
 ## 猜你喜欢
 

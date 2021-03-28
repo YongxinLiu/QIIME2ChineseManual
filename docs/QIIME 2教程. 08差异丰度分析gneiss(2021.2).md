@@ -1,23 +1,12 @@
 [TOC]
 
-# 前情提要
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [7帕金森小鼠教程Parkinson's Mouse](https://mp.weixin.qq.com/s/cN1sfcWFME7S4OJy4VIREg)，[Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-
 # QIIME 2用户文档. 8差异丰度分析gneiss
 
 **Differential abundance analysis with gneiss**
 
-原文地址：https://docs.qiime2.org/2020.2/tutorials/gneiss/
+原文地址：https://docs.qiime2.org/2021.2/tutorials/gneiss/
 
-**此实例需要一些基础知识，要求完成本系列文章前两篇内容：《[1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)》和《[4人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)》。**
+**此实例需要一些基础知识，要求完成本系列文章前两篇内容：《[1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)》和《[4人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)》。**
 
 
 在本教程中，您将学习如何使用`gneiss`中的`balances`来进行差异丰度分析。我们将关注的主要问题是如何以组成连贯的方式识别分类群的差异丰度。
@@ -70,47 +59,39 @@ b_i = \sqrt{\frac{rs}{r+s}} \log \frac{g(x_r)}{g(x_s)}
 
 ```
 # 定义工作目录变量，方便以后多次使用
-wd=~/github/QIIME2ChineseManual/2020.2
+wd=~/github/QIIME2ChineseManual/2021.2
 mkdir -p $wd
 # 进入工作目录，是不是很简介，这样无论你在什么位置就可以快速回到项目文件夹
 cd $wd
 
 # 方法1. 进入QIIME 2 conda工作环境
-conda activate qiime2-2020.2
-# 这时我们的命令行前面出现 (qiime2-2020.2) 表示成功进入工作环境
+conda activate qiime2-2021.2
+# 这时我们的命令行前面出现 (qiime2-2021.2) 表示成功进入工作环境
 
 # 方法2. conda版本较老用户，使用source进入QIIME 2
-source activate qiime2-2020.2
+source activate qiime2-2021.2
 
 # 方法3. 如果是docker安装的请运行如下命令，默认加载当前目录至/data目录
-docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2020.2
+docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2021.2
 
 # 创建本节学习目录
-mkdir qiime2-chronic-fatigue-syndrome-tutorial
-cd qiime2-chronic-fatigue-syndrome-tutorial
+mkdir -p gneiss
+cd gneiss
 ```
 
 **实验数据下载**
 
-注意：**QIIME 2 官方测试数据部分保存在Google服务器上，国内下载比较困难**。可使用代理服务器(如蓝灯)下载  https://data.qiime2.org/2020.2/tutorials/gneiss/sample-metadata.tsv 保存为 sample-metadata.tsv 至此项分析的工作目录，或**公众号后台回复"qiime2"获取测试数据批量下载链接，你还可以跳过以后的wget步骤**。
-
-**下载来源Google文档的实验设计**
+注意：**QIIME 2 官方测试数据的元数据部分保存在Google服务器上，国内下载比较困难**。可直接使用我提供的国内备份链接，或**公众号后台回复"qiime2"获取测试数据批量下载链接**。
 
 ```
-wget -c \
-  -O "sample-metadata.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/gneiss/sample-metadata.tsv"
+wget -c http://210.75.224.110/github/QIIME2ChineseManual/2021.2/gneiss/sample-metadata.tsv
 ```
 
 下载特征表和物种注释
 
 ```
-wget -c \
-  -O "table.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/gneiss/table.qza"
-wget -c \
-  -O "taxa.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/gneiss/taxa.qza"
+wget -c https://data.qiime2.org/2021.2/tutorials/gneiss/table.qza
+wget -c https://data.qiime2.org/2021.2/tutorials/gneiss/taxa.qza
 ```
 
 首先，我们将定义我们想要构建`balances`的微生物的分区。同样，有多种可能的方法来构建一个树（即层级结构），它定义了我们要为其构建`balances`的微生物`balances`的分区。我们将在这个数据集中展示相关聚类( `correlation-clustering`)和梯度聚类(`gradient-clustering`)。
@@ -129,17 +110,16 @@ wget -c \
 其中x和y代表两种微生物在所有样品中的比例。如果两种微生物高度相关，那么这个数量将缩小到接近零。然后，Ward层次集群将使用这个距离度量来迭代地将相互关联的微生物群聚集在一起。最后，我们得到的树将突出显示高层极结构，并识别数据中的任何块。
 
 ```
-# 6s
-time qiime gneiss correlation-clustering \
+qiime gneiss correlation-clustering \
   --i-table table.qza \
   --o-clustering hierarchy.qza
 ```
 
 输出对象:
 
-- `table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fgneiss%2Ftable.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/gneiss/table.qza)
-- `taxa.qza`: 物种注释。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fgneiss%2Ftaxa.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/gneiss/taxa.qza)
-- `hierarchy.qza`: 层级结构。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fgneiss%2Fhierarchy.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/gneiss/hierarchy.qza)
+- `table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fgneiss%2Ftable.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/gneiss/table.qza)
+- `taxa.qza`: 物种注释。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fgneiss%2Ftaxa.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/gneiss/taxa.qza)
+- `hierarchy.qza`: 层级结构。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fgneiss%2Fhierarchy.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/gneiss/hierarchy.qza)
 
 ## 选项2：梯度聚类
 
@@ -148,8 +128,7 @@ time qiime gneiss correlation-clustering \
 相关聚类(`correlation-clustering`)的另一种选择是基于数字元数据类别创建树。通过梯度聚类(`gradient-clustering`)，我们可以对出现在元数据类别类似范围内的分类群进行分组。在本例中，我们将使用元数据类别年龄创建树（层次结构）。请注意，元数据类别不能缺少变量，并且必须是数字。
 
 ```
-# 6s
-time qiime gneiss gradient-clustering \
+qiime gneiss gradient-clustering \
   --i-table table.qza \
   --m-gradient-file sample-metadata.tsv \
   --m-gradient-column Age \
@@ -158,14 +137,13 @@ time qiime gneiss gradient-clustering \
 
 **输出对象**:
 
-- `gradient-hierarchy.qza`: 梯度层级。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fgneiss%2Fgradient-hierarchy.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/gneiss/gradient-hierarchy.qza)
+- `gradient-hierarchy.qza`: 梯度层级。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fgneiss%2Fgradient-hierarchy.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/gneiss/gradient-hierarchy.qza)
 
 下游分析的一个重要考虑因素是过度拟合问题。当使用梯度聚类时，您正在创建一个树来最好地突出所选元数据类别中的成分差异，并且可能会得到假阳性结果。使用梯度聚类`gradient-clustering`要谨慎。
 
 我们可以在热图上可视化层级聚类，以了解它们代表的分类群。**默认情况下，特征表中的值是按对数标准化的，意味着样本值以零为中心**。
 
 ```
-# 10s
 qiime gneiss dendrogram-heatmap \
   --i-table table.qza \
   --i-tree hierarchy.qza \
@@ -177,7 +155,7 @@ qiime gneiss dendrogram-heatmap \
 
 输出可视化结果:
 
-- `heatmap.qzv` :热图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fgneiss%2Fheatmap.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/gneiss/heatmap.qzv)
+- `heatmap.qzv` :热图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fgneiss%2Fheatmap.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/gneiss/heatmap.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.7.06.jpg)
 
@@ -195,17 +173,20 @@ qiime gneiss dendrogram-heatmap \
 
 为了进一步缩小这些假设，需要生物先验知识或实验验证。
 
+## 译者简介
+
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
+
+
 ## Reference
 
-https://docs.qiime2.org/2020.2/
+https://docs.qiime2.org/2021.2/
 
 Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 
 Ludovic Giloteaux, Julia K. Goodrich, William A. Walters, Susan M. Levine, Ruth E. Ley & Maureen R. Hanson. Reduced diversity and altered composition of the gut microbiome in individuals with myalgic encephalomyelitis/chronic fatigue syndrome. Microbiome 4, 30, doi:10.1186/s40168-016-0171-4 (2016).
 
-## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为宏基因组数据分析和植物微生物组，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20+篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1200万+。
 
 ## 猜你喜欢
 

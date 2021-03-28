@@ -1,22 +1,14 @@
 [TOC]
 
-# 前情提要
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-
-
 # QIIME 2用户文档. 4人体各部位微生物组
 
 **“Moving Pictures” tutorial**
 
-https://docs.qiime2.org/2020.2/tutorials/moving-pictures/
+https://docs.qiime2.org/2021.2/tutorials/moving-pictures/
 
-本节1.6万字，14张图。阅读时间大约40分钟。
+本节1.6万字，14张图，3个视频。阅读时间大约40分钟。
 
-> 注意：本文学习需要安装好QIIME 2，请务必完成[1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/xmfoA7MCSoRlnKJJgH823g)
+> 注意：本文学习需要安装好QIIME 2，请务必完成[1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)
 
 在本教程中，你将使用QIIME 2在五个时间点对来自两个人四个身体部位的微生物组样本进行分析，第一个时间点紧接着是抗生素的使用。基于这些样本的[研究文章《Moving pictures of the human microbiome》在2011年发表于*Genome Biology*](https://www.ncbi.nlm.nih.gov/pubmed/21624126)。本教程中使用的数据基于Illumina HiSeq产出，使用[地球微生物组计划](http://earthmicrobiome.org/)扩增16S rRNA基因高变区4（V4）测序的方法。
 
@@ -48,30 +40,30 @@ http://v.qq.com/vplus/22b577627f014f0ca25e9827b38c171e
 
 对于上文提到了两种常用安装方法，我们每次在分析数据前，需要打开工作环境，根据情况选择对应的打开方式。
 
-比如我的工作目录为`~/github/QIIME2ChineseManual/2020.2`，这是与Github中同步的目录，方便同行下载测试数据。用户可以随便定义你的项目工作目录，如把qiime2学习放在`qiime2`目录中。
+比如我的工作目录为`~/github/QIIME2ChineseManual/2021.2`，这是与Github中同步的目录，方便同行下载测试数据。用户可以随便定义你的项目工作目录，如把qiime2学习放在`qiime2`目录中。
 
 **我们在每次分析开始前，必须先进入工作目录**，除非你是一个把什么东西都放在桌面上还很工作更有效率的人。
 
 ```
 # 定义工作目录变量，方便以后多次使用
-wd=~/github/QIIME2ChineseManual/2020.2
+wd=~/github/QIIME2ChineseManual/2021.2
 mkdir -p $wd
 # 进入工作目录，是不是很简介，这样无论你在什么位置就可以快速回到项目文件夹
 cd $wd
 
 # 方法1. 进入QIIME 2 conda工作环境
-conda activate qiime2-2020.2
-# 这时我们的命令行前面出现 (qiime2-2020.2) 表示成功进入工作环境
+conda activate qiime2-2021.2
+# 这时我们的命令行前面出现 (qiime2-2021.2) 表示成功进入工作环境
 
 # 方法2. conda版本较老用户，使用source进入QIIME 2
-source activate qiime2-2020.2
+source activate qiime2-2021.2
 
 # 方法3. 如果是docker安装的请运行如下命令，默认加载当前目录至/data目录
-docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2020.2
+docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2021.2
 
 # 创建本节学习目录
-mkdir qiime2-moving-pictures-tutorial
-cd qiime2-moving-pictures-tutorial
+mkdir moving-pictures
+cd moving-pictures
 ```
 
 ## 样本元数据
@@ -80,19 +72,17 @@ cd qiime2-moving-pictures-tutorial
 
 在开始分析之前，我们需要阅读样本元数据，以熟悉本研究中使用的样本信息。示例元数据作为Google 表格提供。你可以通过选择`File > Download as > Tab-separated values`，以制表符分隔的文本格式下载该文件。或者，以下命令将作为制表符分隔的文本下载示例元数据，并将其保存在文件`sample-metadata.tsv`。这个`sample-metadata.tsv`文件在本教程中一直被用到。
 
-在Windows下可直接点击链接下载 https://data.qiime2.org/2020.2/tutorials/moving-pictures/sample_metadata.tsv， 保存为 `sample_metadata.tsv`；在Qiime 2中则用以下代码下载：
+在Windows下可直接点击链接下载 https://data.qiime2.org/2021.2/tutorials/moving-pictures/sample_metadata.tsv， 保存为 `sample_metadata.tsv`；在Qiime 2中则用以下代码下载：
 
 ```
-wget \
-  -O "sample-metadata.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/moving-pictures/sample_metadata.tsv"
+wget -c http://210.75.224.110/github/QIIME2ChineseManual/2021.2/moving-pictures/sample-metadata.tsv
 ```
 
-注意：**QIIME 2 官方测试数据均保存在Google服务器上，国内下载比较困难**。可使用代理服务器(如蓝灯、谷歌上网助手帮助)下载以上文件，国内用户可选在**QIIME 2中文Github页面 https://github.com/YongxinLiu/QIIME2ChineseManual  、或在<font color=red>微信订阅号“meta-genome”</font>后台回复"qiime2"等方式获取测试数据下载链接，提供多种备选方式保证数据可用**。
+注意：**QIIME 2 官方测试数据均保存在Google服务器上，国内下载比较困难**。以上下载链接已经替换为国内备份链接，可直接使用。也可使用代理服务器(如蓝灯、谷歌上网助手帮助)下载以上文件的原文件，国内用户可选在**QIIME 2中文Github页面 https://github.com/YongxinLiu/QIIME2ChineseManual  、或在<font color=red>微信订阅号“meta-genome”</font>后台回复"qiime2"等方式获取测试数据下载链接，提供多种备选方式保证数据可用**。
 
 > 提示：[Keemei](https://keemei.qiime2.org/)是一个用于验证示例元数据的Google Sheets插件。在开始任何分析之前，样本元数据的验证非常重要。尝试按照Keemei网站上的说明安装Keemei，然后验证上面链接的示例元数据电子表格。该电子表格还包括一个带有一些无效数据的表格，以便使用Keemei进行测试。
 
-> 提示：要了解关于元数据的更多信息，包括如何格式化元数据以便与QIIME 2一起使用，请参阅[元数据教程](https://docs.qiime2.org/2020.2/tutorials/metadata/)。
+> 提示：要了解关于元数据的更多信息，包括如何格式化元数据以便与QIIME 2一起使用，请参阅[元数据教程](https://docs.qiime2.org/2021.2/tutorials/metadata/)。
 
 
 ## 下载和导入数据
@@ -105,19 +95,20 @@ wget \
 
 ```
 mkdir -p emp-single-end-sequences
+# 3.6M
 wget \
   -O "emp-single-end-sequences/barcodes.fastq.gz" \
-  "https://data.qiime2.org/2020.2/tutorials/moving-pictures/emp-single-end-sequences/barcodes.fastq.gz"
+  "https://data.qiime2.org/2021.2/tutorials/moving-pictures/emp-single-end-sequences/barcodes.fastq.gz"
+# 24M
 wget \
   -O "emp-single-end-sequences/sequences.fastq.gz" \
-  "https://data.qiime2.org/2020.2/tutorials/moving-pictures/emp-single-end-sequences/sequences.fastq.gz"
-
+  "https://data.qiime2.org/2021.2/tutorials/moving-pictures/emp-single-end-sequences/sequences.fastq.gz"
+  
 ```
 
 用于输入到QIIME 2的所有数据都以QIIME 2对象的形式出现，其中包含有关数据类型和数据源的信息。因此，我们需要做的第一件事是将这些序列数据文件导入到QIIME 2对象中。
 
-这个QIIME 2对象的语义类型是`EMPSingleEndSequences`。 QIIME 对象`EMPSingleEndSequences`是包含多样本混合的序列文件，这意味着序列尚未分配给样本（因此包括`sequences.fastq.gz`和`barcode.fastq.gz`文件，其`中barcode.fastq.gz`包含与`sequences.fastq.gz`中的每个序列相关联的条形码）。要导入其他格式的序列数据，请参阅[导入数据](https://docs.qiime2.org/2020.2/tutorials/importing/)教程。
-
+这个QIIME 2对象的语义类型是`EMPSingleEndSequences`。 QIIME 对象`EMPSingleEndSequences`是包含多样本混合的序列文件，这意味着序列尚未分配给样本（因此包括`sequences.fastq.gz`和`barcode.fastq.gz`文件，其中`barcode.fastq.gz`包含与`sequences.fastq.gz`中的每个序列相关联的条形码）。要导入其他格式的序列数据，请参阅[导入数据](https://docs.qiime2.org/2021.2/tutorials/importing/)教程。
 
 
 导入数据：生成qiime2要求的对象格式。time统计计算时间。
@@ -131,9 +122,9 @@ time qiime tools import \
 
 输出对象:
 
-`emp-single-end-sequences.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Femp-single-end-sequences.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/emp-single-end-sequences.qza)
+`emp-single-end-sequences.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Femp-single-end-sequences.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/emp-single-end-sequences.qza)
 
-**译者注：公众号无法打开外部链接，想要直接访问`查看`、`下载`等文中链接，可访问位于[Github的QIIME2中文文档](https://github.com/YongxinLiu/QIIME2ChineseManual/tree/master/docs)、[CSDN的扩增子分析专栏](https://blog.csdn.net/woodcorpse/column/info/19197)、[QIIME 2论坛-社区贡献-翻译版块](https://forum.qiime2.org/c/community-contributions/community-translations)、或[科学网QIIME2专栏](http://blog.sciencenet.cn/home.php?mod=space&uid=3334560&do=blog&classid=173195&view=me&from=space)阅读同名文档，也可用百度搜索本节标题试试。**
+**译者注：公众号无法打开外部链接，如果想要直接访问`查看`、`下载`等文中链接，可访问位于[Github的QIIME2中文文档](https://github.com/YongxinLiu/QIIME2ChineseManual/tree/master/docs)、[CSDN的扩增子分析专栏](https://blog.csdn.net/woodcorpse/column/info/19197)、[QIIME 2论坛-社区贡献-翻译版块](https://forum.qiime2.org/c/community-contributions/community-translations)、或[科学网QIIME2专栏](http://blog.sciencenet.cn/home.php?mod=space&uid=3334560&do=blog&classid=173195&view=me&from=space)阅读同名文档，也可用百度搜索本节标题试试。**
 
 > 提示：
 上面的`查看`和`下载`由文档中的命令创建的QIIME 2对象和可视化链接。例如，上面的命令创建了单个`emp-single-end-sequences.qza`文件，上面链接了相应的预计算文件（输出结果）。你可以查看预计算的QIIME 2对象和可视化而不需要安装额外的软件（例如，QIIME 2）。
@@ -145,9 +136,10 @@ time qiime tools import \
 
 **Demultiplexing sequences**
 
-为了混合序列进行样本拆分，我们需要知道哪个条形码序列与每个样本相关联。此信息包含在[样品元数据](https://data.qiime2.org/2020.2/tutorials/moving-pictures/sample_metadata)文件中。你可以运行以下命令来对序列进行样本拆分（`demux emp-single`命令指的是这些序列是根据[地球微生物组计划](http://earthmicrobiome.org/)标准方法添加的条形码，并且是单端序列）。QIIME 2对象`demux.qza`包含样本拆分后的序列。第二个输出文件 (`demux-details.qza`) 包括Golay标签错误校正的详细，在本教程中不作讨论 (你可以使用 `qiime metadata tabulate`查看该结果)。
+为了混合序列进行样本拆分，我们需要知道哪个条形码序列与每个样本相关联。此信息包含在[样品元数据](https://data.qiime2.org/2021.2/tutorials/moving-pictures/sample_metadata)文件中。你可以运行以下命令来对序列进行样本拆分（`demux emp-single`命令指的是这些序列是根据[地球微生物组计划](http://earthmicrobiome.org/)标准方法添加的条形码，并且是单端序列）。QIIME 2对象`demux.qza`包含样本拆分后的序列。第二个输出文件 (`demux-details.qza`) 包括Golay标签错误校正的详细，在本教程中不作讨论 (你可以使用 `qiime metadata tabulate`查看该结果)。
 
 ```
+# 用时1m
 time qiime demux emp-single \
   --i-seqs emp-single-end-sequences.qza \
   --m-barcodes-file sample-metadata.tsv \
@@ -156,12 +148,11 @@ time qiime demux emp-single \
   --o-error-correction-details demux-details.qza
 ```
 
-用时1m3.844s
 
 **输出结果**：
 
-- `demux-details.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux-details.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/demux-details.qza)
-- `demux.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/demux.qza)
+- `demux-details.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux-details.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/demux-details.qza)
+- `demux.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/demux.qza)
 
 在样本拆分之后，生成拆分结果的统计信息非常重要。这允许我们确定每个样本获得多少序列，并且还可以获得序列数据中每个位置处序列质量分布的摘要。
 
@@ -173,7 +164,7 @@ time qiime demux summarize \
   --o-visualization demux.qzv
 ```
 
-输出可视化结果`demux.qzv`： [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/demux.qzv)
+输出可视化结果`demux.qzv`： [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/demux.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.01.jpg)
 
@@ -298,6 +289,7 @@ DADA2是用于检测和校正（如果有可能的话）Illumina扩增序列数�
 下面的步骤计算量较大，有34个样本，26万条序列，计算大约消耗10分钟。
 
 ```
+# 本地46s，服务器1m23m，笔记本单核比服务器更快
 time qiime dada2 denoise-single \
   --i-demultiplexed-seqs demux.qza \
   --p-trim-left 0 \
@@ -305,14 +297,13 @@ time qiime dada2 denoise-single \
   --o-representative-sequences rep-seqs-dada2.qza \
   --o-table table-dada2.qza \
   --o-denoising-stats stats-dada2.qza
- # time统计计算时间，此步计算我测序时耗时1m11s，后来我们的服务器速度还不错
  # 实际计算时间，即受服务器配置影响，还受同台服务器上任务量影响
 ```
 
 生成三个输出文件：
-- `stats-dada2.qza`: dada2计算统计结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fstats-dada2.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/stats-dada2.qza)
-- `table-dada2.qza`: 特征表。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftable-dada2.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/table-dada2.qza)
-- `rep-seqs-dada2.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Frep-seqs-dada2.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/rep-seqs-dada2.qza)
+- `stats-dada2.qza`: dada2计算统计结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fstats-dada2.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/stats-dada2.qza)
+- `table-dada2.qza`: 特征表。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftable-dada2.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/table-dada2.qza)
+- `rep-seqs-dada2.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Frep-seqs-dada2.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/rep-seqs-dada2.qza)
 
 对特征表统计进行进行可视化
 
@@ -322,7 +313,7 @@ qiime metadata tabulate \
   --o-visualization stats-dada2.qzv
 ```
 
-输出样本统计表：`stats-dada2.qzv`，[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fstats-dada2.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/stats-dada2.qzv)
+输出样本统计表：`stats-dada2.qzv`，[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fstats-dada2.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/stats-dada2.qzv)
 
 内容为每个样本，输入、过滤、去噪和非嵌合的统计，**并支持按列排序，检索和功能**，用于样本异常筛选，特征表抽平标准化非常有用。
 
@@ -350,16 +341,16 @@ Deblur使用序列错误配置文件将错误的序列与从其来源的真实�
 按测序碱基质量过滤序列
 
 ```
+# 用时：笔记本25s，服务器44s
 time qiime quality-filter q-score \
  --i-demux demux.qza \
  --o-filtered-sequences demux-filtered.qza \
  --o-filter-stats demux-filter-stats.qza
-# 用时40s
 ```
 
 输出对象:
-- `demux-filtered.qza`: 序列质量过滤后结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux-filtered.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/demux-filtered.qza)
-- `demux-filter-stats.qza`: 序列质量过滤后结果统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux-filter-stats.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/demux-filter-stats.qza)
+- `demux-filtered.qza`: 序列质量过滤后结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux-filtered.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/demux-filtered.qza)
+- `demux-filter-stats.qza`: 序列质量过滤后结果统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux-filter-stats.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/demux-filter-stats.qza)
 
 > 注意：在[Deblur的论文](http://msystems.asm.org/content/2/2/e00191-16)中，作者使用了当时推荐的过滤参数。而这里使用的[参数基于最新的经验](https://qiita.ucsd.edu/static/doc/html/deblur_quality.html)，效果更好。
 
@@ -370,6 +361,7 @@ time qiime quality-filter q-score \
 deblur去噪16S过程，输入文件为质控后的序列，设置截取长度参数，生成结果文件有代表序列、特征表、样本统计。
 
 ```
+# 用时：笔记本3m11s，服务器5m50s
 time qiime deblur denoise-16S \
   --i-demultiplexed-seqs demux-filtered.qza \
   --p-trim-length 120 \
@@ -379,28 +371,28 @@ time qiime deblur denoise-16S \
   --o-stats deblur-stats.qza
 ```
 
-> 注：在测试服务器上单线程运行时间为5m29s，比作者测试时间快了1倍
+> 注：在测试服务器上单线程运行时间为5m50s，比原作者测试时间快了1倍。笔记本也比服务器快近1倍，因为核心频率更高。但服务器的线程数更多，在需要多线程的任务时，优势会非常明显。
 
 输出结果:
 
-- `deblur-stats.qza:` 过程统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdeblur-stats.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/deblur-stats.qza)
-- `table-deblur.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftable-deblur.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/table-deblur.qza)
-- `rep-seqs-deblur.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Frep-seqs-deblur.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/rep-seqs-deblur.qza)
+- `deblur-stats.qza:` 过程统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdeblur-stats.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/deblur-stats.qza)
+- `table-deblur.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftable-deblur.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/table-deblur.qza)
+- `rep-seqs-deblur.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Frep-seqs-deblur.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/rep-seqs-deblur.qza)
 
 > 注意： 本节中使用的两种命令生成包含汇总统计信息的QIIME 2对象。为了查看这些汇总统计数据，你可以分别使用`qiime metadata tabulate`和`qiime deblur visualize-stats`命令来分别可视化这两种命令的输出文件。
 
 ```
-time qiime metadata tabulate \
+qiime metadata tabulate \
   --m-input-file demux-filter-stats.qza \
   --o-visualization demux-filter-stats.qzv
-time qiime deblur visualize-stats \
+qiime deblur visualize-stats \
   --i-deblur-stats deblur-stats.qza \
   --o-visualization deblur-stats.qzv
 ```
 
 输出结果:
 
-- `demux-filter-stats.qzv`: 质量过程统计表，同上面提到的`stats-dada2.qzv`统计表类似。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux-filter-stats.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/demux-filter-stats.qzv)
+- `demux-filter-stats.qzv`: 质量过程统计表，同上面提到的`stats-dada2.qzv`统计表类似。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdemux-filter-stats.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/demux-filter-stats.qzv)
 
 示例如下：包括6列，第一列为样本名称，2-6列分别为总输入读长、总保留高读长、截断的读长、截断后太短的读长和超过最大模糊碱基的读长的数量统计。我们通常只关注2，3列数量即可，其它列常用于异常的输助判断。
 
@@ -411,7 +403,7 @@ L1S105|11340|9232|10782|2066|42
 L1S140|9738|8585|9459|1113|40
 L1S208|11337|10149|10668|1161|27
 
-- deblur-stats.qzv: deblur分析统计表，有分析中每个步骤的统计表 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdeblur-stats.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/deblur-stats.qzv)
+- deblur-stats.qzv: deblur分析统计表，有分析中每个步骤的统计表 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fdeblur-stats.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/deblur-stats.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.03.jpg)
 
@@ -447,8 +439,8 @@ qiime feature-table tabulate-seqs \
 
 输出结果:
 
-- table.qzv: 特征表统计。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftable.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/table.qzv)
-- rep-seqs.qzv: 代表序列统计，可点击序列跳转NCBI blast查看相近序列的信息。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Frep-seqs.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/rep-seqs.qzv)
+- table.qzv: 特征表统计。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftable.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/table.qzv)
+- rep-seqs.qzv: 代表序列统计，可点击序列跳转NCBI blast查看相近序列的信息。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Frep-seqs.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/rep-seqs.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.04.jpg)
 
@@ -483,10 +475,10 @@ time qiime phylogeny align-to-tree-mafft-fasttree \
 
 输出结果文件:
 
-- `aligned-rep-seqs.qza`: 多序列比对结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Faligned-rep-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/aligned-rep-seqs.qza)
-- `masked-aligned-rep-seqs.qza`: 过滤去除高变区后的多序列比对结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fmasked-aligned-rep-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/masked-aligned-rep-seqs.qza)
-- `rooted-tree.qza`: 有根树，用于多样性分析。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Frooted-tree.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/rooted-tree.qza)
-- `unrooted-tree.qza`: 无根树。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Funrooted-tree.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/unrooted-tree.qza)
+- `aligned-rep-seqs.qza`: 多序列比对结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Faligned-rep-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/aligned-rep-seqs.qza)
+- `masked-aligned-rep-seqs.qza`: 过滤去除高变区后的多序列比对结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fmasked-aligned-rep-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/masked-aligned-rep-seqs.qza)
+- `rooted-tree.qza`: 有根树，用于多样性分析。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Frooted-tree.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/rooted-tree.qza)
+- `unrooted-tree.qza`: 无根树。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Funrooted-tree.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/unrooted-tree.qza)
 
 ## Alpha和beta多样性分析
 
@@ -530,26 +522,26 @@ time qiime diversity core-metrics-phylogenetic \
 
 输出对象(13个数据文件):
 
-- core-metrics-results/faith_pd_vector.qza: Alpha多样性考虑进化的faith指数。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Ffaith_pd_vector.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/faith_pd_vector.qza)
-- core-metrics-results/unweighted_unifrac_distance_matrix.qza: 无权重unifrac距离矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/unweighted_unifrac_distance_matrix.qza)
-- core-metrics-results/bray_curtis_pcoa_results.qza: 基于Bray-Curtis距离PCoA的结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fbray_curtis_pcoa_results.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/bray_curtis_pcoa_results.qza)
-- core-metrics-results/shannon_vector.qza: Alpha多样性香农指数。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fshannon_vector.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/shannon_vector.qza)
-- core-metrics-results/rarefied_table.qza: 等量重采样后的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Frarefied_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/rarefied_table.qza)
-- core-metrics-results/weighted_unifrac_distance_matrix.qza: 有权重的unifrac距离矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/weighted_unifrac_distance_matrix.qza)
-- core-metrics-results/jaccard_pcoa_results.qza: jaccard距离PCoA结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fjaccard_pcoa_results.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/jaccard_pcoa_results.qza)
-- core-metrics-results/observed_otus_vector.qza: Alpha多样性observed otus指数。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fobserved_otus_vector.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/observed_otus_vector.qza)
-- core-metrics-results/weighted_unifrac_pcoa_results.qza: 基于有权重的unifrac距离的PCoA结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/weighted_unifrac_pcoa_results.qza)
-- core-metrics-results/jaccard_distance_matrix.qza: jaccard距离矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fjaccard_distance_matrix.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/jaccard_distance_matrix.qza)
+- core-metrics-results/faith_pd_vector.qza: Alpha多样性考虑进化的faith指数。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Ffaith_pd_vector.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/faith_pd_vector.qza)
+- core-metrics-results/unweighted_unifrac_distance_matrix.qza: 无权重unifrac距离矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/unweighted_unifrac_distance_matrix.qza)
+- core-metrics-results/bray_curtis_pcoa_results.qza: 基于Bray-Curtis距离PCoA的结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fbray_curtis_pcoa_results.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/bray_curtis_pcoa_results.qza)
+- core-metrics-results/shannon_vector.qza: Alpha多样性香农指数。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fshannon_vector.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/shannon_vector.qza)
+- core-metrics-results/rarefied_table.qza: 等量重采样后的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Frarefied_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/rarefied_table.qza)
+- core-metrics-results/weighted_unifrac_distance_matrix.qza: 有权重的unifrac距离矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/weighted_unifrac_distance_matrix.qza)
+- core-metrics-results/jaccard_pcoa_results.qza: jaccard距离PCoA结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fjaccard_pcoa_results.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/jaccard_pcoa_results.qza)
+- core-metrics-results/observed_otus_vector.qza: Alpha多样性observed otus指数。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fobserved_otus_vector.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/observed_otus_vector.qza)
+- core-metrics-results/weighted_unifrac_pcoa_results.qza: 基于有权重的unifrac距离的PCoA结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/weighted_unifrac_pcoa_results.qza)
+- core-metrics-results/jaccard_distance_matrix.qza: jaccard距离矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fjaccard_distance_matrix.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/jaccard_distance_matrix.qza)
 - core-metrics-results/evenness_vector.qza: Alpha多样性均匀度指数。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2019.7%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fevenness_vector.qza) | [下载](https://docs.qiime2.org/2019.7/data/tutorials/moving-pictures/core-metrics-results/evenness_vector.qza)
-- core-metrics-results/bray_curtis_distance_matrix.qza: Bray-Curtis距离矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fbray_curtis_distance_matrix.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/bray_curtis_distance_matrix.qza)
-core-metrics-results/unweighted_unifrac_pcoa_results.qza: 无权重的unifrac距离的PCoA结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/unweighted_unifrac_pcoa_results.qza)
+- core-metrics-results/bray_curtis_distance_matrix.qza: Bray-Curtis距离矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fbray_curtis_distance_matrix.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/bray_curtis_distance_matrix.qza)
+core-metrics-results/unweighted_unifrac_pcoa_results.qza: 无权重的unifrac距离的PCoA结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/unweighted_unifrac_pcoa_results.qza)
 
 **输出对象(4种可视化结果)**:
 
-- core-metrics-results/unweighted_unifrac_emperor.qzv：无权重的unifrac距离PCoA结果采用emperor可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted_unifrac_emperor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/unweighted_unifrac_emperor.qzv)
-- core-metrics-results/jaccard_emperor.qzv：jaccard距离PCoA结果采用emperor可视化。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fjaccard_emperor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/jaccard_emperor.qzv)
-- core-metrics-results/bray_curtis_emperor.qzv： Bray-Curtis距离PCoA结果采用emperor可视化。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fbray_curtis_emperor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/bray_curtis_emperor.qzv)
-- core-metrics-results/weighted_unifrac_emperor.qzv： 有权重的unifrac距离PCoA结果采用emperor可视化。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fweighted_unifrac_emperor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/weighted_unifrac_emperor.qzv)
+- core-metrics-results/unweighted_unifrac_emperor.qzv：无权重的unifrac距离PCoA结果采用emperor可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted_unifrac_emperor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/unweighted_unifrac_emperor.qzv)
+- core-metrics-results/jaccard_emperor.qzv：jaccard距离PCoA结果采用emperor可视化。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fjaccard_emperor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/jaccard_emperor.qzv)
+- core-metrics-results/bray_curtis_emperor.qzv： Bray-Curtis距离PCoA结果采用emperor可视化。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fbray_curtis_emperor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/bray_curtis_emperor.qzv)
+- core-metrics-results/weighted_unifrac_emperor.qzv： 有权重的unifrac距离PCoA结果采用emperor可视化。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fweighted_unifrac_emperor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/weighted_unifrac_emperor.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.06.gif)
 
@@ -561,7 +553,7 @@ core-metrics-results/unweighted_unifrac_pcoa_results.qza: 无权重的unifrac距
 
 > 注意：在许多Illumina测序结果中，你将观察到一些序列计数非常低的例子。你通常希望通过在此阶段采样深度选择更大的值来从分析中剔除它们。
 
-在计算多样性度量之后，我们可以开始在样本元数据的分组信息或属性值背景下探索样本的微生物组成差异。此信息存在于先前下载的示例[元数据](https://data.qiime2.org/2020.2/tutorials/moving-pictures/sample_metadata)文件中。
+在计算多样性度量之后，我们可以开始在样本元数据的分组信息或属性值背景下探索样本的微生物组成差异。此信息存在于先前下载的示例[元数据](https://data.qiime2.org/2021.2/tutorials/moving-pictures/sample_metadata)文件中。
 
 我们将首先测试分类元数据列和alpha多样性数据之间的关系。我们将在这里为`Faith`系统发育多样性（群体丰富度的度量）和`Evenness`均匀度进行可视化操作。
 
@@ -577,12 +569,13 @@ qiime diversity alpha-group-significance \
   --i-alpha-diversity core-metrics-results/evenness_vector.qza \
   --m-metadata-file sample-metadata.tsv \
   --o-visualization core-metrics-results/evenness-group-significance.qzv
+
 ```
 
 输出可视化结果：
 
-- core-metrics-results/faith-pd-group-significance.qzv。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Ffaith-pd-group-significance.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/faith-pd-group-significance.qzv)
-- core-metrics-results/evenness-group-significance.qzv。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fevenness-group-significance.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/evenness-group-significance.qzv)
+- core-metrics-results/faith-pd-group-significance.qzv。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Ffaith-pd-group-significance.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/faith-pd-group-significance.qzv)
+- core-metrics-results/evenness-group-significance.qzv。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fevenness-group-significance.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/evenness-group-significance.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.07.gif)
 
@@ -600,27 +593,28 @@ qiime diversity alpha-group-significance \
 接下来，我们将使用PERMANOVA方法（[在Anderson 2001年的文章中首次描述](http://onlinelibrary.wiley.com/doi/10.1111/j.1442-9993.2001.01070.pp.x/full)）`beta-group-significance`分析分类型元数据的样本组间差异。以下命令将测试一组样本之间的距离，是否比来自其他组(例如，舌头、左手掌和右手掌)的样本彼此更相似，例如来自同一身体部位(例如肠)的样本。如果你用这个命令的`--p-pairwise`参数，它将执行成对检验，结果将允许我们确定哪对特定组（例如，舌头和肠）彼此不同是否显著不同。这个**命令运行起来可能很慢，尤其是当使用`--p-pairwise`参数，因为它是基于置换检验的**。因此，我们将在元数据的特定列上运行该命令，而不是在其适用的所有元数据列上运行该命令。这里，我们将使用两个示例元数据列将此应用到未加权的UniFrac距离，如下所示。
 
 ```
+# 7s，多组或多样本时计算量指数增长
 time qiime diversity beta-group-significance \
   --i-distance-matrix core-metrics-results/unweighted_unifrac_distance_matrix.qza \
   --m-metadata-file sample-metadata.tsv \
   --m-metadata-column body-site \
   --o-visualization core-metrics-results/unweighted-unifrac-body-site-significance.qzv \
   --p-pairwise
-# 7s，多种或多样本时计算量指数增长
 
+# 6s，多组或多样本时计算量指数增长
 time qiime diversity beta-group-significance \
   --i-distance-matrix core-metrics-results/unweighted_unifrac_distance_matrix.qza \
   --m-metadata-file sample-metadata.tsv \
   --m-metadata-column subject \
   --o-visualization core-metrics-results/unweighted-unifrac-subject-group-significance.qzv \
   --p-pairwise
-# 6s，多种或多样本时计算量指数增长
+  
 ```
 
 输出可视化结果:
 
-- `core-metrics-results/unweighted-unifrac-body-site-significance.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted-unifrac-body-site-significance.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/unweighted-unifrac-body-site-significance.qzv)
-- `core-metrics-results/unweighted-unifrac-subject-group-significance.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted-unifrac-subject-group-significance.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/unweighted-unifrac-subject-group-significance.qzv)
+- `core-metrics-results/unweighted-unifrac-body-site-significance.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted-unifrac-body-site-significance.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/unweighted-unifrac-body-site-significance.qzv)
+- `core-metrics-results/unweighted-unifrac-subject-group-significance.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted-unifrac-subject-group-significance.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/unweighted-unifrac-subject-group-significance.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.08.jpg)
 
@@ -644,11 +638,12 @@ qiime emperor plot \
   --m-metadata-file sample-metadata.tsv \
   --p-custom-axes days-since-experiment-start \
   --o-visualization core-metrics-results/bray-curtis-emperor-days-since-experiment-start.qzv
+  
 ```
 
 输出可视化：
-- `core-metrics-results/bray-curtis-emperor-days-since-experiment-start.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fbray-curtis-emperor-days-since-experiment-start.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/bray-curtis-emperor-days-since-experiment-start.qzv)
-- `core-metrics-results/unweighted-unifrac-emperor-days-since-experiment-start.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted-unifrac-emperor-days-since-experiment-start.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/unweighted-unifrac-emperor-days-since-experiment-start.qzv)
+- `core-metrics-results/bray-curtis-emperor-days-since-experiment-start.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Fbray-curtis-emperor-days-since-experiment-start.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/bray-curtis-emperor-days-since-experiment-start.qzv)
+- `core-metrics-results/unweighted-unifrac-emperor-days-since-experiment-start.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcore-metrics-results%2Funweighted-unifrac-emperor-days-since-experiment-start.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/unweighted-unifrac-emperor-days-since-experiment-start.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.09.jpg)
 
@@ -659,25 +654,25 @@ qiime emperor plot \
 
 > 问题：在未加权的UniFrac和Bray-Curtis PCoA图中，你观察到了哪些差异？
 
-## Alpha稀疏取线
+## Alpha稀疏曲线
 
 **Alpha rarefaction plotting**
 
 在本节中，我们将使用`qiime diversity alpha-rarefaction`可视化工具来探索α多样性与采样深度的关系。该可视化工具在多个采样深度处计算一个或多个α多样性指数，范围介于1（可选地`--p-min-depth`控制）和最大采样深度`--p-max-depth`提供值之间。在每个采样深度，将生成10个抽样表，并对表中的所有样本计算alpha多样性指数计算。迭代次数（在每个采样深度计算的稀疏表）可以通过`--p-iterations`来控制。在每个采样深度，将为每个样本绘制平均多样性值，如果提供样本元数据`--m-metadata-file`参数，则可以基于元数据对样本进行分组。
 
 ```
+# 用时：笔记本1m13S，服务器40s，本步计算量较大。
 time qiime diversity alpha-rarefaction \
   --i-table table.qza \
   --i-phylogeny rooted-tree.qza \
   --p-max-depth 4000 \
   --m-metadata-file sample-metadata.tsv \
   --o-visualization alpha-rarefaction.qzv
+  
 ```
 
-用时13S，本步计算量较大。
-
 输出可视化：
-- alpha-rarefaction.qzv: 稀疏曲线。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Falpha-rarefaction.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/alpha-rarefaction.qzv)
+- alpha-rarefaction.qzv: 稀疏曲线。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Falpha-rarefaction.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/alpha-rarefaction.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.10.jpg)
 
@@ -701,14 +696,16 @@ time qiime diversity alpha-rarefaction \
 
 在这一节中，我们将开始探索样本的物种组成，并将其与样本元数据再次组合。这个过程的第一步是为`FeatureData[Sequence]`的序列进行物种注释。我们将使用经过Naive Bayes分类器预训练的，并由`q2-feature-classifier`插件来完成这项工作。这个分类器是在`Greengenes 13_8 99% OTU`上训练的，其中序列被修剪到仅包括来自16S区域的250个碱基，该16S区域在该分析中采用V4区域的515F/806R引物扩增并测序。我们将把这个分类器应用到序列中，并且可以生成从序列到物种注释结果关联的可视化。
 
-> 注意：物种分类器根据你特定的样品制备和测序参数进行训练时表现最好，包括用于扩增的引物和测序序列的长度。因此，一般来说，你应该按照[使用`q2-feature-classifier`的训练特征分类器](https://docs.qiime2.org/2020.2/tutorials/feature-classifier/)的说明来训练自己的物种分类器。我们在[数据资源页面](https://docs.qiime2.org/2020.2/data-resources/)上提供了一些通用的分类器，包括基于Silva的16S分类器，不过将来我们可能会停止提供这些分类器，而让用户训练他们自己的分类器，这将与他们的序列数据最相关。
+> 注意：物种分类器根据你特定的样品制备和测序参数进行训练时表现最好，包括用于扩增的引物和测序序列的长度。因此，一般来说，你应该按照[使用`q2-feature-classifier`的训练特征分类器](https://docs.qiime2.org/2021.2/tutorials/feature-classifier/)的说明来训练自己的物种分类器。我们在[数据资源页面](https://docs.qiime2.org/2021.2/data-resources/)上提供了一些通用的分类器，包括基于Silva的16S分类器，不过将来我们可能会停止提供这些分类器，而让用户训练他们自己的分类器，这将与他们的序列数据最相关。
 
 下载物种注释数据库制作的分类器：无法下载记得后台回复"qiime2"获得备用下载链接
 
 ```
+# 27M
 wget \
   -O "gg-13-8-99-515-806-nb-classifier.qza" \
-  "https://data.qiime2.org/2020.2/common/gg-13-8-99-515-806-nb-classifier.qza"
+  "https://data.qiime2.org/2021.2/common/gg-13-8-99-515-806-nb-classifier.qza"
+
 ```
 
 物种注释和可视化
@@ -722,18 +719,19 @@ time qiime feature-classifier classify-sklearn \
 qiime metadata tabulate \
   --m-input-file taxonomy.qza \
   --o-visualization taxonomy.qzv
+
 ```
 
 详者注：此处用时1分钟，大项目、大数据可能几小时或更长。
 
 **输出结果:**
 
-- taxonomy.qza: 物种注释结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftaxonomy.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/taxonomy.qza)
-- gg-13-8-99-515-806-nb-classifier.qza: 分类器的训练结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fgg-13-8-99-515-806-nb-classifier.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/gg-13-8-99-515-806-nb-classifier.qza)
+- taxonomy.qza: 物种注释结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftaxonomy.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/taxonomy.qza)
+- gg-13-8-99-515-806-nb-classifier.qza: 分类器的训练结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fgg-13-8-99-515-806-nb-classifier.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/gg-13-8-99-515-806-nb-classifier.qza)
 
 **可视化结果:**
 
-- taxonomy.qzv: 物种注释可视化。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftaxonomy.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/taxonomy.qzv)
+- taxonomy.qzv: 物种注释可视化。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftaxonomy.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/taxonomy.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.11.jpg)
 
@@ -753,7 +751,7 @@ qiime taxa barplot \
 
 结果: 
 
-- taxa-bar-plots.qzv: 交互式物种组成堆叠柱状图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftaxa-bar-plots.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/taxa-bar-plots.qzv)
+- taxa-bar-plots.qzv: 交互式物种组成堆叠柱状图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Ftaxa-bar-plots.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/taxa-bar-plots.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.12.jpg)
 
@@ -771,7 +769,7 @@ ANCOM可用于识别不同样本组中丰度差异的特征。与任何生物信
 
 ANCOM是在`q2-composition`插件中实现的。ANCOM假设很少（小于约25%）的特征在组之间改变。**如果你期望在组之间有更多的特性正在改变，那么就不应该使用ANCOM**，因为它更容易出错（I类/假阴性和II类/假阳性错误都有可能增加）。因为我们预期身体部位的许多特征都会发生变化，所以在本教程中，我们将过滤完整的特征表后只包含肠道样本。然后，我们将应用ANCOM来确定哪种（如果有的话）序列变体在我们两个受试者的肠道样本中丰度存在差异。
 
-我们将首先创建一个只包含肠道样本的特征表。（要了解关于筛选的更多信息，请参阅[数据筛选教程](https://docs.qiime2.org/2020.2/tutorials/filtering/)。）
+我们将首先创建一个只包含肠道样本的特征表。（要了解关于筛选的更多信息，请参阅[数据筛选教程](https://docs.qiime2.org/2021.2/tutorials/filtering/)。）
 
 ```
 qiime feature-table filter-samples \
@@ -780,8 +778,9 @@ qiime feature-table filter-samples \
   --p-where "[body-site]='gut'" \
   --o-filtered-table gut-table.qza
 ```
+
 输出对象：
-- gut-table.qza：只包含肠道样本的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fgut-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/gut-table.qza)
+- gut-table.qza：只包含肠道样本的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fgut-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/gut-table.qza)
 
 ANCOM基于每个样本的特征频率对`FeatureTable[Composition]`进行操作，但是不能容忍零。为了构建组成composition 对象，必须提供一个添加伪计数`add-pseudocount`（一种遗失值插补方法）的`FeatureTable[Frequency]`对象，这将产生`FeatureTable[Composition]`对象。
 
@@ -793,7 +792,7 @@ qiime composition add-pseudocount \
 
 输出结果:
 
-- comp-gut-table.qza: 组成型特征表，无零值。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcomp-gut-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/comp-gut-table.qza)
+- comp-gut-table.qza: 组成型特征表，无零值。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcomp-gut-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/comp-gut-table.qza)
 
 接下来可用ANCON对两组的特征进行丰度差异的比较了。
 
@@ -807,7 +806,7 @@ time qiime composition ancom \
 
 输出结果:
 
-- `ancom-subject.qzv`: 按Subject分类比较结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fancom-subject.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/ancom-subject.qzv)
+- `ancom-subject.qzv`: 按Subject分类比较结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fancom-subject.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/ancom-subject.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.13.jpg)
 
@@ -837,12 +836,12 @@ qiime composition ancom \
 
 **输出对象:**
 
-- gut-table-l6.qza: 按属水平折叠的特征表。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fgut-table-l6.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/gut-table-l6.qza)
-- comp-gut-table-l6.qza: 属水平筛选肠样本的相对丰度组成表。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcomp-gut-table-l6.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/comp-gut-table-l6.qza)
+- gut-table-l6.qza: 按属水平折叠的特征表。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fgut-table-l6.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/gut-table-l6.qza)
+- comp-gut-table-l6.qza: 属水平筛选肠样本的相对丰度组成表。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fcomp-gut-table-l6.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/comp-gut-table-l6.qza)
 
 输出可视化结果:
 
-- l6-ancom-Subject.qzv: 属水平差异比较结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fl6-ancom-subject.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/l6-ancom-subject.qzv)
+- l6-ancom-Subject.qzv: 属水平差异比较结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmoving-pictures%2Fl6-ancom-subject.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/l6-ancom-subject.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.4.14.jpg)
 
@@ -853,11 +852,11 @@ qiime composition ancom \
 
 ## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为宏基因组数据分析和植物微生物组，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20+篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1200万+。
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
 
 ## Reference
 
-https://docs.qiime2.org/2020.2/
+https://docs.qiime2.org/2021.2/
 
 Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 

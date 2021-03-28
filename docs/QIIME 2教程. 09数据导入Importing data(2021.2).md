@@ -1,23 +1,10 @@
 [TOC]
 
-# 前情提要
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [7帕金森小鼠教程Parkinson's Mouse](https://mp.weixin.qq.com/s/cN1sfcWFME7S4OJy4VIREg)，[Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-- [8差异丰度分析gneiss](https://mp.weixin.qq.com/s/wx9dr5e2B_YyqTdPJ7dVsQ)
-
-
 # QIIME 2用户文档. 9数据导入
 
 **Importing data**
 
-原文地址：https://docs.qiime2.org/2020.2/tutorials/importing/
+原文地址：https://docs.qiime2.org/2020.11/tutorials/importing/
 
 为了使用QIIME 2，输入数据必须存储在`QIIME 2对象（即qza文件）`中。这是实现支持分布式和自动来源跟踪、以及语义类型验证和数据格式之间的转换所必须（有关QIIME 2对象的更多详细信息，请参阅[《1简介和安装》](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)中核心概念部分）。本教程演示如何将各种数据格式导入到QIIME 2对象中，以便使用QIIME 2开展分析。
 
@@ -31,24 +18,24 @@
 
 ```
 # 定义工作目录变量，方便以后多次使用
-wd=~/github/QIIME2ChineseManual/2020.2
+wd=~/github/QIIME2ChineseManual/2020.11
 mkdir -p $wd
 # 进入工作目录，是不是很简介，这样无论你在什么位置就可以快速回到项目文件夹
 cd $wd
 
 # 方法1. 进入QIIME 2 conda工作环境
-conda activate qiime2-2020.2
-# 这时我们的命令行前面出现 (qiime2-2020.2) 表示成功进入工作环境
+conda activate qiime2-2020.11
+# 这时我们的命令行前面出现 (qiime2-2020.11) 表示成功进入工作环境
 
 # 方法2. conda版本较老用户，使用source进入QIIME 2
-source activate qiime2-2020.2
+source activate qiime2-2020.11
 
 # 方法3. 如果是docker安装的请运行如下命令，默认加载当前目录至/data目录
-docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2020.2
+docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2020.11
 
 # 创建本节学习目录
-mkdir qiime2-importing-tutorial
-cd qiime2-importing-tutorial
+mkdir importing
+cd importing
 ```
 
 ## 导入带质量值的FASTQ测序数据
@@ -69,14 +56,14 @@ cd qiime2-importing-tutorial
 1. 一个是barcode文件，
 2. 另一个是样品混样测序数据文件。
 
-此部分的数据己经在[《4人体各部位微生物组分析》](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)中下载过，可直接链接过来，或使用如下命令下载
+此部分的数据己经在[《4人体各部位微生物组分析》](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)中下载过，可直接链接过来，或使用如下命令下载
 
 ```
 # 建样品目录
 mkdir -p emp-single-end-sequences
 
 # 方法1. 链接之前第4节中的文件
-ln ../qiime2-moving-pictures-tutorial/emp-single-end-sequences/*.gz emp-single-end-sequences/
+ln ../moving-pictures/emp-single-end-sequences/*.gz emp-single-end-sequences/
 
 # 方法2. 从头下载
 # 下载 barcode文件
@@ -102,7 +89,7 @@ time qiime tools import \
 
 输出对象：
 
-- `emp-single-end-sequences.qza`：导入的EMP单端序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Femp-single-end-sequences.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/emp-single-end-sequences.qza)
+- `emp-single-end-sequences.qza`：导入的EMP单端序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Femp-single-end-sequences.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/emp-single-end-sequences.qza)
 
 ### EMP混样双端数据
 
@@ -121,21 +108,21 @@ time qiime tools import \
 mkdir -p emp-paired-end-sequences
 
 # 方法1. 链接之前第4节中的文件
-ln ../qiime2-atacama-tutorial/emp-paired-end-sequences/*.gz emp-paired-end-sequences/
+ln ../atacama/emp-paired-end-sequences/*.gz emp-paired-end-sequences/
 
 # 方法2. 从头下载
 # 下载序列正向和反向文件
 wget -c \
   -O "emp-paired-end-sequences/forward.fastq.gz" \
-  "https://data.qiime2.org/2020.2/tutorials/atacama-soils/1p/forward.fastq.gz"
+  "https://data.qiime2.org/2020.11/tutorials/atacama-soils/1p/forward.fastq.gz"
 wget -c \
   -O "emp-paired-end-sequences/reverse.fastq.gz" \
-  "https://data.qiime2.org/2020.2/tutorials/atacama-soils/1p/reverse.fastq.gz"
+  "https://data.qiime2.org/2020.11/tutorials/atacama-soils/1p/reverse.fastq.gz"
 
 # 下载barcode文件
 wget -c \
 -O "emp-paired-end-sequences/barcodes.fastq.gz" \
-  "https://data.qiime2.org/2020.2/tutorials/atacama-soils/1p/barcodes.fastq.gz"
+  "https://data.qiime2.org/2020.11/tutorials/atacama-soils/1p/barcodes.fastq.gz"
 ```
 
 导入EMP双端序列为QIIME2对象
@@ -150,7 +137,7 @@ time qiime tools import \
 
 输出对象：
 
-- `emp-paired-end-sequences.qza`：导入的EMP单端序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Femp-paired-end-sequences.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/emp-paired-end-sequences.qza)
+- `emp-paired-end-sequences.qza`：导入的EMP单端序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Femp-paired-end-sequences.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/emp-paired-end-sequences.qza)
 
 ### Casava1.8单端混样数据
 
@@ -169,9 +156,7 @@ time qiime tools import \
 
 ```
 # 20M
-wget -c \
--O "casava-18-single-end-demultiplexed.zip" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/casava-18-single-end-demultiplexed.zip"
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/casava-18-single-end-demultiplexed.zip
 
 unzip -q casava-18-single-end-demultiplexed.zip
 ```
@@ -188,7 +173,7 @@ time qiime tools import \
 
 输出对象：
 
-- `demux-single-end.qza`：导入的EMP单端序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Fdemux-single-end.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/demux-single-end.qza)
+- `demux-single-end.qza`：导入的EMP单端序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Fdemux-single-end.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/demux-single-end.qza)
 
 ### Casava 1.8双端拆分后数据
 
@@ -200,9 +185,7 @@ time qiime tools import \
 
 ```
 # 9.3 M
-wget -c \
--O "casava-18-paired-end-demultiplexed.zip" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/casava-18-paired-end-demultiplexed.zip"
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/casava-18-paired-end-demultiplexed.zip
 
 unzip -q casava-18-paired-end-demultiplexed.zip
 ```
@@ -220,7 +203,7 @@ time qiime tools import \
 
 输出对象：
 
-- `demux-paired-end.qza`：导入的EMP单端序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Fdemux-paired-end.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/demux-paired-end.qza)
+- `demux-paired-end.qza`：导入的EMP单端序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Fdemux-paired-end.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/demux-paired-end.qza)
 
 ### **Fastq样品文件清单格式**
 
@@ -232,9 +215,9 @@ time qiime tools import \
 
 #### 格式说明
 
-首先，您将创建一个名为“清单文件”的文本文件，它将示例标识符映射到`fastq.gz`或`fastq`的[绝对文件路径(absolute filepaths)](https://en.wikipedia.org/wiki/Path_(computing)#Absolute_and_relative_paths)，其中包含示例的序列和质量数据（即，这些是fastq文件）。清单文件还指示每个fastq.gz或fastq文件中的读取方向。清单文件通常由您创建，它被设计为一种简单的格式，不会拆分好的`fastq.gz/fastq`文件的命名设置限制，因为这些文件没有广泛使用的命名约定。您可以随意调用清单文件。同时，清单文件也是元数据格式兼容的，因此你可以清单文件作为[样本元数据(Sample Metadata)](https://docs.qiime2.org/2020.2/tutorials/metadata/)的起始。
+首先，您将创建一个名为“清单文件”的文本文件，它将示例标识符映射到`fastq.gz`或`fastq`的[绝对文件路径(absolute filepaths)](https://en.wikipedia.org/wiki/Path_(computing)#Absolute_and_relative_paths)，其中包含示例的序列和质量数据（即，这些是fastq文件）。清单文件还指示每个fastq.gz或fastq文件中的读取方向。清单文件通常由您创建，它被设计为一种简单的格式，不会拆分好的`fastq.gz/fastq`文件的命名设置限制，因为这些文件没有广泛使用的命名约定。您可以随意调用清单文件。同时，清单文件也是元数据格式兼容的，因此你可以清单文件作为[样本元数据(Sample Metadata)](https://docs.qiime2.org/2020.11/tutorials/metadata/)的起始。
 
-清单文件是制表符分隔（即.tsv）的文本文件。每行的第一个字段是样本名，第二个字段是绝对文件路径，第三个字段可选的反应序列文件路径。此格式与[QIIME 2元数据格式](https://docs.qiime2.org/2020.2/tutorials/metadata/)]兼容。
+清单文件是制表符分隔（即.tsv）的文本文件。每行的第一个字段是样本名，第二个字段是绝对文件路径，第三个字段可选的反应序列文件路径。此格式与[QIIME 2元数据格式](https://docs.qiime2.org/2020.11/tutorials/metadata/)]兼容。
 
 `fastq.gz`文件位置的绝对文件路径可以包含环境变量（例如$HOME或$PWD）。下面的示例说明了一个简单的fastq清单文件，用于两个示例的双端数据。
 
@@ -266,13 +249,8 @@ FastQ数据有四种常用格式变体，导入时必须将其指定为QIIME 2�
 
 ```
 # 下载fastq单双端样本压缩包zip文件，和文件清单文件mainfest
-wget -c \
--O "se-33.zip" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/se-33.zip"
-wget -c \
--O "se-33-manifest" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/se-33-manifest"
-
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/se-33.zip
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/se-33-manifest
 unzip -q se-33.zip
 ```
 
@@ -289,7 +267,7 @@ qiime tools import \
 
 输出对象：
 
-- `single-end-demux.qza`：导入标准fastq单端输入文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Fsingle-end-demux.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/single-end-demux.qza)
+- `single-end-demux.qza`：导入标准fastq单端输入文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Fsingle-end-demux.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/single-end-demux.qza)
 
 #### **SingleEndFastqManifestPhred64V2**
 
@@ -310,12 +288,8 @@ qiime tools import \
 在这种fastq文件清单格式的变体中，每个样本ID必须有正向和反向读取`fastq.gz/fastq`文件。此格式假定用于所有`fastq.gz/fastq`文件中位置质量分数的分段偏移量为64。在导入过程中，QIIME 2会将phred 64编码的质量分数转换为phred 33编码的质量分数。这种转换将很慢，但只会发生一次。
 
 ```
-wget -c \
- -O "pe-64.zip" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/pe-64.zip"
-wget \
- -O "pe-64-manifest" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/pe-64-manifest"
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/pe-64.zip
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/pe-64-manifest
 unzip -q pe-64.zip
 
 # 4s
@@ -326,7 +300,7 @@ time qiime tools import \
   --input-format PairedEndFastqManifestPhred64V2
 ```
 
-- `paired-end-demux.qza`：导入标准fastq单端输入文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Fpaired-end-demux.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/paired-end-demux.qza)
+- `paired-end-demux.qza`：导入标准fastq单端输入文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Fpaired-end-demux.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/paired-end-demux.qza)
 
 ## fasta格式序列
 
@@ -334,7 +308,7 @@ time qiime tools import \
 
 QIIME 2目前支持导入QIIME 1 `seqs.fna`文件格式，该格式由一个fasta文件组成，每条记录只有两行：`header`和`sequence`。每个序列必须正好一行，不能拆分多行。每条序列的ID必须遵循格式<sample-id>_<seq-id>的要求。<sample id>是序列所属样本的标识符，<seq id>是其样本中序列的标识符。
 
-在[OTU聚类教程](https://docs.qiime2.org/2020.2/tutorials/otu-clustering/)中可以找到导入和去冗余此类数据的示例。
+在[OTU聚类教程](https://docs.qiime2.org/2020.11/tutorials/otu-clustering/)中可以找到导入和去冗余此类数据的示例。
 
 目前不支持其他fasta格式，如具有不同格式序列名的fasta文件或按样本分离的fasta文件（即每个样本一个fasta文件）。
 
@@ -350,17 +324,13 @@ QIIME 2目前支持导入QIIME 1 `seqs.fna`文件格式，该格式由一个fast
 获取示例数据
 
 ```
-# 175 kb
-wget -c \
- -O "sequences.fna" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/sequences.fna"
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/sequences.fna
 ```
 
 ### 导入数据
 
 ```
-# 5s
-time qiime tools import \
+qiime tools import \
   --input-path sequences.fna \
   --output-path sequences.qza \
   --type 'FeatureData[Sequence]'
@@ -368,7 +338,7 @@ time qiime tools import \
 
 输出对象：
 
-- `sequences.qza`：导入标准fastq单端输入文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Fsequences.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/sequences.qza)
+- `sequences.qza`：导入标准fastq单端输入文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Fsequences.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/sequences.qza)
 
 ## 对齐的fasta格式文件
 
@@ -381,9 +351,7 @@ time qiime tools import \
 获取示例数据
 
 ```
-wget -c \
-  -O "aligned-sequences.fna" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/aligned-sequences.fna"
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/aligned-sequences.fna
 ```
 
 可能有的人不了解对齐的fasta格式，如下：有`-`字符，且等长
@@ -402,8 +370,7 @@ TACTGATCGTTGGT-TTGGTGGG-CCGTTA-CCC-C-ACCAACTGCCTAATCAGACGCAA
 ### 导入数据
 
 ```
-# 4s
-time qiime tools import \
+qiime tools import \
   --input-path aligned-sequences.fna \
   --output-path aligned-sequences.qza \
   --type 'FeatureData[AlignedSequence]'
@@ -411,7 +378,7 @@ time qiime tools import \
 
 输出对象：
 
-- `aligned-sequences.qza`：对齐的fasta序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Faligned-sequences.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/aligned-sequences.qza)
+- `aligned-sequences.qza`：对齐的fasta序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Faligned-sequences.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/aligned-sequences.qza)
 
 
 ## 特征表 Feature table data
@@ -425,9 +392,7 @@ time qiime tools import \
 下载数据并导入为QIIME2的qza格式
 
 ```
-wget -c \
-  -O "feature-table-v100.biom" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/feature-table-v100.biom"
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/feature-table-v100.biom
   
 time qiime tools import \
   --input-path feature-table-v100.biom \
@@ -438,18 +403,16 @@ time qiime tools import \
 
 输出对象：
 
-- `feature-table-1.qza`：导入特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Ffeature-table-1.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/feature-table-1.qza)
+- `feature-table-1.qza`：导入特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Ffeature-table-1.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/feature-table-1.qza)
 
 ### BIOM v2.1.0
 
 [BIOM v2.1.0 格式详细信息](http://biom-format.org/documentation/format_versions/biom-2.1.html)
 
 ```
-wget -c \
-  -O "feature-table-v210.biom" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/feature-table-v210.biom"
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/feature-table-v210.biom
 
-time qiime tools import \
+qiime tools import \
   --input-path feature-table-v210.biom \
   --type 'FeatureTable[Frequency]' \
   --input-format BIOMV210Format \
@@ -458,7 +421,7 @@ time qiime tools import \
 
 输出对象：
 
-- `feature-table-2.qza`：导入的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Ffeature-table-2.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/feature-table-2.qza)
+- `feature-table-2.qza`：导入的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Ffeature-table-2.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/feature-table-2.qza)
 
 ## 系统发育树
 
@@ -467,11 +430,9 @@ time qiime tools import \
 通常为newick格式。详细说明见[scikit-bio newick格式描述](http://scikit-bio.org/docs/latest/generated/skbio.io.format.newick.html)
 
 ```
-wget -c \
-  -O "unrooted-tree.tre" \
-  "https://data.qiime2.org/2020.2/tutorials/importing/unrooted-tree.tre"
+wget -c https://data.qiime2.org/2020.11/tutorials/importing/unrooted-tree.tre
   
-time qiime tools import \
+qiime tools import \
   --input-path unrooted-tree.tre \
   --output-path unrooted-tree.qza \
   --type 'Phylogeny[Unrooted]'
@@ -479,8 +440,8 @@ time qiime tools import \
 
 输出对象：
 
-- `unrooted-tree.qza`：导入的无根树文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fimporting%2Funrooted-tree.qza) |
-- [下载](https://docs.qiime2.org/2020.2/data/tutorials/importing/unrooted-tree.qza)
+- `unrooted-tree.qza`：导入的无根树文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fimporting%2Funrooted-tree.qza) |
+- [下载](https://docs.qiime2.org/2020.11/data/tutorials/importing/unrooted-tree.qza)
 
 
 
@@ -495,7 +456,7 @@ qiime tools import \
   --show-importable-formats
 ```
 
-支持的68种格式如下：
+支持的69种格式如下：
 
 - AlignedDNAFASTAFormat
 - AlignedDNASequencesDirectoryFormat
@@ -507,6 +468,7 @@ qiime tools import \
 - BIOMV210Format
 - BooleanSeriesDirectoryFormat
 - BooleanSeriesFormat
+- Bowtie2IndexDirFmt
 - CasavaOneEightLanelessPerSampleDirFmt
 - CasavaOneEightSingleLanePerSampleDirFmt
 - DADA2StatsDirFmt
@@ -566,7 +528,6 @@ qiime tools import \
 - UchimeStatsDirFmt
 - UchimeStatsFmt
 
-
 可导入的文件类型有哪些呢？
 
 ```
@@ -574,8 +535,9 @@ qiime tools import \
   --show-importable-types
 ```
 
-也有多达41种：
+也有多达44种：
 
+- Bowtie2Index
 - DeblurStats
 - DistanceMatrix
 - EMPPairedEndSequences
@@ -589,6 +551,7 @@ qiime tools import \
 - FeatureData[Taxonomy]
 - FeatureTable[Balance]
 - FeatureTable[Composition]
+- FeatureTable[Design]
 - FeatureTable[Frequency]
 - FeatureTable[PercentileNormalized]
 - FeatureTable[PresenceAbsence]
@@ -615,20 +578,21 @@ qiime tools import \
 - SampleData[Sequences]
 - SampleEstimator[Classifier]
 - SampleEstimator[Regressor]
+- SeppReferenceDatabase
 - TaxonomicClassifier
 - UchimeStats
 
 不幸的是，目前没有文档详细说明可以将哪些数据格式导入为哪种QIIME 2数据类型，但是希望这些格式和类型的名称应该是不言自明的，足以弄清楚。 如有任何疑问，请发布至[QIIME 2论坛](https://forum.qiime2.org/)寻求帮助！
 
-## Reference
-
-https://docs.qiime2.org/2020.2/
-
-Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
-
 ## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为宏基因组数据分析和植物微生物组，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20+篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1200万+。
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
+  
+## Reference
+
+https://docs.qiime2.org/2020.11/
+
+Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 
 ## 猜你喜欢
 
@@ -657,4 +621,4 @@ Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Chris
 ![image](http://bailab.genetics.ac.cn/markdown/train/1809/201807.jpg)
 
 点击阅读原文，跳转最新文章目录阅读
-https://mp.weixin.qq.com/s/5jQspEvH5_4Xmart22gjMA 未更新
+https://mp.weixin.qq.com/s/5jQspEvH5_4Xmart22gjMA

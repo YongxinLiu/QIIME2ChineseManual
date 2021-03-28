@@ -1,28 +1,5 @@
 [TOC]
 
-# 前情提要
-
-以下是前面几节的微信推送文章：
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [7帕金森小鼠教程Parkinson's Mouse](https://mp.weixin.qq.com/s/cN1sfcWFME7S4OJy4VIREg)，[Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-- [8差异丰度分析gneiss](https://mp.weixin.qq.com/s/wx9dr5e2B_YyqTdPJ7dVsQ)
-- [9数据导入Importing data](https://mp.weixin.qq.com/s/u0k38x4lAUaghua2FDD1mQ)
-- [10数据导出Exporting data](https://mp.weixin.qq.com/s/pDxDsm8vabpe9KtcLRYWxg)
-- [11元数据Metadata](https://mp.weixin.qq.com/s/Q-YTeXH84lgBbRwuzc1bsg)
-- [12数据筛选Filtering data](https://mp.weixin.qq.com/s/zk-pXJs4GNwb1AOBPzCaHA)
-- [13训练特征分类器Training feature classifiers](https://mp.weixin.qq.com/s/jTRUYgacH5WszsHJVbbh4g)
-- [14数据评估和质控Evaluating and controlling](https://mp.weixin.qq.com/s/1b3Hj23bKWfTkHKAPNmCBQ)
-- [15样品分类和回归q2-sample-classifier](https://mp.weixin.qq.com/s/3DGvuD3R9atSoo2CSrUJBw)
-- [16纵向和成对样本比较q2-longitudinal](https://mp.weixin.qq.com/s/RhRXoGqVuLumxvbba7GgSg)
-- [17鉴定和过滤嵌合体序列q2-vsearch](https://mp.weixin.qq.com/s/4FvR7qGTfVFdSkdKtR6_LQ)
-- [18序列双端合并read-joining](https://mp.weixin.qq.com/s/xjl41rAlqMwyZSoPBX6Tww)
-
 # 使用`q2-vsearch`聚类序列为OTUs
 
 **Clustering sequences into OTUs using q2-vsearch**
@@ -38,16 +15,11 @@
 ## 下载数据
 
 ```
-mkdir -p qiime2-otu-clustering-tutorial
-cd qiime2-otu-clustering-tutorial
+mkdir -p otu-clustering
+cd otu-clustering
 
-wget -c \
-  -O "seqs.fna" \
-  "https://data.qiime2.org/2020.2/tutorials/otu-clustering/seqs.fna"
-
-wget -c \
-  -O "85_otus.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/otu-clustering/85_otus.qza"
+wget -c https://data.qiime2.org/2020.11/tutorials/otu-clustering/seqs.fna
+wget -c https://data.qiime2.org/2020.11/tutorials/otu-clustering/85_otus.qza
 ```
 
 ## 序列去冗余 
@@ -57,8 +29,7 @@ wget -c \
 如果您开始分析时使用的是样本拆分、质量控制的序列，例如[QIIME 1的seqs.fna文件](http://qiime.org/documentation/file_formats.html#post-split-libraries-fasta-file-overview)中的序列，那么第一步是将数据导入为QIIME 1对象。这里使用的语义类型是`SampleData[Sequences]`，表示数据是一个或多个样本的序列集合。
 
 ```
-# 5s
-time qiime tools import \
+qiime tools import \
   --input-path seqs.fna \
   --output-path seqs.qza \
   --type 'SampleData[Sequences]'
@@ -66,15 +37,14 @@ time qiime tools import \
 
 **输出对象：**
 
-- `85_otus.qza`: 按85%相似度聚类的OTU。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2F85_otus.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/85_otus.qza)
-- `seqs.qza`: 导入的序列文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Fseqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/seqs.qza)
+- `85_otus.qza`: 按85%相似度聚类的OTU。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2F85_otus.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/85_otus.qza)
+- `seqs.qza`: 导入的序列文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Fseqs.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/seqs.qza)
 
 
 导入后，使用`dereplicate-sequences`进行序列去冗余 
 
 ```
-# 6s
-time qiime vsearch dereplicate-sequences \
+qiime vsearch dereplicate-sequences \
   --i-sequences seqs.qza \
   --o-dereplicated-table table.qza \
   --o-dereplicated-sequences rep-seqs.qza
@@ -82,8 +52,8 @@ time qiime vsearch dereplicate-sequences \
 
 **输出结果:**
 
-- `rep-seqs.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/rep-seqs.qza)
-- `table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Ftable.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/table.qza)
+- `rep-seqs.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/rep-seqs.qza)
+- `table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Ftable.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/table.qza)
 
 序列去冗余`dereplicate-sequences`的输出是一个`FeatureTable[Frequency]`和一个`FeatureData[Sequence]`对象。`FeatureTable[Frequency]`对象是特征表，指示在每个样本中观察到的每个Amplicon序列变体（ASV）的次数。`FeatureData[Sequence]`对象包含每个功能标识符到定义该特征序列变量的映射。这些文件类似于`qiime dada2 denoise-*`和`qiime deblur denoise-*`生成的文件，只是在去噪过程中没有应用去噪、去除嵌合体或其他质量控制。（在本例中，这些数据的唯一质量控制是在导入`import`步骤之前，即在QIIME 2之外的程序进行的）
 
@@ -102,8 +72,7 @@ QIIME2中的OTU聚类目前应用于一个 `FeatureTable[Frequency]`对象和一
 特性表的无参(从头/新)聚类(De novo clustering)可以用如下命令实现。在这个例子中，聚类是按序列相似度99%的水平执行的，以创建99%的OTU。
 
 ```
-# 5s
-time qiime vsearch cluster-features-de-novo \
+qiime vsearch cluster-features-de-novo \
   --i-table table.qza \
   --i-sequences rep-seqs.qza \
   --p-perc-identity 0.99 \
@@ -113,8 +82,8 @@ time qiime vsearch cluster-features-de-novo \
 
 **输出对象:**
 
-- `table-dn-99.qza`: 99%相似度聚类的OTUs表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Ftable-dn-99.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/table-dn-99.qza)
-- `rep-seqs-dn-99.qza`: 99%相似度聚类的代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Frep-seqs-dn-99.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/rep-seqs-dn-99.qza)
+- `table-dn-99.qza`: 99%相似度聚类的OTUs表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Ftable-dn-99.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/table-dn-99.qza)
+- `rep-seqs-dn-99.qza`: 99%相似度聚类的代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Frep-seqs-dn-99.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/rep-seqs-dn-99.qza)
 
 该过程的输出是`FeatureTable [Frequency]`对象和`FeatureData [Sequence]`对象。 `FeatureData [Sequence]`对象将包含定义每个OTU聚类的**质心(centroid)**序列，即最高丰度序列。
 
@@ -128,8 +97,7 @@ time qiime vsearch cluster-features-de-novo \
 > 注释：有参OTU聚类通常以更高的相似度合并，但这里使用85%，因此本教程的用户不必下载更大的参考数据库。通常，在某个百分比处对聚集在同一百分比相似度的参考数据库执行聚类，但这并没有正确地进行基准测试，以确定它是否是执行有参聚类的最佳方法。
 
 ```
-# 10s
-time qiime vsearch cluster-features-closed-reference \
+qiime vsearch cluster-features-closed-reference \
   --i-table table.qza \
   --i-sequences rep-seqs.qza \
   --i-reference-sequences 85_otus.qza \
@@ -141,9 +109,9 @@ time qiime vsearch cluster-features-closed-reference \
 
 输出对象:
 
-- `table-cr-85.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Ftable-cr-85.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/table-cr-85.qza)
-- `unmatched-cr-85.qza`: 无法比对的序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Funmatched-cr-85.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/unmatched-cr-85.qza)
-- `rep-seqs-cr-85.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Frep-seqs-cr-85.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/rep-seqs-cr-85.qza)
+- `table-cr-85.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Ftable-cr-85.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/table-cr-85.qza)
+- `unmatched-cr-85.qza`: 无法比对的序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Funmatched-cr-85.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/unmatched-cr-85.qza)
+- `rep-seqs-cr-85.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Frep-seqs-cr-85.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/rep-seqs-cr-85.qza)
 
 `cluster-features-closed-reference`输出的结果是一个`FeatureTable[Frequency]`对象和一个`FeatureData[Sequence]`对象。在这种情况下，序列`FeatureData[Sequence]`对象不是定义`FeatureTable`中特征的序列，而是特征ID及其按85%相似度匹配序列的集合。作为输入提供的参考序列被用作定义有参OTU中的特征序列。
 
@@ -156,8 +124,7 @@ time qiime vsearch cluster-features-closed-reference \
 > 注：半有参OTU聚类通常以更高的百分比一致率执行，但这里使用85%，因此本教程的用户不必下载更大的参考数据库。通常，在某个百分比一致率对有相同百分比一致率聚类的参考数据库执行聚类，但这并没有正确地进行基准测试，以确定它是否是执行半有参(开放参考)聚类的最佳方法。
 
 ```
-# 13s
-time qiime vsearch cluster-features-open-reference \
+qiime vsearch cluster-features-open-reference \
   --i-table table.qza \
   --i-sequences rep-seqs.qza \
   --i-reference-sequences 85_otus.qza \
@@ -169,21 +136,21 @@ time qiime vsearch cluster-features-open-reference \
 
 **输出对象:**
 
-- `new-ref-seqs-or-85.qza`: 新参考序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Fnew-ref-seqs-or-85.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/new-ref-seqs-or-85.qza)
-- `rep-seqs-or-85.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Frep-seqs-or-85.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/rep-seqs-or-85.qza)
-- `table-or-85.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fotu-clustering%2Ftable-or-85.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/otu-clustering/table-or-85.qza)
+- `new-ref-seqs-or-85.qza`: 新参考序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Fnew-ref-seqs-or-85.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/new-ref-seqs-or-85.qza)
+- `rep-seqs-or-85.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Frep-seqs-or-85.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/rep-seqs-or-85.qza)
+- `table-or-85.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.11%2Fdata%2Ftutorials%2Fotu-clustering%2Ftable-or-85.qza) | [下载](https://docs.qiime2.org/2020.11/data/tutorials/otu-clustering/table-or-85.qza)
 
 `cluster-features-open-reference`输出结果是一个`FeatureTable[Frequency]`对象和两个`FeatureData[Sequence]`对象。其中一`FeatureData[Sequence]`对象表示聚集的序列，而另一个对象表示新的参考序列，由用于输入的参考序列以及作为内部重新聚集步骤的一部分聚集的序列组成。
 
-## Reference
-
-https://docs.qiime2.org/2020.2
-
-Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
-
 ## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为微生物组数据分析、分析方法开发与优化和科学传播，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20余篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1300万+。
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
+
+## Reference
+
+https://docs.qiime2.org/2020.11
+
+Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 
 ## 猜你喜欢
 

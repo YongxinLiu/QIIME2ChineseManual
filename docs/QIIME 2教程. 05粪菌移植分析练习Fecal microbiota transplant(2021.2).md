@@ -1,24 +1,14 @@
 [TOC]
 
-# 前情提要
-
-以下是前面几节的微信推送文章：
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw) 
-
 # QIIME 2用户文档. 5粪菌移植分析练习
 
 **Fecal microbiota transplant (FMT) study: an exercise**
 
-https://docs.qiime2.org/2020.2/tutorials/fmt/
+https://docs.qiime2.org/2021.2/tutorials/fmt/
 
-> 注意：本教程假定您已经完成[1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)，成功安装QIIME 2。
+> 注意：本教程假定您已经完成[1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)，成功安装QIIME 2。
 
-本教程计划在完成《[4人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)》之后练习。它旨在介绍一些新思想，并且是应用该文档中探索工具的一个练习。
+本教程计划在完成《[4人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)》之后练习。它旨在介绍一些新思想，并且是应用该文档中探索工具的一个练习。
 
 本教程中使用的数据来自[2017年发表于Microbiome上关于粪便微生物移植（粪菌移植）改善自闭症的研究(Microbiota Transfer Therapy alters gut ecosystem and improves gastrointestinal and autism symptoms: an open-label study)](http://doi.org/10.1186/s40168-016-0225-7)，详见《[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/VXy9haFsnnMVlyXLULy52w)》。其中18岁以下患有自闭症和胃肠道疾病的儿童，分别通过自闭症诊断访谈修订版(ADI-R)和胃肠道症状评定量表(GSRS)测量，用粪便微生物移植治疗，试图减少他们的行为异常和胃肠道症状的严重程度。我们通过18周内他们的GSRS评分追踪了他们的微生物变化，包括父母的整体状况III（Parent Global Impressions，PGI-III）和儿童孤独症评定量表（CARS），以及他们胃肠道症状的严重程度。通过每周收集粪便拭子样本（用擦拭用过的卫生纸收集）和不太频繁的大便样本（收集全大便）来跟踪微生物群。在全部研究中，这是第一阶段的临床试验，旨在测试治疗的安全性，18个人接受了治疗，20个人作为对照。对照组未接受治疗，但监测肠道微生物群的正常时间变化。本研究还对治疗期间移植的粪便材料进行了测序。
 
@@ -26,7 +16,7 @@ https://docs.qiime2.org/2020.2/tutorials/fmt/
 
 这些数据是在两次Illumina MiSeq测序批次（Run）中测序。如《人体各部位微生物组教程》所示，我们将使用[DADA2](https://www.ncbi.nlm.nih.gov/pubmed/27214047)执行初始质量控制并生成`FeatureTable[Frequency]`和`FeatureData[Sequence]`对象。然而，**DADA2去噪过程只适用于一次单个测序批次，因此我们需要在每个测序批次的基础上运行该过程，然后合并结果**。我们将完成这个初始步骤，然后提出一些可以作为练习来回答的问题。
 
-> 详者注：此实例需要一些基础知识，要求完成学习本系列文章前两篇内容：[《1简介和安装Introduction&Install》](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)和[《4人体各部位微生物组分析Moving Picture》](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)。
+> 详者注：此实例需要一些基础知识，要求完成学习本系列文章前两篇内容：[《1简介和安装Introduction&Install》](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)和[《4人体各部位微生物组分析Moving Picture》](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)。
 
 
 ## 本节视频视频教程
@@ -47,24 +37,24 @@ https://v.qq.com/x/page/a0920py9hwl.html
 
 ```
 # 定义工作目录变量，方便以后多次使用
-wd=~/github/QIIME2ChineseManual/2020.2
+wd=~/github/QIIME2ChineseManual/2021.2
 mkdir -p $wd
 # 进入工作目录，是不是很简介，这样无论你在什么位置就可以快速回到项目文件夹
 cd $wd
 
 # 方法1. 进入QIIME 2 conda工作环境
-conda activate qiime2-2020.2
-# 这时我们的命令行前面出现 (qiime2-2020.2) 表示成功进入工作环境
+conda activate qiime2-2021.2
+# 这时我们的命令行前面出现 (qiime2-2021.2) 表示成功进入工作环境
 
 # 方法2. conda版本较老用户，使用source进入QIIME 2
-source activate qiime2-2020.2
+source activate qiime2-2021.2
 
 # 方法3. 如果是docker安装的请运行如下命令，默认加载当前目录至/data目录
-docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2020.2
+docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2021.2
 
 # 创建本节学习目录
-mkdir -p qiime2-fmt-tutorial
-cd qiime2-fmt-tutorial
+mkdir -p fmt
+cd fmt
 ```
 
 
@@ -72,17 +62,16 @@ cd qiime2-fmt-tutorial
 
 **Obtain data files**
 
-注意：**QIIME 2 官方测试数据均保存在Google服务器上，国内下载比较困难**。可使用代理服务器(如蓝灯、谷歌上网助手帮助)下载此链接 https://data.qiime2.org/2020.2/tutorials/fmt/sample_metadata.tsv ，国内用户可选在**QIIME 2中文Github页面 https://github.com/YongxinLiu/QIIME2ChineseManual  、或公众号后台回复"qiime2"等方式获取测试数据下载链接，提供多种备选方式保证数据可用**。
+注意：**QIIME 2 官方测试数据均保存在Google服务器上，国内下载比较困难**。，以下Google链接全部替换为国内备份链接*。
 
 下载元数据，即描述样本的数据，也称实验设计。通过上述方法下载请跳过。
 
 ```
-wget \
-  -O "sample-metadata.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/fmt/sample_metadata.tsv"
+wget -c http://210.75.224.110/github/QIIME2ChineseManual/2021.2/fmt/sample-metadata.tsv
+
 ```
 
-接下来，下载我们将在本分析中使用的拆分好的混合样本序列。要了解如何从fastq格式的序列数据中开始QIIME 2分析，请参阅[导入数据教程](https://docs.qiime2.org/2020.2/tutorials/importing/)。我们需要下载两组样本拆分好的序列，每个序列文件对应一个序列测序批次。
+接下来，下载我们将在本分析中使用的拆分好的混合样本序列。要了解如何从fastq格式的序列数据中开始QIIME 2分析，请参阅[导入数据教程](https://docs.qiime2.org/2021.2/tutorials/importing/)。我们需要下载两组样本拆分好的序列，每个序列文件对应一个序列测序批次。
 
 在本教程中，我们将使用完整序列数据的一个小子集，以便命令能够快速运行。您可以选择1%的序列子集或10%的序列子集。如果您只是试图获得准备和组合多个数据序列运行的经验，那么您可以使用1%的子集数据，以便命令可以非常快速地运行。如果您使用本教程来获得在生成和解释QIIME 2分析结果方面的额外经验，那么您应该使用10%的子采样数据，以便结果将由更多的序列数据支持（1%的序列可能不足以支持原始研究的一些发现）。
 
@@ -94,10 +83,11 @@ wget \
 # 20M，about 30s
 wget \
   -O "fmt-tutorial-demux-1.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/fmt/fmt-tutorial-demux-1-10p.qza"
+  "https://data.qiime2.org/2021.2/tutorials/fmt/fmt-tutorial-demux-1-10p.qza"
 wget \
   -O "fmt-tutorial-demux-2.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/fmt/fmt-tutorial-demux-2-10p.qza"
+  "https://data.qiime2.org/2021.2/tutorials/fmt/fmt-tutorial-demux-2-10p.qza"
+  
 ```
 
 ## 序列质控评估
@@ -119,13 +109,13 @@ qiime demux summarize \
 
 输出对象:
 
-- `fmt-tutorial-demux-1.qza`: 第一批测序结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Ffmt-tutorial-demux-1.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/fmt-tutorial-demux-1.qza)
-- `fmt-tutorial-demux-2.qza`: 第二批测序结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Ffmt-tutorial-demux-2.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/fmt-tutorial-demux-2.qza)
+- `fmt-tutorial-demux-1.qza`: 第一批测序结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Ffmt-tutorial-demux-1.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/fmt-tutorial-demux-1.qza)
+- `fmt-tutorial-demux-2.qza`: 第二批测序结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Ffmt-tutorial-demux-2.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/fmt-tutorial-demux-2.qza)
 
 输出可视化:
 
-- `demux-summary-1.qzv`: 第二批样本数据量和质量统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Fdemux-summary-1.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/demux-summary-1.qzv)
-- `demux-summary-2.qzv`: 第一批样本数据量和质量统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Fdemux-summary-2.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/demux-summary-2.qzv)
+- `demux-summary-1.qzv`: 第二批样本数据量和质量统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Fdemux-summary-1.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/demux-summary-1.qzv)
+- `demux-summary-2.qzv`: 第一批样本数据量和质量统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Fdemux-summary-2.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/demux-summary-2.qzv)
 
 
 查看可视化评估结果，也可下载qzv文件，使用 view.qiime2.org 打开查看，也可解压查看。
@@ -147,7 +137,7 @@ qiime demux summarize \
 dada2质控和去冗余，本实验有两批独立的数据，需要处理两次，生成代表序列和特征表
 
 ```
-# 去噪生成特征表，4m40.475s
+# 去噪生成特征表，笔记本：1m28s，服务器：2m44s
 time qiime dada2 denoise-single \
   --p-trim-left 13 \
   --p-trunc-len 150 \
@@ -156,7 +146,7 @@ time qiime dada2 denoise-single \
   --o-table table-1.qza \
   --o-denoising-stats stats-1.qza
 
-# 去噪生成特征表，2m1.706s
+# 去噪生成特征表，笔记本：48s，服务器：1m27s
 time qiime dada2 denoise-single \
   --p-trim-left 13 \
   --p-trunc-len 150 \
@@ -168,12 +158,12 @@ time qiime dada2 denoise-single \
 
 输出对象:
 
-- `stats-1.qza`: 第一批数据统计结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Fstats-1.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/stats-1.qza)
-- `stats-2.qza`: 第二批数据统计结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Fstats-2.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/stats-2.qza)
-- `rep-seqs-1.qza`: 第一批数据代表性序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Frep-seqs-1.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/rep-seqs-1.qza)
-- `rep-seqs-2.qza`: 第二批数据代表性序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Frep-seqs-2.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/rep-seqs-2.qza)
-- `table-1.qza`: 第一批数据特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Ftable-1.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/table-1.qza)
-- `table-2.qza`: 第二批数据特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Ftable-2.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/table-2.qza)
+- `stats-1.qza`: 第一批数据统计结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Fstats-1.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/stats-1.qza)
+- `stats-2.qza`: 第二批数据统计结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Fstats-2.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/stats-2.qza)
+- `rep-seqs-1.qza`: 第一批数据代表性序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Frep-seqs-1.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/rep-seqs-1.qza)
+- `rep-seqs-2.qza`: 第二批数据代表性序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Frep-seqs-2.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/rep-seqs-2.qza)
+- `table-1.qza`: 第一批数据特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Ftable-1.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/table-1.qza)
+- `table-2.qza`: 第二批数据特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Ftable-2.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/table-2.qza)
 
 ## 查看去噪过程统计
 
@@ -192,8 +182,8 @@ qiime metadata tabulate \
 
 结果可视化文件:
 
-- denoising-stats-1.qzv: 批次1可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Fdenoising-stats-1.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/denoising-stats-1.qzv)
-- denoising-stats-2.qzv: 批次2可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Fdenoising-stats-2.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/denoising-stats-2.qzv)
+- denoising-stats-1.qzv: 批次1可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Fdenoising-stats-1.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/denoising-stats-1.qzv)
+- denoising-stats-2.qzv: 批次2可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Fdenoising-stats-2.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/denoising-stats-2.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.5.03.jpg)
 
@@ -208,7 +198,7 @@ qiime metadata tabulate \
 **合并两组数据特征表**
 
 ```
-time qiime feature-table merge \
+qiime feature-table merge \
   --i-tables table-1.qza \
   --i-tables table-2.qza \
   --o-merged-table table.qza
@@ -219,7 +209,7 @@ time qiime feature-table merge \
 **合并两组数据的代表序列**
 
 ```
-time qiime feature-table merge-seqs \
+qiime feature-table merge-seqs \
   --i-data rep-seqs-1.qza \
   --i-data rep-seqs-2.qza \
   --o-merged-data rep-seqs.qza
@@ -227,13 +217,13 @@ time qiime feature-table merge-seqs \
 
 输出对象:
 
-- `rep-seqs.qza`: 合并的代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/rep-seqs.qza)
-- `table.qza`: 合并的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Ftable.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/table.qza)
+- `rep-seqs.qza`: 合并的代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/rep-seqs.qza)
+- `table.qza`: 合并的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Ftable.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/table.qza)
 
 特征表数据需要进行**特征表统计**，查看基本情况。
 
 ```
-time qiime feature-table summarize \
+qiime feature-table summarize \
   --i-table table.qza \
   --o-visualization table.qzv \
   --m-sample-metadata-file sample-metadata.tsv
@@ -241,7 +231,7 @@ time qiime feature-table summarize \
 
 **输出可视化结果：**
 
-- `table.qzv`：特征表统计结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Ftable.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/table.qzv)
+- `table.qzv`：特征表统计结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Ftable.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/table.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.5.04.jpg)
 
@@ -297,7 +287,7 @@ qiime feature-table tabulate-seqs \
 
 输出可视化结果:
 
-- `rep-seqs.qzv`：合并的代表性序列统计结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Ffmt%2Frep-seqs.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/fmt/rep-seqs.qzv)
+- `rep-seqs.qzv`：合并的代表性序列统计结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Ffmt%2Frep-seqs.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/fmt/rep-seqs.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.5.05.jpg)
 
@@ -308,7 +298,7 @@ qiime feature-table tabulate-seqs \
 
 **Diversity analysis**
 
-现在我们已经获得了特征表(Feature table)`FeatureTable[Frequency]`，以及代表序列(Feature Sequences)`FeatureData[Sequence]`对象，你可以基于样本元数据来探索其微生物组成。自己尝试用上篇文章《[4人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)》（2020.2版）分析方法。几个问题与个体的微生物组的纵向变化有关；可以参考[`q2-longitudinal`教程](https://docs.qiime2.org/2020.2/tutorials/longitudinal/)，后面的教程中会详细讲解，到时可以学习此类分析方法。试着回答以下问题？
+现在我们已经获得了特征表(Feature table)`FeatureTable[Frequency]`，以及代表序列(Feature Sequences)`FeatureData[Sequence]`对象，你可以基于样本元数据来探索其微生物组成。自己尝试用上篇文章《[4人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)》（2021.2版）分析方法。几个问题与个体的微生物组的纵向变化有关；可以参考[`q2-longitudinal`教程](https://docs.qiime2.org/2021.2/tutorials/longitudinal/)，后面的教程中会详细讲解，到时可以学习此类分析方法。试着回答以下问题？
 
 1. 个体微生物组；
     1. 按个体(subject-id)分类是否存在组成差异？
@@ -327,7 +317,7 @@ qiime feature-table tabulate-seqs \
     4. 两类取样方法的Alpha多样性存在差别吗？
 4. 每个测序批次中有多少样品？在不同测序批次中是否存在系统性差异？
 
-你已经获得了特征表、代表序列，还有你的实验设计。只需要《[4人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)》（2020.2版）中`构建进化树用于多样性分析`开始往后的代码运行一遍，再交互式探索结果，上面的问题的答案不言自明。
+你已经获得了特征表、代表序列，还有你的实验设计。只需要《[4人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)》（2021.2版）中`构建进化树用于多样性分析`开始往后的代码运行一遍，再交互式探索结果，上面的问题的答案不言自明。
 
 
 ## 参考答案代码
@@ -367,14 +357,15 @@ time qiime diversity core-metrics-phylogenetic \
 
 ```
 qiime diversity alpha-group-significance \
-  --i-alpha-diversity core-metrics-results/observed_otus_vector.qza \
+  --i-alpha-diversity core-metrics-results/observed_features_vector.qza \
   --m-metadata-file sample-metadata.tsv \
-  --o-visualization core-metrics-results/observed_otus-group-significance.qzv
+  --o-visualization core-metrics-results/observed_features-group-significance.qzv
 
 qiime diversity alpha-group-significance \
   --i-alpha-diversity core-metrics-results/evenness_vector.qza \
   --m-metadata-file sample-metadata.tsv \
   --o-visualization core-metrics-results/evenness-group-significance.qzv
+  
 ```
 
 使用QIIME2view打开`observed_otus-group-significance.qzv`，Column切换为subject-id可以查看个体间丰富多的比对箱线图，具体是否显著，可查看下面的表格。
@@ -408,6 +399,7 @@ qiime emperor plot \
   --m-metadata-file sample-metadata.tsv \
   --p-custom-axes week \
   --o-visualization core-metrics-results/bray-curtis-emperor-week.qzv
+  
 ```
 
 我们以unweighted_unifrac距离为例，查看`core-metrics-results/unweighted-unifrac-emperor-week.qzv`结果，把Color分组着色选为`week`，看到样本在week轴上展开非常好。再切换Sahpe面板，修改`treatment-group`的形状为diamond，这样可以按不同形状分清供体和受试者。看到蓝色0周时与供体更像吗？同理，可查看bray_curtis距离的结果，规律如何呢？一般个人觉得Bray-Curtis距离有更好的解释，而且有权重比无权重更可信，更有意义。在不同场景下可能有不同的解读。
@@ -433,82 +425,18 @@ time qiime diversity alpha-rarefaction \
     3. 供体粪便与那种取样的结果更像？
     4. 两类取样方法的Alpha多样性存在差别吗？
 
-物种注释，用于知道差异特征的物种信息
+### 4. 每个测序批次对多少样品进行了测序？
 
-**物种注释和组间比较**
+在各种测序批次间，您是否观察到样品间的系统差异？
 
-```
-# 物种注释和可视化，使用上一节下载的数据库，2min
-time qiime feature-classifier classify-sklearn \
-  --i-classifier ../qiime2-moving-pictures-tutorial/gg-13-8-99-515-806-nb-classifier.qza \
-  --i-reads rep-seqs.qza \
-  --o-classification taxonomy.qza
-# 2min10s
-
-# 生成物种可视化，即每个Feature对应的物种注释和可信度
-time qiime metadata tabulate \
-  --m-input-file taxonomy.qza \
-  --o-visualization taxonomy.qzv
-
-# 物种组成柱状图，按Level2和样本类型 sample-type 排序
-time qiime taxa barplot \
-  --i-table table.qza \
-  --i-taxonomy taxonomy.qza \
-  --m-metadata-file sample-metadata.tsv \
-  --o-visualization taxa-bar-plots.qzv
-```
-
-最大差异特征，即为组间差异结果中最明显的，或丰度最大的。
-
-差异比较计算量大，每次只能指定一类进行统计计算，如比较批次，需要指定 `sequencing-run`列，如比较粪便和试子样品采集方法，则指定列名为`sample-type`。这里以sample-type为例进行计算，更多分组方法，请读者自行探索。
-
-```
-# 格式转换
-time qiime composition add-pseudocount \
-  --i-table table.qza \
-  --o-composition-table comp-table.qza
-
-# 按样本类型比较ASV
-time qiime composition ancom \
-  --i-table comp-table.qza \
-  --m-metadata-file sample-metadata.tsv \
-  --m-metadata-column sample-type \
-  --o-visualization ancom-sample-type.qzv
-# 3m38s，结果中的差异feautre，在`taxonomy.qzv`中查询注释。
-
-# 按属比较，需要先合并
-time qiime taxa collapse \
-  --i-table table.qza \
-  --i-taxonomy taxonomy.qza \
-  --p-level 6 \
-  --o-collapsed-table table-l6.qza
-
-# 格式转换
-time qiime composition add-pseudocount \
-  --i-table table-l6.qza \
-  --o-composition-table comp-table-l6.qza
-
-# 差异比较
-time qiime composition ancom \
-  --i-table comp-table-l6.qza \
-  --m-metadata-file sample-metadata.tsv \
-  --m-metadata-column sample-type \
-  --o-visualization l6-ancom-sample-type.qzv  
-# 分类学差异直接有名称，不用feature再对应物种注释
-```
-
-### 4. 每个测序批次中有多少样品？在不同测序批次中是否存在系统性差异？
-
-同理，按`sequencing-run`为分组，分别观察alpha, beta, taxonomy的差异即可。重用上面的代码，只是更换分组。
 
 ## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为宏基因组数据分析和植物微生物组，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20+篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1200万+。
-
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
 
 ## Reference
 
-https://docs.qiime2.org/2020.2/
+https://docs.qiime2.org/2021.2/
 
 Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 

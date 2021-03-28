@@ -1,33 +1,10 @@
 [TOC]
 
-# 前情提要
-
-以下是前面几节的微信推送文章：
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [7帕金森小鼠教程Parkinson's Mouse](https://mp.weixin.qq.com/s/cN1sfcWFME7S4OJy4VIREg)，[Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-- [8差异丰度分析gneiss](https://mp.weixin.qq.com/s/wx9dr5e2B_YyqTdPJ7dVsQ)
-- [9数据导入Importing data](https://mp.weixin.qq.com/s/u0k38x4lAUaghua2FDD1mQ)
-- [10数据导出Exporting data](https://mp.weixin.qq.com/s/pDxDsm8vabpe9KtcLRYWxg)
-- [11元数据Metadata](https://mp.weixin.qq.com/s/Q-YTeXH84lgBbRwuzc1bsg)
-- [12数据筛选Filtering data](https://mp.weixin.qq.com/s/zk-pXJs4GNwb1AOBPzCaHA)
-- [13训练特征分类器Training feature classifiers](https://mp.weixin.qq.com/s/jTRUYgacH5WszsHJVbbh4g)
-- [14数据评估和质控Evaluating and controlling](https://mp.weixin.qq.com/s/1b3Hj23bKWfTkHKAPNmCBQ)
-- [15样品分类和回归q2-sample-classifier](https://mp.weixin.qq.com/s/3DGvuD3R9atSoo2CSrUJBw)
-- [16纵向和成对样本比较q2-longitudinal](https://mp.weixin.qq.com/s/RhRXoGqVuLumxvbba7GgSg)
-
-
 # 鉴定和过滤嵌合体序列`q2-vsearch`
 
 **Identifying and filtering chimeric feature sequences with q2-vsearch**
 
-https://docs.qiime2.org/2020.2/tutorials/chimera/
+https://docs.qiime2.org/2021.2/tutorials/chimera/
 
 > 注：最好按本教程顺序学习，想直接学习本章，至少完成本系列[《1简介和安装》](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)。
 
@@ -40,16 +17,11 @@ https://docs.qiime2.org/2020.2/tutorials/chimera/
 **Obtain the data**
 
 ```
-mkdir -p qiime2-chimera-filtering-tutorial
-cd qiime2-chimera-filtering-tutorial
+mkdir -p chimera
+cd chimera
 
-wget -c \
-  -O "atacama-table.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/chimera/atacama-table.qza"
-
-wget -c \
-  -O "atacama-rep-seqs.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/chimera/atacama-rep-seqs.qza"
+wget -c https://data.qiime2.org/2021.2/tutorials/chimera/atacama-table.qza
+wget -c https://data.qiime2.org/2021.2/tutorials/chimera/atacama-rep-seqs.qza
 ```
 
 ## 无参嵌合体鉴定
@@ -57,22 +29,22 @@ wget -c \
 **Run de novo chimera checking**
 
 ```
-# 20s
+# 4s/11s
 time qiime vsearch uchime-denovo \
   --i-table atacama-table.qza \
   --i-sequences atacama-rep-seqs.qza \
   --output-dir uchime-dn-out
 ```
 
-**输入对象:**
+**输出对象:**
 
-- `atacama-rep-seqs.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fatacama-rep-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/atacama-rep-seqs.qza)
-- `atacama-table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fatacama-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/atacama-table.qza)
-- `uchime-dn-out/nonchimeras.qza`: 去嵌合序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Fnonchimeras.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/nonchimeras.qza)
-- `uchime-dn-out/chimeras.qza`: 嵌合序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Fchimeras.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/chimeras.qza)
-- `uchime-dn-out/stats.qza`: 统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Fstats.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/stats.qza)
+- `atacama-rep-seqs.qza`: 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fatacama-rep-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/atacama-rep-seqs.qza)
+- `atacama-table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fatacama-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/atacama-table.qza)
+- `uchime-dn-out/nonchimeras.qza`: 去嵌合序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Fnonchimeras.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/nonchimeras.qza)
+- `uchime-dn-out/chimeras.qza`: 嵌合序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Fchimeras.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/chimeras.qza)
+- `uchime-dn-out/stats.qza`: 统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Fstats.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/stats.qza)
 
-注：基于参考序列(有参，Reference-based)的嵌合体鉴定方法详见[`vsearch uchime-ref`](https://docs.qiime2.org/2020.2/plugins/available/vsearch/uchime-ref/)
+注：基于参考序列(有参，Reference-based)的嵌合体鉴定方法详见[`vsearch uchime-ref`](https://docs.qiime2.org/2021.2/plugins/available/vsearch/uchime-ref/)
 
 ## 可视化统计结果 
 
@@ -84,9 +56,9 @@ qiime metadata tabulate \
   --o-visualization uchime-dn-out/stats.qzv
 ```
 
-**输入可视化:**
+**输出可视化:**
 
-- `uchime-dn-out/stats.qzv`: 统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Fstats.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/stats.qzv)
+- `uchime-dn-out/stats.qzv`: 统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Fstats.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/stats.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.16.01.jpg)
 
@@ -114,12 +86,12 @@ qiime feature-table summarize \
 
 **输出对象:**
 
-- `uchime-dn-out/rep-seqs-nonchimeric-wo-borderline.qza`：过滤嵌合体的序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Frep-seqs-nonchimeric-wo-borderline.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/rep-seqs-nonchimeric-wo-borderline.qza)
-- `uchime-dn-out/table-nonchimeric-wo-borderline.qza`：过滤嵌合体的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Ftable-nonchimeric-wo-borderline.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/table-nonchimeric-wo-borderline.qza)
+- `uchime-dn-out/rep-seqs-nonchimeric-wo-borderline.qza`：过滤嵌合体的序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Frep-seqs-nonchimeric-wo-borderline.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/rep-seqs-nonchimeric-wo-borderline.qza)
+- `uchime-dn-out/table-nonchimeric-wo-borderline.qza`：过滤嵌合体的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Ftable-nonchimeric-wo-borderline.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/table-nonchimeric-wo-borderline.qza)
 
 **输出可视化结果:**
 
-- `uchime-dn-out/table-nonchimeric-wo-borderline.qzv`：特征表统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Ftable-nonchimeric-wo-borderline.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/table-nonchimeric-wo-borderline.qzv)
+- `uchime-dn-out/table-nonchimeric-wo-borderline.qzv`：特征表统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Ftable-nonchimeric-wo-borderline.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/table-nonchimeric-wo-borderline.qzv)
 
 ### 过滤嵌合但保留可疑序列
 
@@ -144,24 +116,22 @@ qiime feature-table summarize \
 
 **输出对象:**
 
-- `uchime-dn-out/table-nonchimeric-w-borderline.qza`：过滤嵌合体的序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Ftable-nonchimeric-w-borderline.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/table-nonchimeric-w-borderline.qza)
-- `uchime-dn-out/rep-seqs-nonchimeric-w-borderline.qza`：过滤嵌合体的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Frep-seqs-nonchimeric-w-borderline.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/rep-seqs-nonchimeric-w-borderline.qza)
+- `uchime-dn-out/table-nonchimeric-w-borderline.qza`：过滤嵌合体的序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Ftable-nonchimeric-w-borderline.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/table-nonchimeric-w-borderline.qza)
+- `uchime-dn-out/rep-seqs-nonchimeric-w-borderline.qza`：过滤嵌合体的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Frep-seqs-nonchimeric-w-borderline.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/rep-seqs-nonchimeric-w-borderline.qza)
 
 **输出可视化结果:**
 
-- `uchime-dn-out/table-nonchimeric-w-borderline.qzv`：特征表统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Ftable-nonchimeric-w-borderline.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/chimera/uchime-dn-out/table-nonchimeric-w-borderline.qzv)
-
-
-## Reference
-
-https://docs.qiime2.org/2020.2/
-
-Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
+- `uchime-dn-out/table-nonchimeric-w-borderline.qzv`：特征表统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fchimera%2Fuchime-dn-out%2Ftable-nonchimeric-w-borderline.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/chimera/uchime-dn-out/table-nonchimeric-w-borderline.qzv)
 
 ## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为微生物组数据分析、分析方法开发与优化和科学传播，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20余篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1300万+。
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
 
+## Reference
+
+https://docs.qiime2.org/2021.2/
+
+Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 
 ## 猜你喜欢
 

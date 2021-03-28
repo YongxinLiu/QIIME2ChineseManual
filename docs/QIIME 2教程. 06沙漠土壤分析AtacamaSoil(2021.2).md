@@ -1,27 +1,15 @@
 [TOC]
- 
-# 前情提要
-
-以下是前面几节的微信推送文章：
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures，](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw) [Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT，](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg) [Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- 本篇文章的数据来自于文献《增加干旱对干旱土壤微生物组的显著影响》，点击链接阅读文献解读[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/j86yqVOaZQYLKf2Ls-N6-w)
-
 
 # QIIME 2用户文档. 6阿塔卡马沙漠微生物组分析
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.6.00.jpg)
 
-原文地址：https://docs.qiime2.org/2020.2/tutorials/atacama-soils/
+原文地址：https://docs.qiime2.org/2021.2/tutorials/atacama-soils/
 
-**此实例需要一些基础知识，要求完成本系列文章前两篇内容：《[1、简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)（2020.2版）》和《[4、人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)（2020.2版）》。**
+**此实例需要一些基础知识，要求完成本系列文章前两篇内容：《[1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)》和《[4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)》。**
 
 
-本教程设计用于两个目的。**首先，它描述了对双端序列分析的初始处理步骤**，直到分析步骤与单端序列分析相同。这包括导入、样本拆分和去噪步骤，并产生特征表和相关的特征序列。**其次，这是一次自我练习**，可以在《[4、人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)（2020.2版）》之后运行，以获得更多使用QIIME 2的经验。对于这个练习，我们提供了一些可以用来指导分析的问题，但是不提供直接解决每个问题的命令。相反，您应该应用您在《[4、人体各部位微生物组分析MovingPicture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)（2020.2版）》中学到的命令。
+本教程设计用于两个目的。**首先，它描述了对双端序列分析的初始处理步骤**，直到分析步骤与单端序列分析相同。这包括导入、样本拆分和去噪步骤，并产生特征表和相关的特征序列。**其次，这是一次自我练习**，可以在《[4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)》之后运行，以获得更多使用QIIME 2的经验。对于这个练习，我们提供了一些可以用来指导分析的问题，但是不提供直接解决每个问题的命令。相反，您应该应用您在《[4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)》中学到的命令。
 
 在本教程中，您将使用QIIME 2对来自智利北部阿塔卡马沙漠的土壤样本进行分析。阿塔卡马沙漠是地球上最干旱的地方之一，有些地区每**十年降雨量不到一毫米**。尽管极端干旱，土壤中仍然有微生物。本研究采样地点为东部的巴克达诺(Baquedano)和西部的永盖(Yungay)，横断面的平均土壤相对湿度与海拔高度呈正相关（海拔越高，干旱程度越轻，平均土壤相对湿度越高）。沿着这些剖面，在每个地点挖坑，从每个坑的三个深度收集土壤样品。 详见原文解读：[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/j86yqVOaZQYLKf2Ls-N6-w)。
 
@@ -38,38 +26,37 @@ https://v.qq.com/x/page/f0925nkxavm.html
 
 ```
 # 定义工作目录变量，方便以后多次使用
-wd=~/github/QIIME2ChineseManual/2020.2
+wd=~/github/QIIME2ChineseManual/2021.2
 mkdir -p $wd
 # 进入工作目录，是不是很简介，这样无论你在什么位置就可以快速回到项目文件夹
 cd $wd
 
 # 方法1. 进入QIIME 2 conda工作环境
-conda activate qiime2-2020.2
-# 这时我们的命令行前面出现 (qiime2-2020.2) 表示成功进入工作环境
+conda activate qiime2-2021.2
+# 这时我们的命令行前面出现 (qiime2-2021.2) 表示成功进入工作环境
 
 # 方法2. conda版本较老用户，使用source进入QIIME 2
-source activate qiime2-2020.2
+source activate qiime2-2021.2
 
 # 方法3. 如果是docker安装的请运行如下命令，默认加载当前目录至/data目录
-docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2020.2
+docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2021.2
 
 # 创建本节学习目录
-mkdir -p qiime2-atacama-tutorial
-cd qiime2-atacama-tutorial
+mkdir -p atacama
+cd atacama
 ```
 
 ## 实验数据下载
 
 **Obtain the data**
 
-注意：**QIIME 2 官方测试数据部分保存在Google服务器上，国内下载比较困难**。可使用代理服务器(如蓝灯)下载，或**公众号后台回复"qiime2"获取测试数据批量下载链接，你还可以跳过以后的wget步骤**。
+注意：**QIIME 2 官方测试数据部分保存在Google服务器上，国内下载比较困难**。**公众号后台回复"qiime2"获取测试数据批量下载链接，你还可以跳过以后的wget步骤**。
 
-**下载来源Google文档的实验设计**
+**下载Google文档的国内备份实验设计**
 
 ```
-wget \
-  -O "sample-metadata.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/atacama-soils/sample_metadata.tsv"
+wget -c http://210.75.224.110/github/QIIME2ChineseManual/2021.2/atacama/sample-metadata.tsv
+
 ```
 
 下载双端实验数据(使用10%抽样数据方便下载和演示)：分别为正向、反向和barcodes序列三个文件；文来自亚马逊云，有时无法下载或断开，可不同时间多试几次就成功了。或使用后台百度云链接，或github备份永久链接。
@@ -85,13 +72,14 @@ mkdir -p emp-paired-end-sequences
 # -c为支持断点续传，跨国下载经常断，-c必须加，否则你下不完断线又要从头下载
 wget -c \
   -O "emp-paired-end-sequences/forward.fastq.gz" \
-  "https://data.qiime2.org/2020.2/tutorials/atacama-soils/10p/forward.fastq.gz"
+  "https://data.qiime2.org/2021.2/tutorials/atacama-soils/10p/forward.fastq.gz"
 wget -c \
   -O "emp-paired-end-sequences/reverse.fastq.gz" \
-  "https://data.qiime2.org/2020.2/tutorials/atacama-soils/10p/reverse.fastq.gz"
+  "https://data.qiime2.org/2021.2/tutorials/atacama-soils/10p/reverse.fastq.gz"
 wget -c \
   -O "emp-paired-end-sequences/barcodes.fastq.gz" \
-  "https://data.qiime2.org/2020.2/tutorials/atacama-soils/10p/barcodes.fastq.gz"
+  "https://data.qiime2.org/2021.2/tutorials/atacama-soils/10p/barcodes.fastq.gz"
+  
 ```
 
 ## 双端数据分析方法
@@ -101,17 +89,18 @@ wget -c \
 双端数据导入，数据建库类型为EMP双端序列`EMPPairedEndSequences`(本示例来自EMP项目)
 
 ```
+# 笔记本：23s，服务器34s
 time qiime tools import \
    --type EMPPairedEndSequences \
    --input-path emp-paired-end-sequences \
    --output-path emp-paired-end-sequences.qza
 ```
 
-导入的压缩文件有320 MB，耗时1m
+导入的压缩文件有300 MB，约耗时1m。
 
 输出对象:
 
-- `emp-paired-end-sequences.qza`: EMP项目双端测序类型。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Femp-paired-end-sequences.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/emp-paired-end-sequences.qza)
+- `emp-paired-end-sequences.qza`: EMP项目双端测序类型。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Femp-paired-end-sequences.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/emp-paired-end-sequences.qza)
 
 接下来，我们按Barcode序列信息进行样品拆分。这需要样本元数据文件，您必须指明该文件中的哪个列包含每个样本的条形码。 在这种情况下，该列名称是条形码序列`barcode-sequence`。 在此数据集中，条形码读长是样本元数据文件中包含的条形码读长的反向互补序列，因此我们还包括`--p-rev-comp-mapping-barcodes`参数。 在样品拆分之后，我们可以生成并查看每个样本获得多少序列的摘要。
 
@@ -123,24 +112,24 @@ time qiime demux emp-paired \
   --m-barcodes-column barcode-sequence \
   --p-rev-comp-mapping-barcodes \
   --i-seqs emp-paired-end-sequences.qza \
-  --o-per-sample-sequences demux.qza \
+  --o-per-sample-sequences demux-full.qza \
   --o-error-correction-details demux-details.qza
-# 6m37s
-
-# 摘要可视化为表格
-qiime demux summarize \
-  --i-data demux.qza \
-  --o-visualization demux.qzv
+# 笔记本：2m3s，服务器：3m4s
 ```
 
 输出对象:
 
-- `demux-details.qza`：样品拆分统计文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdemux-details.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/demux-details.qza)
-- `demux.qza`: 样品拆分结果文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdemux.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/demux.qza)
+- `demux-full.qza`: 样品拆分结果文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdemux.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/demux.qza)
+- `demux-details.qza`：样品拆分统计文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdemux-details.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/demux-details.qza)
 
-输出可视化:
 
-- `demux.qzv`: 样本拆分结果可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdemux.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/demux.qzv)
+结果可视化：
+
+```
+qiime demux summarize \
+   --i-data demux-full.qza \
+   --o-visualization demux-full.qzv
+```
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.6.01.jpg)
 图1. 数据量汇总图表。中位数有737，可以分析练手了。
@@ -148,16 +137,56 @@ qiime demux summarize \
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.6.02.jpg)
 图2. 双端数据质量评估图。
 
-网页中交互式图形可以查看每个碱基位置的详细信息。质量分析后，我们根据上图结果和相关表格来确定下步denoise分析参数。
+让我们对数据进行重采样。 我们将在本教程中执行此重采样有两个原因：一个是为了加快教程的运行时间，另一个是为了演示功能。
+
+注意，下面的重采样示例旨在说明q2-demux的重采样功能。如果您正在考虑对序列进行重抽样，请确保您已仔细考虑并有合理理由。
+
+```
+qiime demux subsample-paired \
+  --i-sequences demux-full.qza \
+  --p-fraction 0.3 \
+  --o-subsampled-sequences demux-subsample.qza
+
+qiime demux summarize \
+  --i-data demux-subsample.qza \
+  --o-visualization demux-subsample.qzv
+```
+
+输出对象：
+
+- `demux-subsample.qza`：拆分-重采样文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdemux-subsample.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/demux-subsample.qza)
+
+输出可视化：
+- `demux-subsample.qzv`：拆分-重样可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdemux-subsample.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/demux-subsample.qzv)
+
+让我们看看demux-subsample.qzv中的概况。 在“Overview”选项卡上的“按样本序列计数”表中，数据中有75个样本。 不过，如果我们查看表中的最后20行左右，我们会发现许多样本中的序列数少于100——让我们从数据中过滤掉这些样本。
+
+注意，以下过滤样本的示例旨在说明q2-demux的过滤能力，如果您考虑从研究中过滤样本，请确保您已仔细考虑并具有合理的理由。
+
+```
+qiime tools export \
+  --input-path demux-subsample.qzv \
+  --output-path ./demux-subsample/
+
+qiime demux filter-samples \
+  --i-demux demux-subsample.qza \
+  --m-metadata-file ./demux-subsample/per-sample-fastq-counts.tsv \
+  --p-where 'CAST([forward sequence count] AS INT) > 100' \
+  --o-filtered-demux demux.qza
+```
+输出对象：
+
+- `demux.qza`：demux的输出对象。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdemux.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/demux.qza)
 
 
 ## 去噪并生成特征表和代表序列
 
-在序样本拆分之后，我们将基于十个随机选择的样本来查看序列质量，然后对数据进行去噪。当您查看质量图表时，请注意，与[《4、人体各部位微生物组分析》](https://mp.weixin.qq.com/s/6cLzyJjWQmHm82_U6euJ1g)中的对应图表相比，现在每个示例有两个图表。左边的图表显示正向读取的质量分数，右边的图表显示反向读取的质量分数。我们将使用这些图来确定要使用DADA2进行去噪的裁剪参数，然后使用dada2对双端序列进行去噪。
+接下来，我们将来看看这些序列的质量，这些序列是从过滤后的数据中经过10000次随机重采样产生的，然后对数据进行去噪。当你查看质量图时，请注意，与moving pictures教程中的相应图相比，现在有两个交互式图要一起考虑。 左侧的图显示了正向序列的质量得分，右侧的图显示了反向序列的质量得分。 我们将使用这些图来确定要用于DADA2去噪的调整参数，然后使用`dada2 denoise-paired`进行去噪。
 
-在这个例子中，我们有150个碱基的正向和反向序列。因为我们需要序列足够长的重叠，以便双端序列可以连接，所以正向和反向序列的前13个基数被修剪，但是没有对序列的末端进行修剪，以避免将读数长度减少太多而无法重叠连接。在这个示例中，对`--p-trim-left-f`和`--p-trim-left-r`以及`--p-trunc-len-f`和`--p-trunc-len-r`提供了相同的值，但这不是必需的。
+在此示例中，我们有150个碱基的正向和反向序列。 由于我们需要序列的长度足够长，以便在合并序列末端时重叠，因此正向和反向序列的前13个碱基将被修剪，但不会对序列的末端进行修剪，以免修剪太长的序列。 在此示例中，为`--p-trim-left-f`和`--p-trim-left-r`以及`--p-trunc-len-f`和`--p-trunc-len-r`提供了相同修剪数值，但这不是必须的。
 
 ```
+# 笔记本：2m36s，服务器：4m20s
 time qiime dada2 denoise-paired \
   --i-demultiplexed-seqs demux.qza \
   --p-trim-left-f 13 \
@@ -169,33 +198,35 @@ time qiime dada2 denoise-paired \
   --o-denoising-stats denoising-stats.qza
 ```
 
-95M数据，用时28m
+输出对象：
 
-输出对象:
+- `denoising-stats.qza`：去噪结果统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdenoising-stats.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/denoising-stats.qza)
+- `rep-seqs.qza`：代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/rep-seqs.qza)
+- `table.qza`：表格。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Ftable.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/table.qza)
 
-- `denoising-stats.qza`: 去噪过程统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdenoising-stats.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/denoising-stats.qza)
-- `rep-seqs.qza:` 代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/rep-seqs.qza)
-- `table.qza:` 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Ftable.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/table.qza)
-
-我们要对获得的表和序列进行统计
+在这一阶段，您将拥有包含特征表、相应特征序列和DADA2去噪统计信息的对象。 您可以生成这些摘要。
 
 ```
-# 查看Feature表的统计结果
-time qiime feature-table summarize \
+qiime feature-table summarize \
   --i-table table.qza \
   --o-visualization table.qzv \
   --m-sample-metadata-file sample-metadata.tsv
 
-# 代表序列统计
-time qiime feature-table tabulate-seqs \
+qiime feature-table tabulate-seqs \
   --i-data rep-seqs.qza \
   --o-visualization rep-seqs.qzv
+
+qiime metadata tabulate \
+  --m-input-file denoising-stats.qza \
+  --o-visualization denoising-stats.qzv
 ```
 
-可视化结果:
+可视化输出结果：
 
-- `table.qzv`: 特征表统计表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Ftable.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/table.qzv)
-- `rep-seqs.qzv`: 代表序列统计表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Frep-seqs.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/rep-seqs.qzv)
+- `table.qzv`：表格。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Ftable.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/table.qzv)
+- `denoising-stats.qzv`：去噪统计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdenoising-stats.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/denoising-stats.qzv)
+- `rep-seqs.qzv代表序列`：。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fatacama-soils%2Frep-seqs.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/atacama-soils/rep-seqs.qzv)
+
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.6.03.jpg)
 
@@ -209,26 +240,8 @@ time qiime feature-table tabulate-seqs \
 
 长度基本全一致，意义不大。可以点击序列查询相关注意比较方便。
 
-也可以可视化去噪结果：
+从这个地方开始，双端序列和单端序列的分析方法就相同了。 因此，你可以参照《[4、人体各部位微生物组分析Moving Picture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)（2020.2版）》教程中的方法继续分析你接下来的步骤。
 
-```
-# 去噪过程统计数据可视化
-qiime metadata tabulate \
-  --m-input-file denoising-stats.qza \
-  --o-visualization denoising-stats.qzv
-```
-
-输出可视化结果:
-
-- `denoising-stats.qzv`: 去噪过程统计可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fatacama-soils%2Fdenoising-stats.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/atacama-soils/denoising-stats.qzv)
-
-![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.6.05.jpg)
-
-**图5. 去噪过程统计**
-
-可以看各阶段数据剩余的量。双端合并阶段数据是极速下降的。
-
-接下来，分析双端序列和之前的单端序列就一样了。我们可以继续按照《[4、人体各部位微生物组分析Moving Picture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)（2020.2版）》中的命令继续分析啦！
 
 ## 接下来分析要回答的科学问题
 
@@ -254,21 +267,21 @@ qiime metadata tabulate \
 进化树构建和多样性分析
 
 ```
+# 15s/23s
 time qiime phylogeny align-to-tree-mafft-fasttree \
   --i-sequences rep-seqs.qza \
   --o-alignment aligned-rep-seqs.qza \
   --o-masked-alignment masked-aligned-rep-seqs.qza \
   --o-tree unrooted-tree.qza \
   --o-rooted-tree rooted-tree.qza
-# 1m47s
 
+# 12s，采样深度来自table.qzv，最小值仅有24，取Q1=931
 time qiime diversity core-metrics-phylogenetic \
   --i-phylogeny rooted-tree.qza \
   --i-table table.qza \
-  --p-sampling-depth 3041 \
+  --p-sampling-depth 931 \
   --m-metadata-file sample-metadata.tsv \
   --output-dir core-metrics-results
-# 12s
 ```
 
 ### 环境因子关联分析
@@ -331,7 +344,7 @@ time qiime metadata distance-matrix \
 我们计算一个信息完整的海拔列
 
 ```
-time qiime metadata distance-matrix \
+qiime metadata distance-matrix \
   --m-metadata-file sample-metadata.tsv \
   --m-metadata-column elevation \
   --o-distance-matrix sample-metadata-elevation.qza
@@ -341,7 +354,7 @@ time qiime metadata distance-matrix \
 `qiime diversity mantel`可以基于特征的距离矩阵，和样本元数据的距离矩阵，计算两者间的相关性。找到和微生物群落结构变化的相关因素。
 
 ```
-time qiime diversity mantel \
+qiime diversity mantel \
   --i-dm1 core-metrics-results/weighted_unifrac_distance_matrix.qza \
   --i-dm2 sample-metadata-elevation.qza \
   --p-method spearman \
@@ -378,10 +391,10 @@ average-soil-relative-humidity是最大相关因素。
 # 查看帮助
 qiime diversity alpha-correlation --help
 
-time qiime diversity alpha-correlation \
-  --i-alpha-diversity core-metrics-results/observed_otus_vector.qza \
+qiime diversity alpha-correlation \
+  --i-alpha-diversity core-metrics-results/observed_features_vector.qza \
   --m-metadata-file sample-metadata.tsv \
-  --o-visualization  core-metrics-results/observed_otus_correlation.qzv
+  --o-visualization  core-metrics-results/observed_features_correlation.qzv
 ```
 
 看到elevation与richness显著相关，再Column切换其它参数，如`average-soil-relative-humidity`相关性更好，高达0.6909。
@@ -397,20 +410,20 @@ time qiime diversity alpha-correlation \
 想分析门水平，必须先物种注释，再统计组成。
 
 ```
-# 物种注释和可视化，使用上一节下载的数据库，2min
+# 物种注释和可视化，使用上一节下载的数据库
+# 48s，1m24s
 time qiime feature-classifier classify-sklearn \
-  --i-classifier ../qiime2-moving-pictures-tutorial/gg-13-8-99-515-806-nb-classifier.qza \
+  --i-classifier ../moving-pictures/gg-13-8-99-515-806-nb-classifier.qza \
   --i-reads rep-seqs.qza \
   --o-classification taxonomy.qza
-# 2min10s
 
 # 生成物种可视化，即每个Feature对应的物种注释和可信度
-time qiime metadata tabulate \
+qiime metadata tabulate \
   --m-input-file taxonomy.qza \
   --o-visualization taxonomy.qzv
 
 # 物种组成柱状图，按Level2和样本类型 sample-type 排序
-time qiime taxa barplot \
+qiime taxa barplot \
   --i-table table.qza \
   --i-taxonomy taxonomy.qza \
   --m-metadata-file sample-metadata.tsv \
@@ -424,14 +437,14 @@ time qiime taxa barplot \
 
 ```
 # 按属比较，需要先合并
-time qiime taxa collapse \
+qiime taxa collapse \
   --i-table table.qza \
   --i-taxonomy taxonomy.qza \
   --p-level 2 \
   --o-collapsed-table table-l2.qza
 
 # 格式转换
-time qiime composition add-pseudocount \
+qiime composition add-pseudocount \
   --i-table table-l2.qza \
   --o-composition-table comp-table-l2.qza
 
@@ -444,19 +457,18 @@ time qiime composition ancom \
 # 分类学差异直接有名称，不用feature再对应物种注释
 ```
 
+## 译者简介
+
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
+
 
 ## Reference
 
-https://docs.qiime2.org/2020.2/
+https://docs.qiime2.org/2021.2/
 
 Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 
 The data used in this tutorial is presented in: Significant Impacts of Increasing Aridity on the Arid Soil Microbiome. Julia W. Neilson, Katy Califf, Cesar Cardona, Audrey Copeland, Will van Treuren, Karen L. Josephson, Rob Knight, Jack A. Gilbert, Jay Quade, J. Gregory Caporaso, and Raina M. Maier. mSystems May 2017, 2 (3) e00195-16; DOI: 10.1128/mSystems.00195-16.
-
-
-## 译者简介
-
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为宏基因组数据分析和植物微生物组，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20+篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1200万+。
 
 ## 猜你喜欢
 

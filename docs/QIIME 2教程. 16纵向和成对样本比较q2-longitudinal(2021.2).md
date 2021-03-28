@@ -1,33 +1,12 @@
 [TOC]
 
-# 前情提要
-
-以下是前面几节的微信推送文章：
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [7帕金森小鼠教程Parkinson's Mouse](https://mp.weixin.qq.com/s/cN1sfcWFME7S4OJy4VIREg)，[Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-- [8差异丰度分析gneiss](https://mp.weixin.qq.com/s/wx9dr5e2B_YyqTdPJ7dVsQ)
-- [9数据导入Importing data](https://mp.weixin.qq.com/s/u0k38x4lAUaghua2FDD1mQ)
-- [10数据导出Exporting data](https://mp.weixin.qq.com/s/pDxDsm8vabpe9KtcLRYWxg)
-- [11元数据Metadata](https://mp.weixin.qq.com/s/Q-YTeXH84lgBbRwuzc1bsg)
-- [12数据筛选Filtering data](https://mp.weixin.qq.com/s/zk-pXJs4GNwb1AOBPzCaHA)
-- [13训练特征分类器Training feature classifiers](https://mp.weixin.qq.com/s/jTRUYgacH5WszsHJVbbh4g)
-- [14数据评估和质控Evaluating and controlling](https://mp.weixin.qq.com/s/1b3Hj23bKWfTkHKAPNmCBQ)
-- [15样品分类和回归q2-sample-classifier](https://mp.weixin.qq.com/s/3DGvuD3R9atSoo2CSrUJBw)
-
-
 # 进行纵向和成对样本比较`q2-longitudinal`
 
 **Performing longitudinal and paired sample comparisons with q2-longitudinal**
 
-https://docs.qiime2.org/2020.2/tutorials/longitudinal/
+https://docs.qiime2.org/2021.2/tutorials/longitudinal/
 
-> 注：最好按本教程顺序学习，想直接学习本章，至少完成本系列[《1简介和安装》](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)。
+> 注：此实例需要完成本系列文章[《1简介和安装》](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)
 
 本教程将演示`q2-longitudinal`的各种特性，这个插件支持纵向研究设计和成对样本的统计和可视化比较，以确定样本在观察“状态”之间是否或如何变化。“状态”通常与时间或环境梯度有关，**对于成对分析（成对距离和成对差异），样本对通常由在两个不同时间点观察到的同一个体组成。例如，在接受治疗之前和之后收集临床研究中患者的粪便样本**。
 
@@ -43,23 +22,18 @@ https://docs.qiime2.org/2020.2/tutorials/longitudinal/
 在下面的实例中，我们使用来自ECAM研究的数据(2016年科学转化医学的一篇文章)，这是一项对婴儿和母亲从出生到2岁过程微生物组的纵向研究。首先，我们创建一个新目录并下载相关的测试数据。
 
 ```
-mkdir -p longitudinal-tutorial
-cd longitudinal-tutorial
+mkdir -p longitudinal
+cd longitudinal
 
-wget -c \
-  -O "ecam-sample-metadata.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/longitudinal/sample_metadata.tsv"
-
-# 从上节文件夹复制
-cp ../sample-classifier-tutorial/ecam-metadata.tsv ./ecam-sample-metadata.tsv
+wget -c http://210.75.224.110/github/QIIME2ChineseManual/2021.2/longitudinal/ecam-sample-metadata.tsv
 
 wget \
   -O "shannon.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/longitudinal/ecam_shannon.qza"  
+  "https://data.qiime2.org/2021.2/tutorials/longitudinal/ecam_shannon.qza"  
 
 wget \
   -O "unweighted_unifrac_distance_matrix.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/longitudinal/unweighted_unifrac_distance_matrix.qza"
+  "https://data.qiime2.org/2021.2/tutorials/longitudinal/unweighted_unifrac_distance_matrix.qza"
 ```
 
 ## 成对差异比较
@@ -71,8 +45,7 @@ wget \
 该可视化工具目前支持对特征表中的特征丰度（例如微生物序列变体ASV或分类群）或示例元数据文件中的元数据值进行比较。α多样性值（如观察到的序列数量）和β多样性值（如主坐标轴数值）是与这些测试进行比较的常用指标，应包含在作为输入提供的元数据文件中。在下面的示例中，我们将根据分娩方式(delivery)分组测试ECAM数据中两个不同时间点之间的α多样性（香农多样性指数）是否发生显著变化。
 
 ```
-# 15s
-time qiime longitudinal pairwise-differences \
+qiime longitudinal pairwise-differences \
   --m-metadata-file ecam-sample-metadata.tsv \
   --m-metadata-file shannon.qza \
   --p-metric shannon \
@@ -87,12 +60,12 @@ time qiime longitudinal pairwise-differences \
 
 **输入对象:**
 
-- `unweighted_unifrac_distance_matrix.qza`: 非权重unifrac矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Funweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/unweighted_unifrac_distance_matrix.qza)
-- `shannon.qza`: 香农多样性指数。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fshannon.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/shannon.qza)
+- `unweighted_unifrac_distance_matrix.qza`: 非权重unifrac矩阵。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Funweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/unweighted_unifrac_distance_matrix.qza)
+- `shannon.qza`: 香农多样性指数。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fshannon.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/shannon.qza)
 
 **输出可视化:**
 
-- `pairwise-differences.qzv`: 成对比较结果可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fpairwise-differences.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/pairwise-differences.qzv)
+- `pairwise-differences.qzv`: 成对比较结果可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fpairwise-differences.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/pairwise-differences.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.15.02.jpg)
 
@@ -103,8 +76,7 @@ time qiime longitudinal pairwise-differences \
 成对距离`pairwise-distances`可视化器还可以评估来自两个不同“状态states”的成对样本之间的变化，但是它不是使用元数据列或对象作为输入，而是在距离矩阵上进行操作以评估“前”和“后”样本对之间的距离 ，并检验`group-column`参数指定的不同组之间的配对差异是否显着不同。 在这里，我们使用此动作来比较ECAM数据集中12个月时间范围内阴道出生和剖宫产婴儿的微生物群组成的稳定性。
 
 ```
-# 17s
-time qiime longitudinal pairwise-distances \
+qiime longitudinal pairwise-distances \
   --i-distance-matrix unweighted_unifrac_distance_matrix.qza \
   --m-metadata-file ecam-sample-metadata.tsv \
   --p-group-column delivery \
@@ -118,7 +90,7 @@ time qiime longitudinal pairwise-distances \
 
 **输出可视化:**
 
-- `pairwise-distances.qzv`: 成对比较距离的可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fpairwise-distances.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/pairwise-distances.qzv)
+- `pairwise-distances.qzv`: 成对比较距离的可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fpairwise-distances.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/pairwise-distances.qzv)
 
 成对变化是不可忽略的因素，我们看到组间没有显著差异。
 
@@ -131,8 +103,7 @@ time qiime longitudinal pairwise-distances \
 > 注释: **决定一个因素是固定效应还是随机效应可能很复杂**。一般来说，**如果不同的因子级别（元数据列值）表示（或多或少）所有可能的离散值，那么因子应该是固定效应**。例如，在下面的例子中，**分娩方式、性别和饮食（主要是母乳喂养或配方奶粉喂养）被指定为固定效应**。相反，如果一个因子的值代表一个总体的随机样本，那么它应该是一个随机效应。例如，我们可以想象有一些元数据变量，如**体重、母乳中的每日卡路里kcal、每天吃的花生数量或每天服用的青霉素毫克数；这些值代表一个群体中的随机样本，不太可能代表整个群体的所有可能值**。不确定你实验中的因素吗？🤔咨询统计学家或身边有名的统计专家以获得指导。📚
 
 ```
-# 1s
-time qiime longitudinal linear-mixed-effects \
+qiime longitudinal linear-mixed-effects \
   --m-metadata-file ecam-sample-metadata.tsv \
   --m-metadata-file shannon.qza \
   --p-metric shannon \
@@ -144,7 +115,7 @@ time qiime longitudinal linear-mixed-effects \
 
 输出可视化：
 
-- `linear-mixed-effects.qzv`:线性混合效应模型。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Flinear-mixed-effects.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/linear-mixed-effects.qzv)
+- `linear-mixed-effects.qzv`:线性混合效应模型。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Flinear-mixed-effects.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/linear-mixed-effects.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.15.04linear-mixed-effects.jpg)
 
@@ -166,8 +137,7 @@ time qiime longitudinal linear-mixed-effects \
 在这里，我们研究了ECAM队列中香农多样性和其他元数据随时间的变化（用状态列参数设置），包括样本组（如下所述交互选择）和个体受试者（用个体ID`individual-id-column`列参数设置）。
 
 ```
-# 34s
-time qiime longitudinal volatility \
+qiime longitudinal volatility \
   --m-metadata-file ecam-sample-metadata.tsv \
   --m-metadata-file shannon.qza \
   --p-default-metric shannon \
@@ -179,7 +149,7 @@ time qiime longitudinal volatility \
 
 **输出可视化：**
 
-- `volatibility.qzv`: 波动性图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Flinear-mixed-effects.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/linear-mixed-effects.qzv)
+- `volatibility.qzv`: 波动性图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Flinear-mixed-effects.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/linear-mixed-effects.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.15.04volatility.jpg)
 
@@ -204,8 +174,7 @@ time qiime longitudinal volatility \
 **查看时间序列数据的另一种方法是评估变化率随时间的变化**。我们可以通过计算与第一个时间点差异来做到这一点，即连续时间点之间的变化幅度。如果Yt是时间t的度量值Y，则时间t的第一个差值ΔYt=Yt−Y(t-1)。该计算是以固定的间隔进行的，因此，对于时间t或t-1处缺失样本的受试者，不计算每个间隔的Δyt。这种转换是在`q2-longitudinal`的第一差分法中进行的。
 
 ```
-# 20s
-time qiime longitudinal first-differences \
+qiime longitudinal first-differences \
   --m-metadata-file ecam-sample-metadata.tsv \
   --m-metadata-file shannon.qza \
   --p-state-column month \
@@ -217,15 +186,14 @@ time qiime longitudinal first-differences \
 
 **输出对象：**
 
-- `shannon-first-differences.qza`: 香浓指数第一距离。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fshannon-first-differences.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/shannon-first-differences.qza)
+- `shannon-first-differences.qza`: 香浓指数第一距离。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fshannon-first-differences.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/shannon-first-differences.qza)
 
 这将输出一个`SampleData[FirstDifferences]`对象，然后可以查看该对象，例如，使用波动率`volatility` 可视化工具或使用线性混合效果`linear-mixed-effects`或其他方法进行分析。
 
 一个类似的方法是第一距离`first-distances`，它可以识别同一组连续样本之间的β-多样性距离。所有样本之间的成对距离已经可以通过`q2-diversity`beta多样性中核心度量`core-metrics`方法计算，因此该方法简单地识别从同一分组采集的连续样本之间的距离，并将这一系列值输出为其他方法可以使用的元数据。
 
 ```
-# 25s
-time qiime longitudinal first-distances \
+qiime longitudinal first-distances \
   --i-distance-matrix unweighted_unifrac_distance_matrix.qza \
   --m-metadata-file ecam-sample-metadata.tsv \
   --p-state-column month \
@@ -236,14 +204,13 @@ time qiime longitudinal first-distances \
 
 **输出结果：**
 
-- `first-distances.qza`: 末加权unifrace距离转换的第一距离。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Ffirst-distances.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/first-distances.qza)
+- `first-distances.qza`: 末加权unifrace距离转换的第一距离。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Ffirst-distances.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/first-distances.qza)
 
 
 此输出可以与第一个差异的输出相同的方式使用。但是，第一距离的输出特别有说服力，因为它允许我们使用不能直接作用于距离矩阵的动作（如线性混合效应`linear-mixed-effects`）来分析β多样性的纵向变化。
 
 ```
-# 47s
-time qiime longitudinal linear-mixed-effects \
+qiime longitudinal linear-mixed-effects \
   --m-metadata-file first-distances.qza \
   --m-metadata-file ecam-sample-metadata.tsv \
   --p-metric Distance \
@@ -255,7 +222,7 @@ time qiime longitudinal linear-mixed-effects \
 
 **输出可视化：**
 
-- `first-distances-LME.qzv`: 末加权unifrace距离转换的第一距离的混线分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Ffirst-distances-LME.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/first-distances-LME.qzv)
+- `first-distances-LME.qzv`: 末加权unifrace距离转换的第一距离的混线分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Ffirst-distances-LME.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/first-distances-LME.qzv)
 
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.15.04.jpg)
@@ -269,7 +236,7 @@ time qiime longitudinal linear-mixed-effects \
 第一差异法`first-differences`和第一距离法`first-distances`都有一个可选的“基线”参数来代替计算与静态点的差异（例如，基线或给药时的时间点：ΔYt=Yt−Y0）。**计算基线差异有助于区分纵向数据噪声，揭示个体类别的潜在趋势，或突出与多样性变化或其他因变量相关的重要实验因素**。
 
 ```
-time qiime longitudinal first-distances \
+qiime longitudinal first-distances \
   --i-distance-matrix unweighted_unifrac_distance_matrix.qza \
   --m-metadata-file ecam-sample-metadata.tsv \
   --p-state-column month \
@@ -281,7 +248,7 @@ time qiime longitudinal first-distances \
 
 **输出结果：**
 
-- `first-distances-baseline-0.qza`: 0作为基线的距离。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Ffirst-distances-baseline-0.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/first-distances-baseline-0.qza)
+- `first-distances-baseline-0.qza`: 0作为基线的距离。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Ffirst-distances-baseline-0.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/first-distances-baseline-0.qza)
 
 > 注：我们发现一个有趣的事实！我们还可以使用第一距离法来跟踪个体样本之间共享特征比例的纵向变化。这可以通过计算每对样本之间的**成对Jaccard距离**（不考虑特征的丰度，非权重的方法）并将其用作第一距离的输入来计算。这对于与基线参数配对特别有用，例如，**确定在实验过程中如何丢失/获得独特的特性**。
 
@@ -299,14 +266,13 @@ time qiime longitudinal first-distances \
 ```
 wget \
   -O "ecam-table-taxa.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/longitudinal/ecam_table_taxa.qza"
+  "https://data.qiime2.org/2021.2/tutorials/longitudinal/ecam_table_taxa.qza"
 ```
 
 现在我们准备好了运行NMIT。这个命令的输出是一个距离矩阵，我们可以将它传递给其他的qiime2命令，用于检验是否有意义和可视化。
 
 ```
-# 21s
-time qiime longitudinal nmit \
+qiime longitudinal nmit \
   --i-table ecam-table-taxa.qza \
   --m-metadata-file ecam-sample-metadata.tsv \
   --p-individual-id-column studyid \
@@ -316,16 +282,15 @@ time qiime longitudinal nmit \
 
 **输出结果：**
 
-- `nmit-dm.qza`: 非参相关检验。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fnmit-dm.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/nmit-dm.qza)
-- `ecam-table-taxa.qza`: 时间序列属水平特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-table-taxa.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/ecam-table-taxa.qza)
+- `nmit-dm.qza`: 非参相关检验。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fnmit-dm.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/nmit-dm.qza)
+- `ecam-table-taxa.qza`: 时间序列属水平特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-table-taxa.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/ecam-table-taxa.qza)
 
 现在让我们用距离矩阵来计算。首先，我们将进行Permanova检验来评估组间距离是否大于组内距离。
 
 > 笔记：NMIT计算所有时间点上的受试者(样本/个体)之间的距离，因此每个受试者（如上文所用的`--p-individual-id-column`参数所定义）被压缩成一个单独的“样本”，表示受试者的纵向微生物相互依赖性。这个新的“样本”将用一个匹配的个体ID标记其中一个受试者的样本ID；这样做是为了方便将这个距离矩阵传递到下游步骤，而不需要生成一个新的样本元数据文件，但这意味着您必须注意。对于重要性测试和可视化，只使用跨每个单独ID统一的组列。**不要尝试使用随时间变化的元数据列，否则会发生错误结果**。例如，在教程元数据中，只有在使用抗生素之后，才会将患者标记为`AntiExposedall==Y`；这是一个不应该使用的列，因为它随时间而变化。现在享受分析数据的乐趣，并担负起科学客观严谨的责任。
 
 ```
-# 13s
-time qiime diversity beta-group-significance \
+qiime diversity beta-group-significance \
   --i-distance-matrix nmit-dm.qza \
   --m-metadata-file ecam-sample-metadata.tsv \
   --m-metadata-column delivery \
@@ -334,24 +299,24 @@ time qiime diversity beta-group-significance \
 
 **输出可视化：**
 
-- `nmit.qzv`: 末加权unifrace距离转换的第一距离的混线分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fnmit.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/nmit.qzv)
+- `nmit.qzv`: 末加权unifrace距离转换的第一距离的混线分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fnmit.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/nmit.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.15.05.jpg)
 
 最后，我们可以计算主坐标，并使用Emperor来可视化对象`subjects` 之间的相似性（而不是单个样本；请参见上面的注释）。
 
 ```
-time qiime diversity pcoa \
+qiime diversity pcoa \
   --i-distance-matrix nmit-dm.qza \
   --o-pcoa nmit-pc.qza
 ```
 
 **输出结果：**
 
-- `nmit-pc.qza`: 主坐标分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fnmit-pc.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/nmit-pc.qza)
+- `nmit-pc.qza`: 主坐标分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fnmit-pc.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/nmit-pc.qza)
 
 ```
-time qiime emperor plot \
+qiime emperor plot \
   --i-pcoa nmit-pc.qza \
   --m-metadata-file ecam-sample-metadata.tsv \
   --o-visualization nmit-emperor.qzv
@@ -359,7 +324,7 @@ time qiime emperor plot \
 
 **输出可视化：**
 
-- `nmit-emperor.qzv`: 3D可视化结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fnmit-emperor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/nmit-emperor.qzv)
+- `nmit-emperor.qzv`: 3D可视化结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fnmit-emperor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/nmit-emperor.qzv)
 
 就是这样。我们可以使用Permanova检验或其他基于距离的统计检验来确定各组是否表现出显著不同的纵向微生物相互依赖关系，以及PCoA/emperor来可视化各组受试者之间的关系。不要忘记上述关于使用和解释NMIT的注意事项。现在已经很安全了，可以轻松、开心的分析数据啦！
 
@@ -367,7 +332,7 @@ time qiime emperor plot \
 
 **Feature volatility analysis**
 
-> 注: 此流程是一种有监督的回归方法。阅读[示例分类器教程](https://docs.qiime2.org/2020.2/tutorials/sample-classifier/)，了解有关一般过程、输出（例如，特征重要性分数）和受监督回归模型解释的更多详细信息。
+> 注: 此流程是一种有监督的回归方法。阅读[示例分类器教程](https://docs.qiime2.org/2021.2/tutorials/sample-classifier/)，了解有关一般过程、输出（例如，特征重要性分数）和受监督回归模型解释的更多详细信息。
 
 此流程标识可预测数字元数据列“状态列`state_column`”（例如：时间）的功能，并使用交互式功能波动性图（仅绘制重要功能）绘制其跨状态的相对频率。监督学习回归器用于识别重要特征并评估其预测样本状态的能力。`State_column`通常是时间的度量，但是可以使用任何数字元数据列，而且这不是严格的纵向方法，除非使用`individual_id_column`参数（在这种情况下，特征波动率图将包含每个单独的意大利面线，如上所述）。 🍝
 
@@ -376,7 +341,7 @@ time qiime emperor plot \
 ```
 wget -c \
   -O "ecam-table.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/longitudinal/ecam_table_maturity.qza"
+  "https://data.qiime2.org/2021.2/tutorials/longitudinal/ecam_table_maturity.qza"
 
 # 2m30s
 time qiime longitudinal feature-volatility \
@@ -391,15 +356,15 @@ time qiime longitudinal feature-volatility \
 
 **输出结果:**
 
-- `ecam-table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/ecam-table.qza)
-- `ecam-feat-volatility/filtered_table.qza`: 过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Ffiltered_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/ecam-feat-volatility/filtered_table.qza)
-- `ecam-feat-volatility/sample_estimator.qza`: 样本估计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/ecam-feat-volatility/sample_estimator.qza)
-- `ecam-feat-volatility/feature_importance.qza`: 贡献度/重要性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/ecam-feat-volatility/feature_importance.qza)
+- `ecam-table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/ecam-table.qza)
+- `ecam-feat-volatility/filtered_table.qza`: 过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Ffiltered_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/ecam-feat-volatility/filtered_table.qza)
+- `ecam-feat-volatility/sample_estimator.qza`: 样本估计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/ecam-feat-volatility/sample_estimator.qza)
+- `ecam-feat-volatility/feature_importance.qza`: 贡献度/重要性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/ecam-feat-volatility/feature_importance.qza)
 
 **输出可视化结果:**
 
-- `ecam-feat-volatility/accuracy_results.qzv`: 准确率评估，与机器学习回归类似。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/ecam-feat-volatility/accuracy_results.qzv)
-- `ecam-feat-volatility/volatility_plot.qzv:` 波动图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Fvolatility_plot.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/ecam-feat-volatility/volatility_plot.qzv)
+- `ecam-feat-volatility/accuracy_results.qzv`: 准确率评估，与机器学习回归类似。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/ecam-feat-volatility/accuracy_results.qzv)
+- `ecam-feat-volatility/volatility_plot.qzv:` 波动图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fecam-feat-volatility%2Fvolatility_plot.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/ecam-feat-volatility/volatility_plot.qzv)
 
 此流程中使用的所有参数都是针对其他`q2-longitudinal`功能或[示例分类器教程中所描述的](https://mp.weixin.qq.com/s/ugs4X89SK28hF5dSWbqZbA)，因此，在此处不做讨论。此流程生成多个输出：
 
@@ -436,7 +401,7 @@ time qiime longitudinal feature-volatility \
 
 ```
 # 42s
- time qiime longitudinal maturity-index \
+time qiime longitudinal maturity-index \
   --i-table ecam-table.qza \
   --m-metadata-file ecam-sample-metadata.tsv \
   --p-state-column month \
@@ -451,17 +416,17 @@ time qiime longitudinal feature-volatility \
 
 **输出结果:**
 
-- `maturity/maz_scores.qza`: maz打分。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fmaz_scores.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/maturity/maz_scores.qza)
-- `maturity/sample_estimator.qza`: 样本估计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/maturity/sample_estimator.qza)
-- `maturity/feature_importance.qza`: 贡献度/重要性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/maturity/feature_importance.qza)
-- `maturity/predictions.qza`: 预测值。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fpredictions.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/maturity/predictions.qza)
+- `maturity/maz_scores.qza`: maz打分。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fmaz_scores.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/maturity/maz_scores.qza)
+- `maturity/sample_estimator.qza`: 样本估计。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/maturity/sample_estimator.qza)
+- `maturity/feature_importance.qza`: 贡献度/重要性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/maturity/feature_importance.qza)
+- `maturity/predictions.qza`: 预测值。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fpredictions.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/maturity/predictions.qza)
 
 **输出可视化结果:**
 
-- `maturity/accuracy_results.qzv`: 结果准确性评估图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/maturity/accuracy_results.qzv)
-- `maturity/volatility_plots.qzv`: 波动图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fvolatility_plots.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/maturity/volatility_plots.qzv)
-- `maturity/clustermap.qzv`: 聚类热图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fclustermap.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/maturity/clustermap.qzv)
-- `maturity/model_summary.qzv`: 模型统计基本信息。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/longitudinal/maturity/model_summary.qzv)
+- `maturity/accuracy_results.qzv`: 结果准确性评估图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/maturity/accuracy_results.qzv)
+- `maturity/volatility_plots.qzv`: 波动图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fvolatility_plots.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/maturity/volatility_plots.qzv)
+- `maturity/clustermap.qzv`: 聚类热图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fclustermap.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/maturity/clustermap.qzv)
+- `maturity/model_summary.qzv`: 模型统计基本信息。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Flongitudinal%2Fmaturity%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/longitudinal/maturity/model_summary.qzv)
 
 
 本流程输出结果的解释如下：
@@ -469,7 +434,7 @@ time qiime longitudinal feature-volatility \
 1. `Accuracy_results.qzv`结果准确性评估：包含所有选择测试样本的预测值与预期值的线性回归图（[如样本分类器教程中所述](https://mp.weixin.qq.com/s/ugs4X89SK28hF5dSWbqZbA)）。这是“对照control”样本的一个子集，未用于模型训练（由测试集大小参数定义的分数）。
 2. `volatibility-plots.qzv`波动图：包含一个交互式波动图。此可视化对于评估每个样本组中MAZ和其他度量值随时间的变化情况非常有用（默认情况下，使用“分组依据`group_by`”列，但可以为分组样本选择其他样本元数据）。此图表上显示的默认指标是所选状态列的MAZ分数。“预测”（预测的“状态栏`state_column`”值）和状态栏“成熟度”度量是由该插件计算的其他度量，值得研究。详见[2014年Sathish等人文中有关MAZ和成熟度指标的更多详细信息](https://doi.org/10.1038/nature13421)。
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.15.09.jpg)
-3. `clustermap.qzv`聚类热图：包含一个热图(heatmap)，显示每个组中每个重要特征在时间上的频率。此图有助于可视化每个组中重要特征的频率如何随时间变化，展示不同的特征丰度模式（例如，年龄或基于时间模型的发展轨迹）如何影响模型预测和MAZ评分。沿X轴显示的重要特征；按“分组依据`group_by`”和“状态依据`state_column`”列分组和排序的样本显示在Y轴上。请参见[heatmap，以获取有关特征如何沿X轴聚集的详细信息（使用默认参数）。](https://docs.qiime2.org/2020.2/plugins/available/feature-table/heatmap/)
+3. `clustermap.qzv`聚类热图：包含一个热图(heatmap)，显示每个组中每个重要特征在时间上的频率。此图有助于可视化每个组中重要特征的频率如何随时间变化，展示不同的特征丰度模式（例如，年龄或基于时间模型的发展轨迹）如何影响模型预测和MAZ评分。沿X轴显示的重要特征；按“分组依据`group_by`”和“状态依据`state_column`”列分组和排序的样本显示在Y轴上。请参见[heatmap，以获取有关特征如何沿X轴聚集的详细信息（使用默认参数）。](https://docs.qiime2.org/2021.2/plugins/available/feature-table/heatmap/)
 4. `maz_scores.qza`MAZ得分：包含每个样本的MAZ分数（不包括训练样本）。这对于下游分析很有用，如下所述。
 5. `predictions.qza`预测结果：包含每个样本（不包括训练样本）的“状态列state column”预测。这些预测用于计算MAZ评分，而子集（对照测试样本）用于评估模型的准确性。尽管如此，如果这些预测被证明是有用的…这些也可以在波动率图中查看。
 6. `feature_importance.qza`特征重要性：包含最终回归模型中包含的所有功能的重要性分数。如果使用`optimize-feature-selection`参数，则只包含重要特征；否则，将为原始特征表中的所有特征分配重要性分数。
@@ -481,20 +446,18 @@ time qiime longitudinal feature-volatility \
 
 注意到目前为止，所有的研究结果都没有证实两组之间的统计差异。想把这个分析提升到下一个层次吗（用多元统计检验）？使用MAZ分数（或可能的预测）作为线性混合效应模型（如上所述）中的输入指标（因变量）。
 
-## Reference
-
-Antibiotics, birth mode, and diet shape microbiome maturation during early life
-Nicholas A. Bokulich1, Jennifer Chung1, Thomas Battaglia1, Nora Henderson1, Melanie Jay1,2, Huilin Li3, Arnon D. Lieber1, Fen Wu1,2, Guillermo I. Perez-Perez1,4, Yu Chen1,2, William Schweizer5, Xuhui Zheng4, Monica Contreras1, Maria Gloria Dominguez-Bello1 and Martin J. Blaser^1,4,6,*^ **Science Translational Medicine**  15 Jun 2016:
-Vol. 8, Issue 343, pp. 343ra82
-https://doi.org/10.1126/scitranslmed.aad7121
-
-https://docs.qiime2.org/2020.2/
-
-Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
-
 ## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为微生物组数据分析、分析方法开发与优化和科学传播，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20余篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1300万+。
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
+
+
+## Reference
+
+Nicholas A. Bokulich, Jennifer Chung, Thomas Battaglia, Nora Henderson, Melanie Jay, Huilin Li, Arnon D. Lieber, Fen Wu, Guillermo I. Perez-Perez, Yu Chen, William Schweizer, Xuhui Zheng, Monica Contreras, Maria Gloria Dominguez-Bello & Martin J. Blaser. (2016). Antibiotics, birth mode, and diet shape microbiome maturation during early life. Science Translational Medicine 8, 343ra382-343ra382, doi: https://doi.org/10.1126/scitranslmed.aad7121
+
+https://docs.qiime2.org/2021.2/
+
+Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 
 
 ## 猜你喜欢

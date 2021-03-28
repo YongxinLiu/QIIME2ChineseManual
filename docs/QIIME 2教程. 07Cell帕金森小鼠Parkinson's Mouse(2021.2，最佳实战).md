@@ -1,22 +1,10 @@
 [TOC]
 
-# 前情提要
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-
 # QIIME 2用户文档. 7帕金森小鼠教程
 
 **Parkinson’s Mouse Tutorial**
 
-原文地址：https://docs.qiime2.org/2020.2/tutorials/pd-mice/
-
+原文地址：https://docs.qiime2.org/2021.2/tutorials/pd-mice/
 
 本教程将使用来自[人源化(humanized)小鼠](https://en.wikipedia.org/wiki/Humanized_mouse)的一组粪便样品，展示16S rRNA基因扩增子数据的“典型”QIIME 2分析。最初的研究，[Sampson等，2016](https://www.ncbi.nlm.nih.gov/pubmed/27912057)旨在确定粪便微生物组是否有助于帕金森病（Parkinson’s Disease, PD）的发展。一些观察研究显示PD患者和对照之间的微生物组存在差异，尽管研究中发现的物种不一致。然而，这足以证明PD与粪便微生物组之间可能存在关联。
 
@@ -34,7 +22,6 @@ https://v.qq.com/x/page/b3007nt4hby.html
 
 视频有广告，清晰度不够高吗？在公众号“**宏基因组(meta-genome)**”后台回复“qiime2”获得1080p视频和测试数据下载链接。
 
-
 ## 假设
 
 Hypothesis
@@ -43,30 +30,30 @@ Hypothesis
 
 ## 启动QIIME2运行环境
 
-要求完成本节分析，你需要安装好QIIME 2，参见《[1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)（2020.2版）》。
+要求完成本节分析，你需要安装好QIIME 2，参见《[1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)》。
 
 对于上文提到了conda/docker两种常用安装方法，我们每次在分析数据前，需要打开工作环境，根据情况选择对应的打开方式。
 
 ```
 # 定义工作目录变量，方便以后多次使用
-wd=~/github/QIIME2ChineseManual/2020.2
+wd=~/github/QIIME2ChineseManual/2021.2
 mkdir -p $wd
 # 进入工作目录，是不是很简介，这样无论你在什么位置就可以快速回到项目文件夹
 cd $wd
 
 # 方法1. 进入QIIME 2 conda工作环境
-conda activate qiime2-2020.2
-# 这时我们的命令行前面出现 (qiime2-2020.2) 表示成功进入工作环境
+conda activate qiime2-2021.2
+# 这时我们的命令行前面出现 (qiime2-2021.2) 表示成功进入工作环境
 
 # 方法2. conda版本较老用户，使用source进入QIIME 2
-source activate qiime2-2020.2
+source activate qiime2-2021.2
 
 # 方法3. 如果是docker安装的请运行如下命令，默认加载当前目录至/data目录
-docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2020.2
+docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2021.2
 
 # 创建本节学习目录
-mkdir -p mouse_tutorial
-cd mouse_tutorial
+mkdir -p mouse
+cd mouse
 ```
 
 ## 元数据
@@ -80,14 +67,10 @@ cd mouse_tutorial
 即使`mouse ID`看起来像一个数字，我们也会使用`＃q2_type`指令指定它是分类型数据。
 
 
-注意：**QIIME 2 官方测试数据部分保存在Google服务器上，国内下载比较困难**。可使用代理服务器(如蓝灯)下载 https://data.qiime2.org/2020.2/tutorials/pd-mice/sample_metadata.tsv ，或**微信订阅号回复"qiime2"获取测试数据批量下载链接，这样你就可以跳过下面的wget步骤**。
-
-**下载来源Google文档的实验设计**
+注意：**QIIME 2 官方测试数据部分保存在Google服务器上，国内下载比较困难**。我们提供国内备份链接方便大家学习，或**微信订阅号回复"qiime2"获取测试数据批量下载链接，这样你就可以跳过下面的wget步骤**。
 
 ```
-wget \
-  -O "metadata.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/pd-mice/sample_metadata.tsv"
+wget -c http://210.75.224.110/github/QIIME2ChineseManual/2021.2/mouse/metadata.tsv
 ```
 
 整个教程将使用示例元数据。 让我们运行我们的第一个QIIME 2命令，来总结和探索元数据。
@@ -98,30 +81,28 @@ qiime metadata tabulate \
   --o-visualization metadata.qzv
 ```
 
-- `metadata.qzv`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fmetadata.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/metadata.qzv)
+- `metadata.qzv`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fmetadata.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/metadata.qzv)
 
 ## 数据导入QIIME 2
 
 **Importing data into QIIME 2**
 
-在QIIME 2中，所有数据都被构造为特定语义类型的对象。对象包含数据以及有关数据的信息，包括原始数据的记录和用于处理数据的工具。这样可以更好地跟踪您实际到达分析中的位置。您可以在[此处了解有关常见QIIME 2对象和语义类型的更多信息](https://docs.qiime2.org/2020.2/semantic-types/)。
+在QIIME 2中，所有数据都被构造为特定语义类型的对象。对象包含数据以及有关数据的信息，包括原始数据的记录和用于处理数据的工具。这样可以更好地跟踪您实际到达分析中的位置。您可以在[此处了解有关常见QIIME 2对象和语义类型的更多信息](https://docs.qiime2.org/2021.2/semantic-types/)。
 
 我们的样品使用[EMP 515f-806r引物扩增](http://www.earthmicrobiome.org/protocols-and-standards/16s/)，并在Illumina MiSeq上用2x150bp试剂盒测序。我们使用的引物覆盖的高变区长290bp，因此，对于150bp的读数，我们的序列将略微过短，无法在下游进行配对末端分析。因此，我们将使用单端序列。我们将使用已经按标签拆分好样本的版本，例如由测序中心拆分。如果您需要对序列进行自行样本拆分，“《[人体各部位微生物组分析Moving Picture](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)（2020.2版）》”教程将介绍如果使用Earth Microbiome Project协议对序列进行测序，则对应如何对序列进行拆分。(**详者注：拆分方法与测序的实验方法对应，建议由你的测序服务商或合作者提供拆分为单个样本的单端或双端序列，并要确定是否已经去除了引物和标签序列**)
 
-我们将序列导入为`SampleData [SequencesWithQuality]`，这是拆分后的单端序列格式。如果我们想导入双端序列，我们将指定语义类型`SampleData [PairedEndSequencesWithQuality]`。**我们将使用[样本清单格式(manifest format)](https://docs.qiime2.org/2020.2/tutorials/importing/#manifest-file)导入序列，这是一种在QIIME 2中导入拆分样本数据的通用方法**。我们创建一个以制表符分隔的样本清单文件，将我们要在QIIME 2中使用的**样本名称映射到序列文件的路径**。好处是可以将单样本的序列文件命名为您想要的任何名称；没有关于约定的固定假设，文件名也没有规定最终名称。当QIIME 2读取文件时，它会忽略前缀为`＃`符号的任何行。但不包含`＃`的第一行，因为它是标题行，必须是`sample-id <TAB> absolute-filepath`。标题行后的样本顺序无关紧要。阅读有关将[数据导入QIIME 2对象](https://docs.qiime2.org/2020.2/tutorials/importing/)的更多信息，以及[有关示例元数据格式要求的更多信息](https://docs.qiime2.org/2020.2/tutorials/metadata/)。
+我们将序列导入为`SampleData [SequencesWithQuality]`，这是拆分后的单端序列格式。如果我们想导入双端序列，我们将指定语义类型`SampleData [PairedEndSequencesWithQuality]`。**我们将使用[样本清单格式(manifest format)](https://docs.qiime2.org/2021.2/tutorials/importing/#manifest-file)导入序列，这是一种在QIIME 2中导入拆分样本数据的通用方法**。我们创建一个以制表符分隔的样本清单文件，将我们要在QIIME 2中使用的**样本名称映射到序列文件的路径**。好处是可以将单样本的序列文件命名为您想要的任何名称；没有关于约定的固定假设，文件名也没有规定最终名称。当QIIME 2读取文件时，它会忽略前缀为`＃`符号的任何行。但不包含`＃`的第一行，因为它是标题行，必须是`sample-id <TAB> absolute-filepath`。标题行后的样本顺序无关紧要。阅读有关将[数据导入QIIME 2对象](https://docs.qiime2.org/2021.2/tutorials/importing/)的更多信息，以及[有关示例元数据格式要求的更多信息](https://docs.qiime2.org/2021.2/tutorials/metadata/)。
 
 让我们从下载清单和相应的序列开始。
 
 ```
 # 下载文件清单
-wget -c \
-  -O "manifest.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/pd-mice/manifest"
+wget -c http://210.75.224.110/github/QIIME2ChineseManual/2021.2/mouse/manifest.tsv
 
 # 下载序列压缩包，21M文件，我下载了1-10m不等
 wget -c \
   -O "demultiplexed_seqs.zip" \
-  "https://data.qiime2.org/2020.2/tutorials/pd-mice/demultiplexed_seqs.zip"
+  "https://data.qiime2.org/2021.2/tutorials/pd-mice/demultiplexed_seqs.zip"
 
 # 解压序列数据
 unzip demultiplexed_seqs.zip
@@ -163,7 +144,7 @@ time qiime demux summarize \
   --o-visualization ./demux_seqs.qzv
 ```
 
-- `demux_seqs.qzv`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdemux_seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/demux_seqs.qza)
+- `demux_seqs.qzv`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdemux_seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/demux_seqs.qza)
 
 问题
 
@@ -192,19 +173,19 @@ time qiime demux summarize \
 
 **Sequence quality control and feature table**
 
-有几种方法可以在QIIME 2中构建特征表。第一个主要选择是使用操作分类单元（Operational Taxonomic Units，OTU）或扩增/绝对序列变体（Absolute Sequence Variants，ASV）。自2010年中期以来，OTU已广泛用于微生物组研究，并基于参考数据库或从头将序列分配给聚类。 QIIME 2目前通过[`q2-vsearch`](https://docs.qiime2.org/2020.2/tutorials/otu-clustering/)和[`q2-dbOTU`](https://library.qiime2.org/plugins/q2-dbotu/4/)插件提供聚类。
+有几种方法可以在QIIME 2中构建特征表。第一个主要选择是使用操作分类单元（Operational Taxonomic Units，OTU）或扩增/绝对序列变体（Absolute Sequence Variants，ASV）。自2010年中期以来，OTU已广泛用于微生物组研究，并基于参考数据库或从头将序列分配给聚类。 QIIME 2目前通过[`q2-vsearch`](https://docs.qiime2.org/2021.2/tutorials/otu-clustering/)和[`q2-dbOTU`](https://library.qiime2.org/plugins/q2-dbotu/4/)插件提供聚类。
 
 与传统的基于OTU的方法相比，ASV是最近发展的新一代方法，在功能上提供更好的分辨率。 ASV可以基于400bp或更多序列中单个核苷酸的差异来分离特征，甚至超过99％同一性OTU聚类的分辨率。 QIIME 2目前通过[DADA2（q2-dada2）](https://www.ncbi.nlm.nih.gov/pubmed/27214047)和[Deblur（q2-deblur）](https://www.ncbi.nlm.nih.gov/pubmed/28289731)提供去噪。 [Nearing等人，2018年很好地描述了主要去噪算法的动机的主要差异](https://www.ncbi.nlm.nih.gov/pubmed/30123705)。
 
 值得注意的是，在任何一种情况下，对序列进行ASV去噪或OTU进行聚类是分开的，即并行步骤。应该选择单一方法：去噪或基于OTU的聚类; 不建议将这些步骤组合在一起（当然也存在组合方法，但我们不推荐）。
 
-在本教程中，我们将使用DADA2进行去噪（使用单端序列）。有关在配对末端序列上使用DADA2的示例，请参阅[Atacama Soil教程](https://docs.qiime2.org/2020.2/tutorials/atacama-soils/)。对于那些对使用Deblur感兴趣的人，你可以参考[《4人体各部位微生物组分析MovingPicture》](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)和阅读[序列合并的替代方法](https://docs.qiime2.org/2020.2/tutorials/read-joining/)，分别在单端和双端序列上运行Deblur。
+在本教程中，我们将使用DADA2进行去噪（使用单端序列）。有关在配对末端序列上使用DADA2的示例，请参阅[Atacama Soil教程](https://docs.qiime2.org/2021.2/tutorials/atacama-soils/)。对于那些对使用Deblur感兴趣的人，你可以参考[《4人体各部位微生物组分析MovingPicture》](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)和阅读[序列合并的替代方法](https://docs.qiime2.org/2021.2/tutorials/read-joining/)，分别在单端和双端序列上运行Deblur。
 
 `qiime dada2 denoise-single`方法要求我们设置`--p-trunc-len`参数。这可以控制序列的长度，并应根据质量得分的下降进行选择。在我们的数据集中，质量得分在测序运行中相对均匀分布，因此我们将使用完整的150 bp序列。然而，修剪长度的选择是相对主观的测量结果，并且依赖于数据分析人员的决策能力。
 
 ```
 # 注：./代表当前目录，可以省略，也可替换为你数据所在或想保存的任何位置
-# 时间2m55s，此步大数据可能需数小时或数天
+# 时间3m，此步大数据可能需数小时或数天
 time qiime dada2 denoise-single \
   --i-demultiplexed-seqs ./demux_seqs.qza \
   --p-trunc-len 150 \
@@ -213,26 +194,25 @@ time qiime dada2 denoise-single \
   --o-denoising-stats ./dada2_stats.qza
 ```
 
-20M的测试数据，用时2分30s。
+20M的测试数据，用时3分，本地2m。
 
 **输出对象：**
 
-- `dada2_stats.qza`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_stats.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/dada2_stats.qza)
-- `dada2_table.qza`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/dada2_table.qza)
-- `dada2_rep_set.qza`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_rep_set.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/dada2_rep_set.qza)
+- `dada2_stats.qza`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_stats.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/dada2_stats.qza)
+- `dada2_table.qza`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/dada2_table.qza)
+- `dada2_rep_set.qza`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_rep_set.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/dada2_rep_set.qza)
 
 我们可以使用`qiime metadata tabulate`命令来可视化统计结果
 
 ```
-# 5s
-time qiime metadata tabulate \
+qiime metadata tabulate \
   --m-input-file ./dada2_stats.qza  \
   --o-visualization ./dada2_stats.qzv
 ```
 
 可视化结果:
 
-- `dada2_stats.qzv`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_stats.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/dada2_stats.qzv)
+- `dada2_stats.qzv`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_stats.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/dada2_stats.qzv)
 
 ## 特征表摘要
 
@@ -241,14 +221,13 @@ Feature table summary
 在我们完成对数据进行去噪后，我们可以通过查看特征表的摘要来检查结果。 这将为我们提供与每个序列和每个特征相关的计数，以及其他有用的图和指标。
 
 ```
-# 7s
-time qiime feature-table summarize \
+qiime feature-table summarize \
   --i-table ./dada2_table.qza \
   --m-sample-metadata-file ./metadata.tsv \
   --o-visualization ./dada2_table.qzv
 ```
 
-- `dada2_table.qzv`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_table.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/dada2_table.qzv)
+- `dada2_table.qzv`：元数据可视化，生成交互式表格在网页在查看，可按任意列排序。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_table.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/dada2_table.qzv)
 
 
 问题：
@@ -279,30 +258,29 @@ QIIME 2提供了几种构建系统发育树的方法。在本教程中，我们�
 > 注意
 > 此命令是资源密集型的 - 如果您的计算环境支持它，我们建议包括一个适当设置的`--p-threads`参数。
 
-先下载sepp-refs-gg-13-8.qza
+先下载sepp-refs-gg-13-8.qza (48 M)
+
 ```
 wget -c \
   -O "sepp-refs-gg-13-8.qza" \
-  "https://data.qiime2.org/2020.2/common/sepp-refs-gg-13-8.qza"
+  "https://data.qiime2.org/2021.2/common/sepp-refs-gg-13-8.qza"
 ```
 
 ```
-# 多线程服务器，可调多线程加速
+# 多线程服务器，可调多线程加速；30-60m
 time qiime fragment-insertion sepp \
   --i-representative-sequences ./dada2_rep_set.qza \
   --i-reference-database sepp-refs-gg-13-8.qza \
   --o-tree ./tree.qza \
   --o-placements ./tree_placements.qza \
-  --p-threads 1  # update to a higher number if you can
+  --p-threads 1
 ```
-
-测序中，1线程计算35m，9线程用时15m。多线程是缩短时间，但使用机时长达3小时以上，总体效率下降明显。
 
 输出对象:
 
-- `sepp-refs-gg-13-8.qza`: Greengenes 13_8 版本99%相似性参考树骨架文件。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsepp-refs-gg-13-8.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/sepp-refs-gg-13-8.qza)
-- `tree_placements.qza`：插值法的树文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftree_placements.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/tree_placements.qza)
-- `tree.qza`：树文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftree.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/tree.qza)
+- `sepp-refs-gg-13-8.qza`: Greengenes 13_8 版本99%相似性参考树骨架文件。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsepp-refs-gg-13-8.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/sepp-refs-gg-13-8.qza)
+- `tree_placements.qza`：插值法的树文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftree_placements.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/tree_placements.qza)
+- `tree.qza`：树文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftree.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/tree.qza)
 
 ## Alpha稀疏和深度选择
 
@@ -319,8 +297,7 @@ Alpha Rarefaction and Selecting a Rarefaction Depth
 在每个采样深度，通常计算10个稀疏表以提供误差估计，尽管可以使用`--p-iterations`参数进行调整。我们可以通过指定`--m-metadata-file`参数的元数据文件来检查并查看alpha多样性和元数据之间是否存在关系。
 
 ```
-# 用时15s
-time qiime diversity alpha-rarefaction \
+qiime diversity alpha-rarefaction \
   --i-table ./dada2_table.qza \
   --m-metadata-file ./metadata.tsv \
   --o-visualization ./alpha_rarefaction_curves.qzv \
@@ -328,7 +305,7 @@ time qiime diversity alpha-rarefaction \
   --p-max-depth 4250
 ```
 
-- `alpha_rarefaction_curves.qzv`：alpha稀疏曲线。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Falpha_rarefaction_curves.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/alpha_rarefaction_curves.qzv)
+- `alpha_rarefaction_curves.qzv`：alpha稀疏曲线。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Falpha_rarefaction_curves.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/alpha_rarefaction_curves.qzv)
 
 可视化文件将显示两个图。上图将显示作为采样深度函数的α多样性（观察到的OTU或shannon）。这用于基于采样深度确定丰富度或均匀度是否已饱和。当您接近最大采样深度时，稀疏曲线应“平稳”。如果不这样做，特别是对于仅有多样性的度量，例如观察到的OTU或Faith的PD多样性，可能表明样本中的丰富度尚未完全饱和。
 
@@ -413,26 +390,26 @@ time qiime diversity core-metrics-phylogenetic \
 
 **输出对象**:
 
-- `core-metrics-results/faith_pd_vector.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Ffaith_pd_vector.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/faith_pd_vector.qza)
-- `core-metrics-results/unweighted_unifrac_distance_matrix.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/unweighted_unifrac_distance_matrix.qza)
-- `core-metrics-results/bray_curtis_pcoa_results.qza`:。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fbray_curtis_pcoa_results.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/bray_curtis_pcoa_results.qza)
-- `core-metrics-results/shannon_vector.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fshannon_vector.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/shannon_vector.qza)
-- `core-metrics-results/rarefied_table.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Frarefied_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/rarefied_table.qza)
-- `core-metrics-results/weighted_unifrac_distance_matrix.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/weighted_unifrac_distance_matrix.qza)
-- `core-metrics-results/jaccard_pcoa_results.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fjaccard_pcoa_results.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/jaccard_pcoa_results.qza)
-- `core-metrics-results/observed_otus_vector.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fobserved_otus_vector.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/observed_otus_vector.qza)
-- `core-metrics-results/weighted_unifrac_pcoa_results.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/weighted_unifrac_pcoa_results.qza)
-- `core-metrics-results/jaccard_distance_matrix.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fjaccard_distance_matrix.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/jaccard_distance_matrix.qza)
-- `core-metrics-results/evenness_vector.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fevenness_vector.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/evenness_vector.qza)
-- `core-metrics-results/bray_curtis_distance_matrix.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fbray_curtis_distance_matrix.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/bray_curtis_distance_matrix.qza)
-- `core-metrics-results/unweighted_unifrac_pcoa_results.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/unweighted_unifrac_pcoa_results.qza)
+- `core-metrics-results/faith_pd_vector.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Ffaith_pd_vector.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/faith_pd_vector.qza)
+- `core-metrics-results/unweighted_unifrac_distance_matrix.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/unweighted_unifrac_distance_matrix.qza)
+- `core-metrics-results/bray_curtis_pcoa_results.qza`:。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fbray_curtis_pcoa_results.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/bray_curtis_pcoa_results.qza)
+- `core-metrics-results/shannon_vector.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fshannon_vector.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/shannon_vector.qza)
+- `core-metrics-results/rarefied_table.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Frarefied_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/rarefied_table.qza)
+- `core-metrics-results/weighted_unifrac_distance_matrix.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted_unifrac_distance_matrix.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/weighted_unifrac_distance_matrix.qza)
+- `core-metrics-results/jaccard_pcoa_results.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fjaccard_pcoa_results.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/jaccard_pcoa_results.qza)
+- `core-metrics-results/observed_otus_vector.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fobserved_otus_vector.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/observed_otus_vector.qza)
+- `core-metrics-results/weighted_unifrac_pcoa_results.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/weighted_unifrac_pcoa_results.qza)
+- `core-metrics-results/jaccard_distance_matrix.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fjaccard_distance_matrix.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/jaccard_distance_matrix.qza)
+- `core-metrics-results/evenness_vector.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fevenness_vector.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/evenness_vector.qza)
+- `core-metrics-results/bray_curtis_distance_matrix.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fbray_curtis_distance_matrix.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/bray_curtis_distance_matrix.qza)
+- `core-metrics-results/unweighted_unifrac_pcoa_results.qza`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/unweighted_unifrac_pcoa_results.qza)
 
 **输出可视化**:
 
-- `core-metrics-results/unweighted_unifrac_emperor.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_unifrac_emperor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/unweighted_unifrac_emperor.qzv)
-- `core-metrics-results/jaccard_emperor.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fjaccard_emperor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/jaccard_emperor.qzv)
-- `core-metrics-results/bray_curtis_emperor.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fbray_curtis_emperor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/bray_curtis_emperor.qzv)
-- `core-metrics-results/weighted_unifrac_emperor.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted_unifrac_emperor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/weighted_unifrac_emperor.qzv)
+- `core-metrics-results/unweighted_unifrac_emperor.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_unifrac_emperor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/unweighted_unifrac_emperor.qzv)
+- `core-metrics-results/jaccard_emperor.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fjaccard_emperor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/jaccard_emperor.qzv)
+- `core-metrics-results/bray_curtis_emperor.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fbray_curtis_emperor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/bray_curtis_emperor.qzv)
+- `core-metrics-results/weighted_unifrac_emperor.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted_unifrac_emperor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/weighted_unifrac_emperor.qzv)
 
 > 问题：我们从哪里获得2000的参数值？ 我们为什么选择那个？
 
@@ -453,7 +430,7 @@ time qiime diversity alpha-group-significance \
 
 可视化结果:
 
-- `core-metrics-results/faiths_pd_statistics.qzv`: faiths_pd指数按元数据的统计可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Ffaiths_pd_statistics.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/faiths_pd_statistics.qzv)
+- `core-metrics-results/faiths_pd_statistics.qzv`: faiths_pd指数按元数据的统计可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Ffaiths_pd_statistics.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/faiths_pd_statistics.qzv)
 
 ```
 # 5s
@@ -465,7 +442,7 @@ time qiime diversity alpha-group-significance \
 
 可视化结果:
 
-- `core-metrics-results/evenness_statistics.qzv`: 均匀度指数按元数据的统计可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fevenness_statistics.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/evenness_statistics.qzv)
+- `core-metrics-results/evenness_statistics.qzv`: 均匀度指数按元数据的统计可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fevenness_statistics.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/evenness_statistics.qzv)
 
 问题：
 
@@ -490,7 +467,7 @@ time qiime longitudinal anova \
   --o-visualization ./core-metrics-results/faiths_pd_anova.qzv
 ```
 
-- `core-metrics-results/faiths_pd_anova.qzv`: faiths_pd指数按元数据分组交互计算的anova统计可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Ffaiths_pd_anova.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/faiths_pd_anova.qzv)
+- `core-metrics-results/faiths_pd_anova.qzv`: faiths_pd指数按元数据分组交互计算的anova统计可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Ffaiths_pd_anova.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/faiths_pd_anova.qzv)
 
 ### Beta多样性
 
@@ -508,15 +485,13 @@ Beta diversity
 让我们使用`beta-group-significance`命令来测试供体身份（我们定性地确定为PCoA空间中的主要分隔符）是否与加权和未加权UniFrac距离的显着差异相关联。
 
 ```
-# 6s
-time qiime diversity beta-group-significance \
+qiime diversity beta-group-significance \
   --i-distance-matrix core-metrics-results/unweighted_unifrac_distance_matrix.qza \
   --m-metadata-file metadata.tsv \
   --m-metadata-column donor \
   --o-visualization core-metrics-results/unweighted-unifrac-donor-significance.qzv
 
-# 5s
-time qiime diversity beta-group-significance \
+qiime diversity beta-group-significance \
   --i-distance-matrix core-metrics-results/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file metadata.tsv \
   --m-metadata-column donor \
@@ -525,22 +500,20 @@ time qiime diversity beta-group-significance \
 
 可视化结果:
 
-- `core-metrics-results/weighted-unifrac-donor-significance.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted-unifrac-donor-significance.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/weighted-unifrac-donor-significance.qzv)
-- `core-metrics-results/unweighted-unifrac-donor-significance.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted-unifrac-donor-significance.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/unweighted-unifrac-donor-significance.qzv)
+- `core-metrics-results/weighted-unifrac-donor-significance.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted-unifrac-donor-significance.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/weighted-unifrac-donor-significance.qzv)
+- `core-metrics-results/unweighted-unifrac-donor-significance.qzv`: 。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted-unifrac-donor-significance.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/unweighted-unifrac-donor-significance.qzv)
 
 我们还要检查小鼠所在的笼子与β多样性之间是否存在关系，因为“笼子效应”通常是一个需要考虑的重要技术效果。 由于我们有几个笼子，我们将使用`--p-pairwise`参数，让我们检查驱动差异的笼子之间是否存在个体差异。 这可能很有用，因为如果我们检查元数据，我们可能会发现笼子是由捐赠者嵌套的。
 
 ```
-# 9s
-time qiime diversity beta-group-significance \
+qiime diversity beta-group-significance \
   --i-distance-matrix core-metrics-results/unweighted_unifrac_distance_matrix.qza \
   --m-metadata-file metadata.tsv \
   --m-metadata-column cage_id \
   --o-visualization core-metrics-results/unweighted-unifrac-cage-significance.qzv \
   --p-pairwise
 
-# 9s
-time qiime diversity beta-group-significance \
+qiime diversity beta-group-significance \
   --i-distance-matrix core-metrics-results/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file metadata.tsv \
   --m-metadata-column cage_id \
@@ -550,8 +523,8 @@ time qiime diversity beta-group-significance \
 
 可视化结果:
 
-- `core-metrics-results/weighted-unifrac-cage-significance.qzv`: 按笼子统计有权重unifrac距离的显著性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted-unifrac-cage-significance.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/weighted-unifrac-cage-significance.qzv)
-- `core-metrics-results/unweighted-unifrac-cage-significance.qzv`:  按笼子统计无权重unifrac距离的显著性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted-unifrac-cage-significance.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/unweighted-unifrac-cage-significance.qzv)
+- `core-metrics-results/weighted-unifrac-cage-significance.qzv`: 按笼子统计有权重unifrac距离的显著性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Fweighted-unifrac-cage-significance.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/weighted-unifrac-cage-significance.qzv)
+- `core-metrics-results/unweighted-unifrac-cage-significance.qzv`:  按笼子统计无权重unifrac距离的显著性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted-unifrac-cage-significance.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/unweighted-unifrac-cage-significance.qzv)
 
 > 译者注：可以看到很多笼子间就有显著区别，这是一个小鼠实验中很常见的混淆因子，一定要严格注意，防止下错误结论。
 
@@ -580,7 +553,7 @@ time qiime diversity beta-group-significance \
 
 可视化结果:
 
-- `core-metrics-results/unweighted-unifrac-cage-significance_disp.qzv`: 按笼子统计无权重unifrac距离的显著性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted-unifrac-cage-significance_disp.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/unweighted-unifrac-cage-significance_disp.qzv)
+- `core-metrics-results/unweighted-unifrac-cage-significance_disp.qzv`: 按笼子统计无权重unifrac距离的显著性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted-unifrac-cage-significance_disp.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/unweighted-unifrac-cage-significance_disp.qzv)
 
 > 问题：任何一个笼子的方差都有显着差异吗？
 
@@ -597,7 +570,7 @@ time qiime diversity adonis \
 
 可视化结果:
 
-- `core-metrics-results/unweighted_adonis.qzv`: 供体和基因型交互条件统计无权重unifrac距离的显著性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_adonis.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/core-metrics-results/unweighted_adonis.qzv)
+- `core-metrics-results/unweighted_adonis.qzv`: 供体和基因型交互条件统计无权重unifrac距离的显著性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_adonis.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/core-metrics-results/unweighted_adonis.qzv)
 
 > 问题：
 > 1. 捐赠者有显著影响吗？
@@ -625,10 +598,10 @@ Taxonomic classification
 # 27M，61s
 wget -c \
   -O "gg-13-8-99-515-806-nb-classifier.qza" \
-  "https://data.qiime2.org/2020.2/common/gg-13-8-99-515-806-nb-classifier.qza"
+  "https://data.qiime2.org/2021.2/common/gg-13-8-99-515-806-nb-classifier.qza"
 ```
 
-值得注意的是，Naive Bayes分类器在针对扩增特定高变区数据训练时表现最佳。 您可以根据[训练分类器教程](https://docs.qiime2.org/2020.2/tutorials/feature-classifier/)，训练特定于数据集的分类器，或者从[QIIME 2资源页面](https://docs.qiime2.org/2020.2/data-resources/)下载其他数据集的分类器。 分类器可以重复用于一致版本的包，数据库和感兴趣的区域。
+值得注意的是，Naive Bayes分类器在针对扩增特定高变区数据训练时表现最佳。 您可以根据[训练分类器教程](https://docs.qiime2.org/2021.2/tutorials/feature-classifier/)，训练特定于数据集的分类器，或者从[QIIME 2资源页面](https://docs.qiime2.org/2021.2/data-resources/)下载其他数据集的分类器。 分类器可以重复用于一致版本的包，数据库和感兴趣的区域。
 
 ```
 # 59s
@@ -640,8 +613,8 @@ time qiime feature-classifier classify-sklearn \
 
 **输出对象**:
 
-- `taxonomy.qza`: 物种注释结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftaxonomy.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/taxonomy.qza)
-- `gg-13-8-99-515-806-nb-classifier.qza`: 物种注释结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fgg-13-8-99-515-806-nb-classifier.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/gg-13-8-99-515-806-nb-classifier.qza)
+- `taxonomy.qza`: 物种注释结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftaxonomy.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/taxonomy.qza)
+- `gg-13-8-99-515-806-nb-classifier.qza`: 物种注释结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fgg-13-8-99-515-806-nb-classifier.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/gg-13-8-99-515-806-nb-classifier.qza)
 
 接下来可视化物种注释为表，方便查看。
 
@@ -653,7 +626,7 @@ qiime metadata tabulate \
 
 **输出可视化**:
 
-- `taxonomy.qzv`: 物种注释表，包括界、门、纲、目、科、属和种的注释。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftaxonomy.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/taxonomy.qzv)
+- `taxonomy.qzv`: 物种注释表，包括界、门、纲、目、科、属和种的注释。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftaxonomy.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/taxonomy.qzv)
 
 我们还将代表性序列（`FeatureData [Sequence]`）制成表格。 对代表性序列进行制表将允许我们查看分配给标识符的序列，并以NCBI数据库的形式交互式地对序列进行比对查询。
 
@@ -665,7 +638,7 @@ qiime feature-table tabulate-seqs \
 
 **输出可视化**:
 
-- `dada2_rep_set.qzv`: 代表序列，特征的序列，可blast到NCBI人工挑选注释。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_rep_set.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/dada2_rep_set.qzv)
+- `dada2_rep_set.qzv`: 代表序列，特征的序列，可blast到NCBI人工挑选注释。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fdada2_rep_set.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/dada2_rep_set.qzv)
 
 > 问题
 > 1. 找到该特征，`07f183edd4e4d8aef1dcb2ab24dd7745`。这个序列的分类学注释是什么？这项任务的置信度是多少？
@@ -690,7 +663,7 @@ Taxonomy barchart
 
 由于我们发现该数据集的多样性存在差异，我们可能需要查看这些样本的分类组成。 为了使其可视化，我们将在多样性数据集中构建我们分析的样本的分类条形图。
 
-在此之前，我们将首先筛选掉比我们的稀疏阈值（2000）更少特征的任何样本。 我们可以使用`q2-feature-table`插件和`filter-samples`方法过滤样本。 这让我们可以根据各种标准过滤我们的表格，例如计数（频率，`--p-min-frequency`和`--p-max-frequency`），特征数量（`--p-min-features`和 `--p-max-feature`）或样本元数据（`--p-where`）。 有关更多详细信息和示例，请参阅[过滤教程](https://docs.qiime2.org/2020.2/tutorials/filtering/)。
+在此之前，我们将首先筛选掉比我们的稀疏阈值（2000）更少特征的任何样本。 我们可以使用`q2-feature-table`插件和`filter-samples`方法过滤样本。 这让我们可以根据各种标准过滤我们的表格，例如计数（频率，`--p-min-frequency`和`--p-max-frequency`），特征数量（`--p-min-features`和 `--p-max-feature`）或样本元数据（`--p-where`）。 有关更多详细信息和示例，请参阅[过滤教程](https://docs.qiime2.org/2021.2/tutorials/filtering/)。
 
 对于此示例，我们需要过滤掉比稀疏深度更少的序列的样本。
 
@@ -703,7 +676,7 @@ time qiime feature-table filter-samples \
 
 **输出对象**：
 
-- `table_2k.qza`: 按2000条序列过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftable_2k.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/table_2k.qza)
+- `table_2k.qza`: 按2000条序列过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftable_2k.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/table_2k.qza)
 
 现在，让我们使用过滤表在每个样本中构建分类法的交互式条形图。
 
@@ -717,7 +690,7 @@ time qiime taxa barplot \
 
 **输出对象**：
 
-- `taxa_barplot.qzv`: 按2000条序列过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftaxa_barplot.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/taxa_barplot.qzv)
+- `taxa_barplot.qzv`: 按2000条序列过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftaxa_barplot.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/taxa_barplot.qzv)
 
 > 问题：
 > 
@@ -744,7 +717,7 @@ time qiime feature-table filter-features \
 
 **输出对象**：
 
-- `table_2k_abund.qza`: 按2000条序列过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftable_2k_abund.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/table_2k_abund.qza)
+- `table_2k_abund.qza`: 按2000条序列过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftable_2k_abund.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/table_2k_abund.qza)
 
 ANCOM从根本上对`FeatureTable[Frequency]`进行操作，其中包含每个样本中的特征频率。 但是，ANCOM不能容忍零（因为组合方法通常使用对数变换或比率，你不能求对数或除以零）。 要从表中删除零，我们将一个伪计数添加到`FeatureTable [Frequency]`对象，在其位置创建一个`FeatureTable[Composition]`。
 
@@ -757,7 +730,7 @@ time qiime composition add-pseudocount \
 
 **输出对象**：
 
-- `table2k_abund_comp.qza`: 按2000条序列过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftable2k_abund_comp.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/table2k_abund_comp.qza)
+- `table2k_abund_comp.qza`: 按2000条序列过滤的特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ftable2k_abund_comp.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/table2k_abund_comp.qza)
 
 让我们使用ANCOM检查基于其供体的小鼠是否存在差异，然后检查它们的遗传背景。 该检验将计算采用FDR校正的p <0.05显著不同的ASV对之间的比率数。
 
@@ -779,8 +752,8 @@ time qiime composition ancom \
 
 **输出可视化**：
 
-- `ancom_genotype.qzv`: 按基因型差异分析的结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fancom_genotype.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/ancom_genotype.qzv)
-- `ancom_donor.qzv`: 按基因型差异分析的结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fancom_donor.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/ancom_donor.qzv)
+- `ancom_genotype.qzv`: 按基因型差异分析的结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fancom_genotype.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/ancom_genotype.qzv)
+- `ancom_donor.qzv`: 按基因型差异分析的结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fancom_donor.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/ancom_donor.qzv)
 
 当您打开ANCOM可视化时，您将在顶部看到一个火山图，它将ANCOM W统计信息与组的CLR（中心对数变换）相关联。 **W统计量是每个单独分类单元已经过的ANCOM子假设的数量，表明该分类单元的相对丰度与W其他分类群的相对丰度的比率被检测到显著不**同（通常FDR调整后的p <0.05）。因为ANCOM中的差异丰度是基于测试之间的比率，所以它不会产生传统的p值。
 
@@ -821,23 +794,23 @@ https://v.qq.com/x/page/n3007ry9psh.html
 # V4区代表序列，8.9M, 23s
 wget -c \
   -O "ref_seqs_v4.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/pd-mice/ref_seqs_v4.qza"
+  "https://data.qiime2.org/2021.2/tutorials/pd-mice/ref_seqs_v4.qza"
 
 # 对应物种注释，2.5M, 7s
 wget -c \
   -O "ref_tax.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/pd-mice/ref_tax.qza"
+  "https://data.qiime2.org/2021.2/tutorials/pd-mice/ref_tax.qza"
 
 # 肠道菌群数据表，224k, 1s
 wget -c \
   -O "animal_distal_gut.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/pd-mice/animal_distal_gut.qza"
+  "https://data.qiime2.org/2021.2/tutorials/pd-mice/animal_distal_gut.qza"
 ```
 
 接下来重新训练分类器，建立考虑已知菌群丰度的分类器：
 
 ```
-# 7m 37s
+# 9m
 time qiime feature-classifier fit-classifier-naive-bayes \
   --i-reference-reads ./ref_seqs_v4.qza \
   --i-reference-taxonomy ./ref_tax.qza \
@@ -847,10 +820,10 @@ time qiime feature-classifier fit-classifier-naive-bayes \
 
 **输出对象**：
 
-- `ref_seqs_v4.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fref_seqs_v4.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/ref_seqs_v4.qza)
-- `animal_distal_gut.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fanimal_distal_gut.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/animal_distal_gut.qza)
-- `bespoke.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fbespoke.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/bespoke.qza)
-- `ref_tax.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fref_tax.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/ref_tax.qza)
+- `ref_seqs_v4.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fref_seqs_v4.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/ref_seqs_v4.qza)
+- `animal_distal_gut.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fanimal_distal_gut.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/animal_distal_gut.qza)
+- `bespoke.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fbespoke.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/bespoke.qza)
+- `ref_tax.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fref_tax.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/ref_tax.qza)
 
 你可以像使用标准分类器的方法使用新的分类器。
 
@@ -869,10 +842,10 @@ time qiime metadata tabulate \
 
 **输出对象**：  
 
-- `bespoke_taxonomy.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fbespoke_taxonomy.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/bespoke_taxonomy.qza)
+- `bespoke_taxonomy.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fbespoke_taxonomy.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/bespoke_taxonomy.qza)
 
 **输出可视化结果**：  
-- `bespoke_taxonomy.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fbespoke_taxonomy.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/bespoke_taxonomy.qzv)
+- `bespoke_taxonomy.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fbespoke_taxonomy.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/bespoke_taxonomy.qzv)
 
 **问题**：打开老的可视化工具`taxonomy.qzv`，然后与`bespoke_taxonomy.qzv`比较看看有何差异。⑴ 你可以用“ovatus”搜索，能在新的分类学中找到这个ASV吗？这个在原来分类中并没有出现。⑵ 重新查阅`ancom_donor.qzv`可视化结果，你能发现这个ASV吗？
 
@@ -881,22 +854,19 @@ time qiime metadata tabulate \
 为了便于比较，我们将运行这个流程二次，一次用原来的分类信息，一次用新的分类注释信息。首先用原来的分类信息：
 
 ```
-# 4s
-time qiime taxa collapse \
+qiime taxa collapse \
   --i-table ./table_2k.qza \
   --i-taxonomy ./taxonomy.qza \
   --o-collapsed-table ./uniform_table.qza \
   --p-level 7 # means that we group at species level
 
-# 5s
-time qiime feature-table filter-features \
+qiime feature-table filter-features \
   --i-table ./uniform_table.qza \
   --p-min-frequency 50 \
   --p-min-samples 4 \
   --o-filtered-table ./filtered_uniform_table.qza
 
-# 5s
-time qiime composition add-pseudocount \
+qiime composition add-pseudocount \
   --i-table ./filtered_uniform_table.qza \
   --o-composition-table ./cfu_table.qza
 
@@ -910,11 +880,11 @@ time qiime composition ancom \
 
 **输出对象**:
 
-- `uniform_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Funiform_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/uniform_table.qza)
-- `cfu_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcfu_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/cfu_table.qza)
-- `filtered_uniform_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffiltered_uniform_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/filtered_uniform_table.qza)
+- `uniform_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Funiform_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/uniform_table.qza)
+- `cfu_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcfu_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/cfu_table.qza)
+- `filtered_uniform_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffiltered_uniform_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/filtered_uniform_table.qza)
 
-**输出可视化结果**：ancom_donor_uniform.qzv: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fancom_donor_uniform.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/ancom_donor_uniform.qzv)
+**输出可视化结果**：ancom_donor_uniform.qzv: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fancom_donor_uniform.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/ancom_donor_uniform.qzv)
 
 下面用新的分类学再来运行一次：
 
@@ -944,12 +914,12 @@ qiime composition ancom \
 
 **输出对象**：
 
-- `bespoke_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fbespoke_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/bespoke_table.qza)
-- `cfb_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcfb_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/cfb_table.qza)
-- `filtered_bespoke_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffiltered_bespoke_table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/filtered_bespoke_table.qza)
+- `bespoke_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fbespoke_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/bespoke_table.qza)
+- `cfb_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcfb_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/cfb_table.qza)
+- `filtered_bespoke_table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffiltered_bespoke_table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/filtered_bespoke_table.qza)
 
 **输出可视化结果**：  
-- `ancom_donor_bespoke.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fancom_donor_bespoke.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/ancom_donor_bespoke.qzv)
+- `ancom_donor_bespoke.qzv`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fancom_donor_bespoke.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/ancom_donor_bespoke.qzv)
 
 **问题**：比较最终的ANCOM可视化结果，其实他们是很像的，你觉得哪个更好呢？问题⑴：在ANCOM结果中出现的Bacteroides ovatus是来自于原来的分类法吗？问题⑵：B. ovatus有没有出现在新的ANCOM结果中？问题⑶：这是为什么？
 
@@ -957,7 +927,7 @@ qiime composition ancom \
 
 **Longitudinal analysis**
 
-该研究包括纵向分量;在粪便移植后7,14,21和49天收集每只小鼠的样品。我们可以使用`q2-longitudinal`插件来探索小鼠遗传背景影响每只小鼠微生物群落变化的假设。对于这种纵向分析，我们将重点关注beta多样性。婴儿的α多样性变化很大，但在短时间内成人常常稳定。我们在相对较短的时间内处理成人粪便群落，并且α多样性随时间没有差异。[纵向分析教程](https://docs.qiime2.org/2020.2/tutorials/longitudinal/)是探索微生物组样本纵向分析的极好资源。
+该研究包括纵向分量;在粪便移植后7,14,21和49天收集每只小鼠的样品。我们可以使用`q2-longitudinal`插件来探索小鼠遗传背景影响每只小鼠微生物群落变化的假设。对于这种纵向分析，我们将重点关注beta多样性。婴儿的α多样性变化很大，但在短时间内成人常常稳定。我们在相对较短的时间内处理成人粪便群落，并且α多样性随时间没有差异。[纵向分析教程](https://docs.qiime2.org/2021.2/tutorials/longitudinal/)是探索微生物组样本纵向分析的极好资源。
 
 ### 基于PCoA的分析
 
@@ -967,7 +937,7 @@ PCoA-based analyses
 
 **问题**
 
-1. 打开未加权的UniFrac emperor 图[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_unifrac_emperor.qzv)，并设置样本按小鼠ID(`mouse_id`)着色。单击“动画Animations”选项卡并使用`day_post_transplant`作为渐变(Gradient)和mouse_id作为轨迹(Trajectory)进行动画处理。您是否观察到基于PCoA的任何明确的时间趋势？(打开weighted_unifrac_emperor.qzv文件，自己操作一下，很有意思)
+1. 打开未加权的UniFrac emperor 图[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fcore-metrics-results%2Funweighted_unifrac_emperor.qzv)，并设置样本按小鼠ID(`mouse_id`)着色。单击“动画Animations”选项卡并使用`day_post_transplant`作为渐变(Gradient)和mouse_id作为轨迹(Trajectory)进行动画处理。您是否观察到基于PCoA的任何明确的时间趋势？(打开weighted_unifrac_emperor.qzv文件，自己操作一下，很有意思)
 2. 如果你通过`day_post_transplant`上色会发生什么？您是否看到了当天的差异？提示：尝试将色彩映射更改为像viridis一样的连续色彩映射。
 
 
@@ -989,7 +959,7 @@ time qiime longitudinal volatility \
 
 **输出可视化**：
 
-- `pc_vol.qzv`: 按主坐标轴值和时间的波动图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fpc_vol.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/pc_vol.qzv)
+- `pc_vol.qzv`: 按主坐标轴值和时间的波动图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fpc_vol.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/pc_vol.qzv)
 
 > 问题：使用右侧控件，查看PC 1,2和3中笼子的变化。沿着每个轴，您看到了什么样的图案？
 
@@ -1001,7 +971,7 @@ Distance-based analysis
 
 现在，让我们试着直接查看样本之间的成对距离。在这里，我们将检验这样的**假设，基因型会影响从每只小鼠收集的样本至第一个样本（移植后7天）的距离变化幅度**。我们**假设，鉴于微生物群落的动态变化率，可能会看到群落随着时间的推移而发生变化。我们将回答这些变化是否与宿主基因型相关**。
 
-我们将通过观察每只小鼠的微生物群落从移植后7天的变化开始这一分析。我们使用`baseline`参数指定一个静态时间点，与之比较所有其他时间点; 如果我们从命令中删除此参数，我们会查看每个时间点之间每个人的变化率。有关详细信息，请参阅[纵向分析教程](https://docs.qiime2.org/2020.2/tutorials/longitudinal/)。
+我们将通过观察每只小鼠的微生物群落从移植后7天的变化开始这一分析。我们使用`baseline`参数指定一个静态时间点，与之比较所有其他时间点; 如果我们从命令中删除此参数，我们会查看每个时间点之间每个人的变化率。有关详细信息，请参阅[纵向分析教程](https://docs.qiime2.org/2021.2/tutorials/longitudinal/)。
 
 ```
 # 纵向分析，5s
@@ -1016,7 +986,7 @@ time qiime longitudinal first-distances \
 
 **输出对象**：
 
-- `from_first_unifrac.qza`: 基于无权重unifrac距离的时间分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffrom_first_unifrac.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/from_first_unifrac.qza)
+- `from_first_unifrac.qza`: 基于无权重unifrac距离的时间分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffrom_first_unifrac.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/from_first_unifrac.qza)
 
 我们可以再次使用波动率分析来根据距离可视化β多样性的变化。
 
@@ -1034,7 +1004,7 @@ time qiime longitudinal volatility \
 
 **输出可视化**：
 
-- `from_first_unifrac_vol.qzv`: 基于无权重unifrac距离的时间分析图表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffrom_first_unifrac_vol.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/from_first_unifrac_vol.qzv)
+- `from_first_unifrac_vol.qzv`: 基于无权重unifrac距离的时间分析图表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffrom_first_unifrac_vol.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/from_first_unifrac_vol.qzv)
 
 > 问题：根据波动率图，一个捐赠者的变化是否会随着时间的推移而变化？基因型怎么样？笼子怎么变？
 > 答：切换不同分组方式`donor_status`、`genotype`和`cage_id`查看，你会看到三种不同的变化趋势，自己总结一下吧。
@@ -1063,7 +1033,7 @@ time qiime longitudinal linear-mixed-effects \
 
 **输出可视化**：
 
-- `from_first_unifrac_lme.qzv`: 基于无权重unifrac距离的交互时间分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffrom_first_unifrac_lme.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/from_first_unifrac_lme.qzv)
+- `from_first_unifrac_lme.qzv`: 基于无权重unifrac距离的交互时间分析。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Ffrom_first_unifrac_lme.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/from_first_unifrac_lme.qzv)
 
 现在，让我们看一下模型的结果。
 
@@ -1083,7 +1053,7 @@ time qiime longitudinal linear-mixed-effects \
 
 > 注意
 > 
-> 重要的是，LME模型还允许我们区分两种类型的独立变量：**固定效应（例如，实验处理）和随机效应（例如，在实验中不能控制的生物因子）**。默认情况下，`q2-longitudinal`中的线性混合效应`linear-mixed-effects`动作使用`individual_id_column`作为随机效应，因为我们可以预期各个主体之间的生物差异将影响我们正在测试的因变量的基线值(baseline values)。变化率-斜率——是另一种个体间效应(The rate of change — slope — is another inter-individual effect)，我们通常可能希望将其视为纵向实验中的随机效应。有关LME测试和效果类型的更多详细信息和讨论，请参阅[纵向分析教程](https://docs.qiime2.org/2020.2/tutorials/longitudinal/)。
+> 重要的是，LME模型还允许我们区分两种类型的独立变量：**固定效应（例如，实验处理）和随机效应（例如，在实验中不能控制的生物因子）**。默认情况下，`q2-longitudinal`中的线性混合效应`linear-mixed-effects`动作使用`individual_id_column`作为随机效应，因为我们可以预期各个主体之间的生物差异将影响我们正在测试的因变量的基线值(baseline values)。变化率-斜率——是另一种个体间效应(The rate of change — slope — is another inter-individual effect)，我们通常可能希望将其视为纵向实验中的随机效应。有关LME测试和效果类型的更多详细信息和讨论，请参阅[纵向分析教程](https://docs.qiime2.org/2021.2/tutorials/longitudinal/)。
 
 ## 用于预测样本特征的机器学习分类器
 
@@ -1104,15 +1074,16 @@ time qiime sample-classifier classify-samples \
 
 **输出对象**：
 
-- `sample-classifier-results/probabilities.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fprobabilities.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/sample-classifier-results/probabilities.qza)
-- `sample-classifier-results/sample_estimator.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/sample-classifier-results/sample_estimator.qza)
-- `sample-classifier-results/feature_importance.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/sample-classifier-results/feature_importance.qza)
-- `sample-classifier-results/predictions.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fpredictions.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/sample-classifier-results/predictions.qza)
+- `sample-classifier-results/probabilities.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fprobabilities.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/sample-classifier-results/probabilities.qza)
+- `sample-classifier-results/sample_estimator.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/sample-classifier-results/sample_estimator.qza)
+- `sample-classifier-results/feature_importance.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/sample-classifier-results/feature_importance.qza)
+- `sample-classifier-results/predictions.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fpredictions.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/sample-classifier-results/predictions.qza)
 
 **输出可视化**：
 
-- `sample-classifier-results/accuracy_results.qzv`: 模型准确度评估混淆矩阵和ROC曲线。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/sample-classifier-results/accuracy_results.qzv)
-- `sample-classifier-results/model_summary.qzv`: 模型摘要。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/sample-classifier-results/model_summary.qzv)
+- `sample-classifier-results/heatmap.qzv`：热图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fheatmap.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/sample-classifier-results/heatmap.qzv)
+- `sample-classifier-results/accuracy_results.qzv`: 模型准确度评估混淆矩阵和ROC曲线。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/sample-classifier-results/accuracy_results.qzv)
+- `sample-classifier-results/model_summary.qzv`: 模型摘要。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/sample-classifier-results/model_summary.qzv)
 
 此流程生成许多输出对象和可视化。您可以在示例分类器教程中阅读有关这些内容的更多信息，但现在让我们只关注`./sample-classifier-results/accuracy_results.qzv`。此可视化通过[`混淆矩阵(confusion matrix)`](https://en.wikipedia.org/wiki/Confusion_matrix)和附带的准确度分数表告诉您样本分类器的执行情况。这会告诉您每个样本类型分类到每个样本类的频率，包括正确的类标签。整体错误率也在下表中报告。
 
@@ -1146,8 +1117,6 @@ time qiime sample-classifier classify-samples \
 
 在这里，我们将生成一个热图，显示每个基因型和供体组中100个最重要的ASV的平均丰度。
 
-注：此处的参数有更新，`metadata-file`全变为`sample-metadata-file`。因为metadata还有feature-metadata。
-
 ```
 # 25s
 time qiime sample-classifier heatmap \
@@ -1163,11 +1132,9 @@ time qiime sample-classifier heatmap \
 
 **输出对象**：
 
-- `sample-classifier-results/probabilities.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Ffiltered-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/sample-classifier-results/filtered-table.qza)
+- `sample-classifier-results/filtered-table.qza`: [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Ffiltered-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/pd-mice/sample-classifier-results/filtered-table.qza)
 
-**输出可视化**：
 
-- `sample-classifier-results/heatmap.qzv`: 样本按组均值取log10对数的特征热图。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fpd-mice%2Fsample-classifier-results%2Fheatmap.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/pd-mice/sample-classifier-results/heatmap.qzv)
 
 > 问题：哪些特征可以区分基因型genotypes呢？捐助者呢donors？ 哪些ASV是否特定于单个样品组？
 
@@ -1192,21 +1159,20 @@ Synthesis
 
 💩🐁
 
+## 译者简介
+
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
+
 
 ## Reference
 
-https://docs.qiime2.org/2020.2
+https://docs.qiime2.org/2021.2
 
 Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 
 Timothy R. Sampson, Justine W. Debelius, Taren Thron, Stefan Janssen, Gauri G. Shastri, Zehra Esra Ilhan, Collin Challis, Catherine E. Schretter, Sandra Rocha, Viviana Gradinaru, Marie-Francoise Chesselet, Ali Keshavarzian, Kathleen M. Shannon, Rosa Krajmalnik-Brown, Pernilla Wittung-Stafshede, Rob Knight & Sarkis K. Mazmanian. Gut Microbiota Regulate Motor Deficits and Neuroinflammation in a Model of Parkinson's Disease. ***Cell*** 167, 1469-1480.e1412, doi:10.1016/j.cell.2016.11.018 (2016).
 
 Nearing JT, Douglas GM, Comeau AM, Langille MGI. 2018. Denoising the Denoisers: an independent evaluation of microbiome sequence error-correction approaches. ***PeerJ*** 6:e5364 https://doi.org/10.7717/peerj.5364
-
-
-## 译者简介
-
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为宏基因组数据分析和植物微生物组，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20+篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1200万+。
 
 
 ## 猜你喜欢

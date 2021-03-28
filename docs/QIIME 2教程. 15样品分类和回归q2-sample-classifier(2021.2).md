@@ -1,60 +1,24 @@
 [TOC]
 
-# 前情提要
-
-以下是前面几节的微信推送文章：
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [7帕金森小鼠教程Parkinson's Mouse](https://mp.weixin.qq.com/s/cN1sfcWFME7S4OJy4VIREg)，[Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-- [8差异丰度分析gneiss](https://mp.weixin.qq.com/s/wx9dr5e2B_YyqTdPJ7dVsQ)
-- [9数据导入Importing data](https://mp.weixin.qq.com/s/u0k38x4lAUaghua2FDD1mQ)
-- [10数据导出Exporting data](https://mp.weixin.qq.com/s/pDxDsm8vabpe9KtcLRYWxg)
-- [11元数据Metadata](https://mp.weixin.qq.com/s/Q-YTeXH84lgBbRwuzc1bsg)
-- [12数据筛选Filtering data](https://mp.weixin.qq.com/s/zk-pXJs4GNwb1AOBPzCaHA)
-- [13训练特征分类器Training feature classifiers](https://mp.weixin.qq.com/s/jTRUYgacH5WszsHJVbbh4g)
-- [14数据评估和质控Evaluating and controlling](https://mp.weixin.qq.com/s/1b3Hj23bKWfTkHKAPNmCBQ)
-
 # 预测样本元数据`q2-sample-classifier`
 
 **Predicting sample metadata values with q2-sample-classifier**
 
-https://docs.qiime2.org/2020.2/tutorials/sample-classifier/
+https://docs.qiime2.org/2021.2/tutorials/sample-classifier/
 
-> 注：[`q2-sample-classifier`参考文档中提供了通过Python API和命令行界面使用所有插件操作的文档](https://docs.qiime2.org/2020.2/plugins/available/sample-classifier/)。最好按本教程顺序学习，想直接学习本章，至少完成本系列[《1简介和安装》](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)和[《4人体各部位微生物组分析Moving Pictures》](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)。
+> 注：[`q2-sample-classifier`参考文档中提供了通过Python API和命令行界面使用所有插件操作的文档](https://docs.qiime2.org/2021.2/plugins/available/sample-classifier/)。 **此实例需要一些基础知识，要求完成本系列文章前两篇内容：[《1简介和安装》](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)和[《4人体各部位微生物组分析》](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)。**
 
 > 警告：与任何统计方法一样，**此插件中描述的操作需要足够的样本量才能获得有意义的结果。根据经验，[至少应提供50个样品(生物学重复而非技术重复)](http://scikit-learn.org/stable/tutorial/machine_learning_map/index.html)**。**用作分类器目标的分类元数据列的每个唯一值至少应具有10个样本，用作回归器目标的连续元数据列不应包含许多异常值或严重不均匀的分布**。较小的样本量将导致不准确的模型，并可能导致错误。
 
-本教程将演示如何使用`q2-sample-classifier`预测样本元数据值。监督学习方法基于样本数据（如微生物群组成）可预测样本属性值（如元数据值）。预测目标可以是离散样本类（分类问题）或连续值（回归问题）。任何其他数据都可用作预测特征，但就`q2-sample-classifier`而言，这通常是微生物序列变异(ASV)、可操作分类单位（OTU）或分类组成数据。但是，功能表中包含的任何功能都可以使用——同样适用于非微生物数据，只需将[观测值/特征表转换为biom格式](http://biom-format.org/documentation/biom_conversion.html)，并将[特征表数据导入QIIME 2](https://docs.qiime2.org/2020.2/tutorials/importing/)。
+本教程将演示如何使用`q2-sample-classifier`预测样本元数据值。监督学习方法基于样本数据（如微生物群组成）可预测样本属性值（如元数据值）。预测目标可以是离散样本类（分类问题）或连续值（回归问题）。任何其他数据都可用作预测特征，但就`q2-sample-classifier`而言，这通常是微生物序列变异(ASV)、可操作分类单位（OTU）或分类组成数据。但是，功能表中包含的任何功能都可以使用——同样适用于非微生物数据，只需将[观测值/特征表转换为biom格式](http://biom-format.org/documentation/biom_conversion.html)，并将[特征表数据导入QIIME 2](https://docs.qiime2.org/2021.2/tutorials/importing/)。
 
 
 **启动工作环境并创建工作目录**
 
 ```
-# 定义工作目录变量，方便以后多次使用
-wd=~/github/QIIME2ChineseManual/2020.2
-mkdir -p $wd
-# 进入工作目录，是不是很简介，这样无论你在什么位置就可以快速回到项目文件夹
-cd $wd
-
-# 方法1. 进入QIIME 2 conda工作环境
-conda activate qiime2-2020.2
-# 这时我们的命令行前面出现 (qiime2-2020.2) 表示成功进入工作环境
-
-# 方法2. conda版本较老用户，使用source进入QIIME 2
-source activate qiime2-2020.2
-
-# 方法3. 如果是docker安装的请运行如下命令，默认加载当前目录至/data目录
-docker run --rm -v $(pwd):/data --name=qiime -it  qiime2/core:2020.2
-
 # 建立工作目录
-mkdir -p sample-classifier-tutorial
-cd sample-classifier-tutorial
+mkdir -p sample-classifier
+cd sample-classifier
 ```
 
 ## 预测样本分类
@@ -64,15 +28,10 @@ cd sample-classifier-tutorial
 监督学习分类器通过学习已知分类训练样本的组成，预测未知分类样本的分类元数据类别。例如，我们可以使用分类器根据粪便微生物组成诊断或预测疾病易感性，或者根据样本中检测到的序列变异、微生物类群或代谢物预测样本类型。在本教程中，我们将使用[《4人体各部位微生物组分析Moving Pictures》](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)的数据来训练一个分类器，该分类器预测收集样本的身体部位(Body Sites)。使用以下链接下载功能表和示例元数据：
 
 ```
-wget \
-  -O "moving-pictures-sample-metadata.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/moving-pictures/sample_metadata.tsv"
 # 下载不了从之前的文件夹中复制
-cp ../qiime2-moving-pictures-tutorial/sample-metadata.tsv moving-pictures-sample-metadata.tsv
+cp ../moving-pictures/sample-metadata.tsv moving-pictures-sample-metadata.tsv
 
-wget -c \
-  -O "moving-pictures-table.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/sample-classifier/moving-pictures-table.qza"
+wget -c https://data.qiime2.org/2021.2/tutorials/sample-classifier/moving-pictures-table.qza
 ```
 
 接下来，我们将训练和测试一个分类器，它根据样本的微生物组成预测样本来源于哪个身体部位。我们将使用`classify-samples`流程来完成此操作，该流程中包括执行一系列步骤：
@@ -86,8 +45,7 @@ wget -c \
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.14.01.png)
 
 ```
-# 1m
-time qiime sample-classifier classify-samples \
+qiime sample-classifier classify-samples \
   --i-table moving-pictures-table.qza \
   --m-metadata-file moving-pictures-sample-metadata.tsv \
   --m-metadata-column body-site \
@@ -101,21 +59,21 @@ time qiime sample-classifier classify-samples \
 
 **输出对象:**
 
-- `moving-pictures-table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-table.qza)
-- `moving-pictures-classifier/probabilities.qza`：概率。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fprobabilities.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/probabilities.qza)
-- `moving-pictures-classifier/sample_estimator.qza`: 模型。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/sample_estimator.qza)
-- `moving-pictures-classifier/feature_importance.qza`: 重要性。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/feature_importance.qza)
-- `moving-pictures-classifier/predictions.qza`: 预测结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fpredictions.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/predictions.qza)
+- `moving-pictures-table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-table.qza)
+- `moving-pictures-classifier/probabilities.qza`：概率。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fprobabilities.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/probabilities.qza)
+- `moving-pictures-classifier/sample_estimator.qza`: 模型。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/sample_estimator.qza)
+- `moving-pictures-classifier/feature_importance.qza`: 重要性。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/feature_importance.qza)
+- `moving-pictures-classifier/predictions.qza`: 预测结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fpredictions.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/predictions.qza)
 
 **输出可视化:**
 
-- `moving-pictures-classifier/accuracy_results.qzv`: 准确率评估。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/accuracy_results.qzv)
+- `moving-pictures-classifier/accuracy_results.qzv`: 准确率评估。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/accuracy_results.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.14.02.jpg)
 
 **图1.混淆矩阵(confusion matrix)** 热图显示分类结果，即各组预测的结果。可观察预测准确和错误的比例和类别。热图下面有对应数值的表。
 
-- `moving-pictures-classifier/model_summary.qzv`: 模型摘要。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/model_summary.qzv)
+- `moving-pictures-classifier/model_summary.qzv`: 模型摘要。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/model_summary.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.14.03.jpg)
 
@@ -135,7 +93,7 @@ qiime metadata tabulate \
 
 输出对象:
 
-- `moving-pictures-classifier/predictions.qzv`: 。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fpredictions.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/predictions.qzv)
+- `moving-pictures-classifier/predictions.qzv`: 。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fpredictions.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/predictions.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.14.04.jpg)
 **图3. 每个样品的预测结果**
@@ -150,10 +108,10 @@ qiime metadata tabulate \
 
 输出对象:
 
-- `moving-pictures-classifier/probabilities.qzv`:概率表 。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fprobabilities.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/probabilities.qzv)
+- `moving-pictures-classifier/probabilities.qzv`:概率表 。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fprobabilities.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/probabilities.qzv)
 
 
-监督学习方法的另一个真正有用的输出是选择的特征（feature selection），即它们报告哪些特征（如ASV或物种）最具预测性能。所有特征及其相对重要性（或特征权重或模型系数，取决于使用的学习模型）的列表将在`feature_importance.qza`中报告。具有更高重要性分数的特征对于区分类别更有用。特征重要性数值由使用的[`scikit-learn estimators`估计量直接分配；有关单个估计量及其重要性分数的更多详细信息，请参阅`scikit-learn`文档](http://scikit-learn.org/stable/supervised_learning.html)。请注意，一些估计量（尤其是`K-nearest neighbors models`）没有报告特征重要性得分，因此如果您使用这样的估计量，这个输出将毫无意义。功能导入属于语义类型`FeatureData[Importance]`，可以解释为（功能）元数据，因此我们可以使用`metadata tabulate`查看这些功能重要性（和/或[与其他功能元数据合并](https://docs.qiime2.org/2020.2/tutorials/metadata/#exploring-feature-metadata)）：
+监督学习方法的另一个真正有用的输出是选择的特征（feature selection），即它们报告哪些特征（如ASV或物种）最具预测性能。所有特征及其相对重要性（或特征权重或模型系数，取决于使用的学习模型）的列表将在`feature_importance.qza`中报告。具有更高重要性分数的特征对于区分类别更有用。特征重要性数值由使用的[`scikit-learn estimators`估计量直接分配；有关单个估计量及其重要性分数的更多详细信息，请参阅`scikit-learn`文档](http://scikit-learn.org/stable/supervised_learning.html)。请注意，一些估计量（尤其是`K-nearest neighbors models`）没有报告特征重要性得分，因此如果您使用这样的估计量，这个输出将毫无意义。功能导入属于语义类型`FeatureData[Importance]`，可以解释为（功能）元数据，因此我们可以使用`metadata tabulate`查看这些功能重要性（和/或[与其他功能元数据合并](https://docs.qiime2.org/2021.2/tutorials/metadata/#exploring-feature-metadata)）：
 
 
 ```
@@ -164,7 +122,7 @@ qiime metadata tabulate \
 
 输出对象:
 
-- `moving-pictures-classifier/feature_importance.qzv`: 重要性/贡献度 。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Ffeature_importance.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/feature_importance.qzv)
+- `moving-pictures-classifier/feature_importance.qzv`: 重要性/贡献度 。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Ffeature_importance.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/feature_importance.qzv)
 
 
 查看每个特征的`importance`
@@ -185,12 +143,12 @@ qiime feature-table filter-features \
 
 输出对象:
 
-- `moving-pictures-classifier/important-feature-table.qza`: 筛选重要特征对应的特征表 。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fimportant-feature-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/important-feature-table.qza)
+- `moving-pictures-classifier/important-feature-table.qza`: 筛选重要特征对应的特征表 。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fimportant-feature-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/important-feature-table.qza)
 
 我们还可以使用热图`heatmap`流程来生成每个样本或组中最重要特征的丰富热图。 让我们对每种样本类型中前30个最丰富的特征进行热图绘制：
 
 ```
-time qiime sample-classifier heatmap \
+qiime sample-classifier heatmap \
   --i-table moving-pictures-table.qza \
   --i-importance moving-pictures-classifier/feature_importance.qza \
   --m-sample-metadata-file moving-pictures-sample-metadata.tsv \
@@ -203,11 +161,11 @@ time qiime sample-classifier heatmap \
 
 输出对象:
 
-- `moving-pictures-classifier/important-feature-table-top-30.qza`: 前30个重要特征。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fimportant-feature-table-top-30.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/important-feature-table-top-30.qza)
+- `moving-pictures-classifier/important-feature-table-top-30.qza`: 前30个重要特征。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fimportant-feature-table-top-30.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/important-feature-table-top-30.qza)
 
 输出对象:
 
-- `moving-pictures-classifier/important-feature-heatmap.qzv`: 特征热图。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fimportant-feature-heatmap.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/important-feature-heatmap.qzv)
+- `moving-pictures-classifier/important-feature-heatmap.qzv`: 特征热图。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fimportant-feature-heatmap.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/important-feature-heatmap.qzv)
 
 
 此流程还生成一个可视化对象`model_summary.qzv`，中包含受监督的学习估计器所使用的模型参数摘要。如果启用了`--p-optimize-feature-selection`，可视化还将显示一个递归的特征移除图，该图说明了作为特征计数移除时对模型函数精度的影响如何变化。**最终模型自动选择最大精度的特征组合，用于其他输出中显示样本的预测结果**。
@@ -221,8 +179,7 @@ time qiime sample-classifier heatmap \
 ### **基于模型来预测样品**
 
 ```
-# 11s
-time qiime sample-classifier predict-classification \
+qiime sample-classifier predict-classification \
   --i-table moving-pictures-table.qza \
   --i-sample-estimator moving-pictures-classifier/sample_estimator.qza \
   --o-predictions moving-pictures-classifier/new_predictions.qza \
@@ -231,8 +188,8 @@ time qiime sample-classifier predict-classification \
 
 **输出对象:**
 
-- `moving-pictures-classifier/new_predictions.qza`：新预测结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fnew_predictions.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/new_predictions.qza)
-- `moving-pictures-classifier/new_probabilities.qza`：新概率结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fnew_probabilities.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/new_probabilities.qza)
+- `moving-pictures-classifier/new_predictions.qza`：新预测结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fnew_predictions.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/new_predictions.qza)
+- `moving-pictures-classifier/new_probabilities.qza`：新概率结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fnew_probabilities.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/new_probabilities.qza)
 
 我们可以使用元数据表查看这些`new_predictions.qza`，方法如上所述。或者，如果这些样本不是“未知”样本，我们可以使用这批新样本重新测试模型精度：
 
@@ -247,7 +204,7 @@ qiime sample-classifier confusion-matrix \
 
 **输出可视化:**
 
-- `moving-pictures-classifier/new_confusion_matrix.qzv`：新混淆矩阵。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fnew_confusion_matrix.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/moving-pictures-classifier/new_confusion_matrix.qzv)
+- `moving-pictures-classifier/new_confusion_matrix.qzv`：新混淆矩阵。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fmoving-pictures-classifier%2Fnew_confusion_matrix.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/moving-pictures-classifier/new_confusion_matrix.qzv)
 
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.14.05.jpg)
@@ -281,10 +238,10 @@ qiime sample-classifier confusion-matrix \
 ```
 wget -c \
   -O "ecam-metadata.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/longitudinal/sample_metadata.tsv"
+  "https://data.qiime2.org/2021.2/tutorials/longitudinal/sample_metadata.tsv"
 wget -c \
   -O "ecam-table.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/longitudinal/ecam_table_maturity.qza"
+  "https://data.qiime2.org/2021.2/tutorials/longitudinal/ecam_table_maturity.qza"
 ```
 
 接下来，我们将使用回归样本流程训练回归器，根据婴儿的微生物群组成预测婴儿的年龄。
@@ -303,21 +260,21 @@ time qiime sample-classifier regress-samples \
 
 **输出对象:**
 
-- `ecam-table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-table.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-table.qza)
-- `ecam-regressor/sample_estimator.qza`: 模型。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-regressor/sample_estimator.qza)
-- `ecam-regressor/feature_importance.qza`: 重要性。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-regressor/feature_importance.qza)
-- `ecam-regressor/predictions.qza`: 预测结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Fpredictions.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-regressor/predictions.qza)
+- `ecam-table.qza`: 特征表。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-table.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-table.qza)
+- `ecam-regressor/sample_estimator.qza`: 模型。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Fsample_estimator.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-regressor/sample_estimator.qza)
+- `ecam-regressor/feature_importance.qza`: 重要性。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Ffeature_importance.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-regressor/feature_importance.qza)
+- `ecam-regressor/predictions.qza`: 预测结果。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Fpredictions.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-regressor/predictions.qza)
 
 **输出可视化:**
 
-- `ecam-regressor/accuracy_results.qzv`: 预测结果准确率评估。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-regressor/accuracy_results.qzv)
-- `ecam-regressor/model_summary.qzv`: 回归模型总结可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-regressor/model_summary.qzv)
+- `ecam-regressor/accuracy_results.qzv`: 预测结果准确率评估。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Faccuracy_results.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-regressor/accuracy_results.qzv)
+- `ecam-regressor/model_summary.qzv`: 回归模型总结可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-regressor/model_summary.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.14.06.jpg)
 
 此命令生成的输出与分类样本生成的输出基本相同，但有一个主要的区别是准确度中的回归精度结果`qzv`以散点图的形式表示，该散点图显示了每个测试样本的预测值与真实值，并附有一条线性回归线，该线与95%置信区间（灰色阴影）的数据相匹配。预测值和真实值之间的真(true)1:1比率用虚线表示，以便进行比较。在此基础上，将模型精度量化为一个表，其中显示了均值、方差、误差和线性回归拟合的r值、p值、估计梯度的标准误差、斜率和截距。
 
-- `ecam-regressor/model_summary.qzv`: 模型摘要。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-regressor/model_summary.qzv)
+- `ecam-regressor/model_summary.qzv`: 模型摘要。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-regressor%2Fmodel_summary.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-regressor/model_summary.qzv)
 
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.14.07.jpg)
@@ -356,9 +313,9 @@ time qiime sample-classifier classify-samples-ncv \
 
 **输出对象:**
 
-- `body-site-predictions-ncv.qza`: 特征表预测结果的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fbody-site-predictions-ncv.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/body-site-predictions-ncv.qza)
-- `body-site-probabilities-ncv.qza`: 特征表预测概述的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fbody-site-probabilities-ncv.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/body-site-probabilities-ncv.qza)
-- `body-site-importance-ncv.qza`: 特征重要性的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fbody-site-importance-ncv.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/body-site-importance-ncv.qza)
+- `body-site-predictions-ncv.qza`: 特征表预测结果的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fbody-site-predictions-ncv.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/body-site-predictions-ncv.qza)
+- `body-site-probabilities-ncv.qza`: 特征表预测概述的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fbody-site-probabilities-ncv.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/body-site-probabilities-ncv.qza)
+- `body-site-importance-ncv.qza`: 特征重要性的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fbody-site-importance-ncv.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/body-site-importance-ncv.qza)
 
 **NCV验证结果热图可视化**
 
@@ -374,7 +331,7 @@ time qiime sample-classifier confusion-matrix \
 
 **输出可视化:**
 
-- `ncv_confusion_matrix.qzv`: 预测结果准确率评估。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fncv_confusion_matrix.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ncv_confusion_matrix.qzv)
+- `ncv_confusion_matrix.qzv`: 预测结果准确率评估。[查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fncv_confusion_matrix.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ncv_confusion_matrix.qzv)
 
 ### **回归的验证和可视化**
 
@@ -395,8 +352,8 @@ time qiime sample-classifier regress-samples-ncv \
 
 **输出对象:**
 
-- `ecam-predictions-ncv.qza`: 预测结果的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-predictions-ncv.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-predictions-ncv.qza)
-- `ecam-importance-ncv.qza`: 特征重要性的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-importance-ncv.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-importance-ncv.qza)
+- `ecam-predictions-ncv.qza`: 预测结果的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-predictions-ncv.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-predictions-ncv.qza)
+- `ecam-importance-ncv.qza`: 特征重要性的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-importance-ncv.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-importance-ncv.qza)
 
 
 **结果可视化**
@@ -411,7 +368,7 @@ qiime sample-classifier scatterplot \
 
 **输出可视化:**
 
-- `ecam-scatter.qzv`: 预测结果的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-scatter.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/sample-classifier/ecam-scatter.qzv)
+- `ecam-scatter.qzv`: 预测结果的NCV验证。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fsample-classifier%2Fecam-scatter.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/sample-classifier/ecam-scatter.qzv)
 
 > 注意: 我们使用混淆矩阵来呈现分类器的准确度，使用散点图来展示回归器的准确度👀
 
@@ -431,15 +388,16 @@ qiime sample-classifier scatterplot \
     1. 如果学习模型旨在根据批量产生的数据预测值（例如，对未来分析中生产的微生物组序列数据进行诊断），**考虑在训练数据中加入多个批次，以降低学习模型过度适应批量效应和类似噪音的可能性**。
     2. 同样，请注意，**批处理效果会强烈地影响性能，特别是当这些与您试图预测的目标值相关时**。例如，如果您希望对样本是否属于两个不同组中的一个进行分类，并且这些组是在单独的测序批次Run（对于微生物组扩增子序列数据）上进行测序的，那么针对这些数据对分类器进行训练可能会导致不准确的结果，而这些结果不能推广到其他数据集。
  
+## 译者简介
+
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
+
 ## Reference
 
-https://docs.qiime2.org/2020.2/
+https://docs.qiime2.org/2021.2/
 
 Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 
-## 译者简介
-
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为微生物组数据分析、分析方法开发与优化和科学传播，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20余篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1300万+。
 
 ## 猜你喜欢
 

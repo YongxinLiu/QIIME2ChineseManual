@@ -1,28 +1,12 @@
 [TOC]
 
-# 前情提要
-
-以下是前面几节的微信推送文章：
-
-- [NBT：QIIME 2可重复、交互式的微生物组分析平台](https://mp.weixin.qq.com/s/-_FHxF1XUBNF4qMV1HLPkg)
-- [1简介和安装Introduction&Install](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)
-- [2插件工作流程概述Workflow](https://mp.weixin.qq.com/s/qXlx1a8OQN9Ar7HYIC3OqQ)
-- [3老司机上路指南Experienced](https://mp.weixin.qq.com/s/gJZCRzenCplCiOsDRHLhjw)
-- [4人体各部位微生物组分析Moving Pictures](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)，[Genome Biology：人体各部位微生物组时间序列分析](https://mp.weixin.qq.com/s/DhecHNqv4UjYpVEu48oXAw)
-- [5粪菌移植分析练习FMT](https://mp.weixin.qq.com/s/cqzpLOprpClaib1FvH7bjg)，[Microbiome：粪菌移植改善自闭症](https://mp.weixin.qq.com/s/PHpg0y6_mydtCXYUwZa2Yg)
-- [6沙漠土壤分析Atacama soil](https://mp.weixin.qq.com/s/tmXAjkl7oW3X4uagLOJu2A)，[mSystems：干旱对土壤微生物组的影响](https://mp.weixin.qq.com/s/3tF6_CfSKBbtLQU4G3NpEQ)
-- [7帕金森小鼠教程Parkinson's Mouse](https://mp.weixin.qq.com/s/cN1sfcWFME7S4OJy4VIREg)，[Cell：肠道菌群促进帕金森发生ParkinsonDisease](https://mp.weixin.qq.com/s/OINhALYIaH-JZICpU68icQ)
-- [8差异丰度分析gneiss](https://mp.weixin.qq.com/s/wx9dr5e2B_YyqTdPJ7dVsQ)
-- [9数据导入Importing data](https://mp.weixin.qq.com/s/u0k38x4lAUaghua2FDD1mQ)
-- [10数据导出Exporting data](https://mp.weixin.qq.com/s/pDxDsm8vabpe9KtcLRYWxg)
-
 # QIIME 2用户文档. 11元数据
 
 **Metadata in QIIME 2**
 
-https://docs.qiime2.org/2020.2/tutorials/metadata/
+https://docs.qiime2.org/2021.2/tutorials/metadata/
 
-> 注：**此实例需要一些基础知识，要求完成本系列文章前两篇内容：[《1简介和安装》](https://mp.weixin.qq.com/s/vlc2uIaWnPSMhPBeQtPR4w)和[《4人体各部位微生物组分析》](https://mp.weixin.qq.com/s/c8ZQegtfNBHZRVjjn5Gyrw)。**
+> 注：**此实例需要一些基础知识，要求完成本系列文章前两篇内容：[《1简介和安装》](https://mp.weixin.qq.com/s/sX7ab7ff_H6dyLwwjuYFjA)和[《4人体各部位微生物组分析》](https://mp.weixin.qq.com/s/Stlb1ri6W7aSOF2rX2ru1A)。**
 
 > 详者注：什么是元数据？是描述数据的数据，样本信息是样本元数据，物种注释是特征元数据。
 
@@ -38,7 +22,7 @@ https://docs.qiime2.org/2020.2/tutorials/metadata/
 
 QIIME 2元数据通常存储在[TSV（即制表符分隔，Tab-separated values）文件中](https://en.wikipedia.org/wiki/Tab-separated_values)。这些文件通常具有`.tsv`或`.txt`文件扩展名，但QIIME 2使用什么文件扩展名并不重要。TSV文件是用于存储表格数据的简单文本文件，其格式受多种软件支持，如从电子表格程序和数据库中编辑、导入和导出。因此，使用您选择的软件操作编辑QIIME 2元数据通常很简单。如果有疑问，我们建议使用电子表格程序（如Microsoft Excel或Google工作表）编辑和导出元数据文件。
 
-> 注: 除了TSV文件之外，QIIME 2对象（即qza文件）也可以用作元数据。有关详细信息，请参阅下面[使用QIIME 2对象作为元数据](https://docs.qiime2.org/2020.2/tutorials/metadata/#artifacts-as-metadata)的部分。QIIME 2将来还可能支持其他文件格式。
+> 注: 除了TSV文件之外，QIIME 2对象（即qza文件）也可以用作元数据。有关详细信息，请参阅下面[使用QIIME 2对象作为元数据](https://docs.qiime2.org/2021.2/tutorials/metadata/#artifacts-as-metadata)的部分。QIIME 2将来还可能支持其他文件格式。
 
 > QIIME 1用户: 在QIIME 1中，TSV元数据文件被称为映射文件(mapping files)。在QIIME 2中，我们将这些文件称为元数据文件，但它们在概念上是相同的。**QIIME 2元数据文件与QIIME 1映射文件向后兼容**，这意味着您可以在QIIME 2中使用现有的QIIME 1映射文件，而无需对该文件进行修改。
 以下各节介绍了QIIME 2元数据文件的格式要求，以及如何验证元数据文件。由于TSV文件没有通用标准，因此必须遵守如下要求，并了解QIIME 2如何解释文件内容，以充分利用元数据！
@@ -222,13 +206,11 @@ QIIME 2支持可选的`comment`指令，允许用户显式地声明列的类型�
 **Using Metadata Files**
 
 ```
-mkdir qiime2-metadata-tutorial
-cd qiime2-metadata-tutorial
+mkdir -p metadata
+cd metadata
 
 # 下载示例样本信息
-wget \
-  -O "sample-metadata.tsv" \
-  "https://data.qiime2.org/2020.2/tutorials/moving-pictures/sample_metadata.tsv"
+wget -c http://210.75.224.110/github/QIIME2ChineseManual/2021.2/moving-pictures/sample-metadata.tsv
 ```
 
 由于这是一个TSV文件，它可以在各种应用程序中打开和编辑，包括文本编辑器、Microsoft Excel和Google工作表（如果您计划使用`Keemi`验证元数据）。
@@ -241,7 +223,7 @@ qiime metadata tabulate \
   --o-visualization tabulated-sample-metadata.qzv
 ```
 
-- `tabulated-sample-metadata.qzv`：元数据可视化文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmetadata%2Ftabulated-sample-metadata.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/metadata/tabulated-sample-metadata.qzv)
+- `tabulated-sample-metadata.qzv`：元数据可视化文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmetadata%2Ftabulated-sample-metadata.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/metadata/tabulated-sample-metadata.qzv)
 
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.10.01.jpg)
@@ -263,9 +245,7 @@ qiime metadata tabulate \
 
 ```
 # 下载Alpha多样性PD算法的结果
-wget \
-  -O "faith_pd_vector.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/metadata/faith_pd_vector.qza"
+wget -c https://data.qiime2.org/2021.2/tutorials/metadata/faith_pd_vector.qza
 ```
 
 要将此对象视为元数据，只需将其传递给希望看到元数据的任何方法或可视化工具（例如，`metadata tabulate`或`emperor plot`）：
@@ -278,11 +258,11 @@ qiime metadata tabulate \
 
 **输出对象**
 
-- `faith_pd_vector.qza`：多样性元数据可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmetadata%2Ffaith_pd_vector.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/metadata/faith_pd_vector.qza)
+- `faith_pd_vector.qza`：多样性元数据可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmetadata%2Ffaith_pd_vector.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/metadata/faith_pd_vector.qza)
 
 **可视化对象**
 
-- `tabulated-faith-pd-metadata.qzv`：多样性元数据可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmetadata%2Ftabulated-faith-pd-metadata.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/metadata/tabulated-faith-pd-metadata.qzv)
+- `tabulated-faith-pd-metadata.qzv`：多样性元数据可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmetadata%2Ftabulated-faith-pd-metadata.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/metadata/tabulated-faith-pd-metadata.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.10.02.jpg)
 图中的样本新增了对应pd多样性值
@@ -291,7 +271,7 @@ qiime metadata tabulate \
 
 > 问题：qzv文件包括结果生成的过程，请查看该结果的追溯图，研究分析过程。
 
-## **合并原数据**
+## 合并元数据
 
 **Merging metadata**
 
@@ -304,20 +284,18 @@ qiime metadata tabulate \
   --o-visualization tabulated-combined-metadata.qzv
 ```
 
-- `tabulated-combined-metadata.qzv`：多样性元数据可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmetadata%2Ftabulated-combined-metadata.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/metadata/tabulated-combined-metadata.qzv)
+- `tabulated-combined-metadata.qzv`：多样性元数据可视化。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmetadata%2Ftabulated-combined-metadata.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/metadata/tabulated-combined-metadata.qzv)
 
 
 合并后生成的元数据将包含所有指定文件中标识符的交集。换句话说，合并的元数据将只包含在所有提供的元数据文件中共享的标识符。这是一个使用数据库术语的内部联接。
 
-> 问题: 修改上面的命令，将`SampleData[AlphaDiversity]`的[均匀度向量(evenness vector)](https://docs.qiime2.org/2020.2/data/tutorials/moving-pictures/core-metrics-results/evenness_vector.qza)合并到`Faith’s PD`向量之后。合并三个对象时会发生什么？结果元数据可视化中有多少列？这些列中有多少列表示样本ID？这些列中有多少列表示`SampleData[AlphaDiversity]`度量？如果元数据文件的顺序颠倒了，可视化会发生什么？提示，仔细查看列顺序。
+> 问题: 修改上面的命令，将`SampleData[AlphaDiversity]`的[均匀度向量(evenness vector)](https://docs.qiime2.org/2021.2/data/tutorials/moving-pictures/core-metrics-results/evenness_vector.qza)合并到`Faith’s PD`向量之后。合并三个对象时会发生什么？结果元数据可视化中有多少列？这些列中有多少列表示样本ID？这些列中有多少列表示`SampleData[AlphaDiversity]`度量？如果元数据文件的顺序颠倒了，可视化会发生什么？提示，仔细查看列顺序。
 
 在QIIME 2中接受元数据的任何地方都支持元数据合并。例如，根据研究元数据或样本alpha多样性为Emperor plot着色可能很有意思。这可以通过提供样本元数据文件和`SampleData[AlphaDiversity]`对象来实现：
 
 ```
 # 组合Alpha和Beta多样性
-wget \
-  -O "unweighted_unifrac_pcoa_results.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/metadata/unweighted_unifrac_pcoa_results.qza"
+wget https://data.qiime2.org/2021.2/tutorials/metadata/unweighted_unifrac_pcoa_results.qza
   
 qiime emperor plot \
   --i-pcoa unweighted_unifrac_pcoa_results.qza \
@@ -328,11 +306,11 @@ qiime emperor plot \
 
 **输出对象**
 
-- `unweighted_unifrac_pcoa_results.qza`：无权重unifrac PCoA结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmetadata%2Funweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/metadata/unweighted_unifrac_pcoa_results.qza)
+- `unweighted_unifrac_pcoa_results.qza`：无权重unifrac PCoA结果。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmetadata%2Funweighted_unifrac_pcoa_results.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/metadata/unweighted_unifrac_pcoa_results.qza)
 
 **可视化对象**
 
-- `unweighted-unifrac-emperor-with-alpha.qzv`：Beta多样性可视化添加Alpha多样性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmetadata%2Funweighted-unifrac-emperor-with-alpha.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/metadata/unweighted-unifrac-emperor-with-alpha.qzv)
+- `unweighted-unifrac-emperor-with-alpha.qzv`：Beta多样性可视化添加Alpha多样性。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmetadata%2Funweighted-unifrac-emperor-with-alpha.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/metadata/unweighted-unifrac-emperor-with-alpha.qzv)
 
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.10.03.jpg)
@@ -348,12 +326,8 @@ qiime emperor plot \
 **Exploring feature metadata**
 
 ```
-wget \
-  -O "rep-seqs.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/metadata/rep-seqs.qza"
-wget \
-  -O "taxonomy.qza" \
-  "https://data.qiime2.org/2020.2/tutorials/metadata/taxonomy.qza"
+wget https://data.qiime2.org/2021.2/tutorials/metadata/rep-seqs.qza
+wget https://data.qiime2.org/2021.2/tutorials/metadata/taxonomy.qza
   
 qiime metadata tabulate \
   --m-input-file rep-seqs.qza \
@@ -361,16 +335,14 @@ qiime metadata tabulate \
   --o-visualization tabulated-feature-metadata.qzv
 ```
 
-
 **输出对象**
 
-- `taxonomy.qza`：物种注释结果文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmetadata%2Ftaxonomy.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/metadata/taxonomy.qza)
-- `rep-seqs.qza`：代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmetadata%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/metadata/rep-seqs.qza)
-
+- `taxonomy.qza`：物种注释结果文件。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmetadata%2Ftaxonomy.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/metadata/taxonomy.qza)
+- `rep-seqs.qza`：代表序列。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmetadata%2Frep-seqs.qza) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/metadata/rep-seqs.qza)
 
 **可视化对象**
 
-- `tabulated-feature-metadata.qzv`：特征元数据，包括序列、物种注释和置信度。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2020.2%2Fdata%2Ftutorials%2Fmetadata%2Ftabulated-feature-metadata.qzv) | [下载](https://docs.qiime2.org/2020.2/data/tutorials/metadata/tabulated-feature-metadata.qzv)
+- `tabulated-feature-metadata.qzv`：特征元数据，包括序列、物种注释和置信度。 [查看](https://view.qiime2.org/?src=https%3A%2F%2Fdocs.qiime2.org%2F2021.2%2Fdata%2Ftutorials%2Fmetadata%2Ftabulated-feature-metadata.qzv) | [下载](https://docs.qiime2.org/2021.2/data/tutorials/metadata/tabulated-feature-metadata.qzv)
 
 ![image](http://bailab.genetics.ac.cn/markdown/qiime2/fig/2019.7.10.04.jpg)
 
@@ -385,15 +357,15 @@ qiime metadata tabulate \
 > 译者注：网页中查看可以导出任意格式的结果、并可追溯实验的分析过程、支持筛选、查找和排序。导出后分析过程将不可追溯。
 
 
-## Reference
-
-https://docs.qiime2.org/2020.2/
-
-Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
-
 ## 译者简介
 
-**刘永鑫**，博士。2008年毕业于东北农大微生物学，2014年于中科院遗传发育所获生物信息学博士，2016年遗传学博士后出站留所工作，任宏基因组学实验室工程师。目前主要研究方向为宏基因组数据分析和植物微生物组，QIIME 2项目参与人。目前在***Science、Nature Biotechnology、Cell Host & Microbe、Current Opinion in Microbiology*** 等杂志发表论文20+篇。2017年7月创办“宏基因组”公众号，目前分享宏基因组、扩增子原创文章500余篇，代表博文有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、[《Nature综述：手把手教你分析菌群数据(1.8万字)》](https://mp.weixin.qq.com/s/F8Anj9djawaFEUQKkdE1lg)、[《QIIME2中文教程(22篇)》](https://mp.weixin.qq.com/s/UFLNaJtFPH-eyd1bLRiPTQ)等，关注人数8万+，累计阅读1200万+。
+**刘永鑫**，博士，高级工程师，中科院青促会会员，QIIME 2项目参与人。2008年毕业于东北农业大学微生物学专业，2014年于中国科学院大学获生物信息学博士，2016年遗传学博士后出站留所工作，任工程师，研究方向为宏基因组数据分析。目前在***Science、Nature Biotechnology、Protein & Cell、Current Opinion in Microbiology***等杂志发表论文30余篇，被引3千余次。2017年7月创办“宏基因组”公众号，分享宏基因组、扩增子研究相关文章2400余篇，代表作有[《扩增子图表解读、分析流程和统计绘图三部曲(21篇)》](https://mp.weixin.qq.com/s/u7PQn2ilsgmA6Ayu-oP1tw)、 [《微生物组实验手册》](https://mp.weixin.qq.com/s/PzFglpqW1RwoqTLghpAIbA)、[《微生物组数据分析》](https://mp.weixin.qq.com/s/xHe1FHLm3n0Vkxz0nNbXvQ)等，关注人数11万+，累计阅读2100万+。
+
+## Reference
+
+https://docs.qiime2.org/2021.2/
+
+Evan Bolyen*, Jai Ram Rideout*, Matthew R. Dillon*, Nicholas A. Bokulich*, Christian C. Abnet, Gabriel A. Al-Ghalith, Harriet Alexander, Eric J. Alm, Manimozhiyan Arumugam, Francesco Asnicar, Yang Bai, Jordan E. Bisanz, Kyle Bittinger, Asker Brejnrod, Colin J. Brislawn, C. Titus Brown, Benjamin J. Callahan, Andrés Mauricio Caraballo-Rodríguez, John Chase, Emily K. Cope, Ricardo Da Silva, Christian Diener, Pieter C. Dorrestein, Gavin M. Douglas, Daniel M. Durall, Claire Duvallet, Christian F. Edwardson, Madeleine Ernst, Mehrbod Estaki, Jennifer Fouquier, Julia M. Gauglitz, Sean M. Gibbons, Deanna L. Gibson, Antonio Gonzalez, Kestrel Gorlick, Jiarong Guo, Benjamin Hillmann, Susan Holmes, Hannes Holste, Curtis Huttenhower, Gavin A. Huttley, Stefan Janssen, Alan K. Jarmusch, Lingjing Jiang, Benjamin D. Kaehler, Kyo Bin Kang, Christopher R. Keefe, Paul Keim, Scott T. Kelley, Dan Knights, Irina Koester, Tomasz Kosciolek, Jorden Kreps, Morgan G. I. Langille, Joslynn Lee, Ruth Ley, **Yong-Xin Liu**, Erikka Loftfield, Catherine Lozupone, Massoud Maher, Clarisse Marotz, Bryan D. Martin, Daniel McDonald, Lauren J. McIver, Alexey V. Melnik, Jessica L. Metcalf, Sydney C. Morgan, Jamie T. Morton, Ahmad Turan Naimey, Jose A. Navas-Molina, Louis Felix Nothias, Stephanie B. Orchanian, Talima Pearson, Samuel L. Peoples, Daniel Petras, Mary Lai Preuss, Elmar Pruesse, Lasse Buur Rasmussen, Adam Rivers, Michael S. Robeson, Patrick Rosenthal, Nicola Segata, Michael Shaffer, Arron Shiffer, Rashmi Sinha, Se Jin Song, John R. Spear, Austin D. Swafford, Luke R. Thompson, Pedro J. Torres, Pauline Trinh, Anupriya Tripathi, Peter J. Turnbaugh, Sabah Ul-Hasan, Justin J. J. van der Hooft, Fernando Vargas, Yoshiki Vázquez-Baeza, Emily Vogtmann, Max von Hippel, William Walters, Yunhu Wan, Mingxun Wang, Jonathan Warren, Kyle C. Weber, Charles H. D. Williamson, Amy D. Willis, Zhenjiang Zech Xu, Jesse R. Zaneveld, Yilong Zhang, Qiyun Zhu, Rob Knight & J. Gregory Caporaso#. Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2. ***Nature Biotechnology***. 2019, 37: 852-857. doi:[10.1038/s41587-019-0209-9](https://doi.org/10.1038/s41587-019-0209-9)
 
 ## 猜你喜欢
 
