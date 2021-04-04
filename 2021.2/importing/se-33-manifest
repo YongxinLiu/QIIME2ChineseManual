@@ -1,0 +1,4 @@
+# single-end PHRED 33 fastq manifest file for forward reads
+sample-id	absolute-filepath
+sample.1	$PWD/se-33/sample1.fastq.gz
+sample2	$PWD/se-33/sample2_S1_L001_R1_001.fastq.gz

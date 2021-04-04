@@ -1,0 +1,123 @@
+sample-id	sequencing-run	sample-type	treatment-group	subject-id	week	gsrs	gsrs-diff	administration-route	age	gender	weight	height	bmi
+#q2:types	categorical	categorical	categorical	categorical	numeric	numeric	numeric	categorical	numeric	categorical	numeric	numeric	numeric
+595e93ed.e4b3.42b5.91b1.1ad4f31e7134	run-1	stool	treatment	B101	0	2.9	0	Oral	12.5	m	63	55	14.8
+bd64992d.87cc.464f.9e1b.9c0156ed65d8	run-1	stool	treatment	B101	3	1.8	-1.1	Oral	12.5	m	63	55	14.8
+e7a2370c.f80c.4703.b2ee.10c65967e05f	run-1	stool	treatment	B101	10	1.3	-1.6	Oral	12.5	m	63	55	14.8
+11f3f37a.3698.4031.8183.75f6f2c6c04c	run-1	stool	treatment	B101	18	1.3	-1.6	Oral	12.5	m	63	55	14.8
+fa2e9bcc.cc53.4b83.ad1e.a308375854f5	run-1	swab	treatment	B101	0	2.9	0	Oral	12.5	m	63	55	14.8
+b1e40907.45fc.4d81.ad81.c58ed3d91e1f	run-1	swab	treatment	B101	2	1.3	-1.6	Oral	12.5	m	63	55	14.8
+c784e063.e586.43cb.a602.9f2e2ae420d1	run-1	swab	treatment	B101	3	1.8	-1.1	Oral	12.5	m	63	55	14.8
+104e5902.1c3e.417f.bb22.124bfca61a61	run-1	swab	treatment	B101	6	1.1	-1.8	Oral	12.5	m	63	55	14.8
+7c66ff62.02e7.458d.a55d.8d07d15a9315	run-1	swab	treatment	B101	8	1.4	-1.5	Oral	12.5	m	63	55	14.8
+0bb5e24a.aa34.48e7.b1f9.e761ac2dc6b4	run-1	swab	treatment	B101	10	1.3	-1.6	Oral	12.5	m	63	55	14.8
+b447da2d.f44f.4ced.ab9e.b560736484fb	run-1	swab	treatment	B101	12			Oral	12.5	m	63	55	14.8
+60345a80.4df2.4a0b.b7af.e2370c607aec	run-1	swab	treatment	B101	14			Oral	12.5	m	63	55	14.8
+44ef59fb.3279.46dc.a113.c762aa889eb5	run-1	swab	treatment	B101	16			Oral	12.5	m	63	55	14.8
+21a4ec1a.bcae.4e10.be82.66328d2dad4f	run-1	swab	treatment	B101	18	1.3	-1.6	Oral	12.5	m	63	55	14.8
+aef9e193.1f8c.429e.bfdf.38bb59235e7d	run-2	swab	treatment	B101	0	2.9	0	Oral	12.5	m	63	55	14.8
+c61b44a5.ae92.4202.9d0c.b4507197e456	run-1	stool	treatment	B103	0	2.2	0	Rectal	8.1	f	50	50	14.1
+59d06f37.995b.40a5.91a8.c825d1a7ca6f	run-1	stool	treatment	B103	3	3	0.8	Rectal	8.1	f	50	50	14.1
+8cbe736d.b553.450d.af3c.d5ad08863390	run-1	stool	treatment	B103	10	2.2	0	Rectal	8.1	f	50	50	14.1
+124dc1db.9029.41c6.afff.b73a692e19b1	run-1	stool	treatment	B103	18	1.8	-0.4	Rectal	8.1	f	50	50	14.1
+1fe57dd4.58b3.4fde.b8a1.f73db5614909	run-1	swab	treatment	B103	0	2.2	0	Rectal	8.1	f	50	50	14.1
+e6dcb4be.68c0.473f.a9cb.412345eeb749	run-1	swab	treatment	B103	2	2.1	-0.1	Rectal	8.1	f	50	50	14.1
+633bc9a7.b25f.475a.9bd3.858212b39d7d	run-1	swab	treatment	B103	3	3	0.8	Rectal	8.1	f	50	50	14.1
+d7c251b8.15e9.4266.bcd8.6e6c6a453c11	run-1	swab	treatment	B103	4	2.4	0.2	Rectal	8.1	f	50	50	14.1
+65ba3877.ad29.4afc.aaec.bcf3544f5f75	run-1	swab	treatment	B103	6	2.3	0.1	Rectal	8.1	f	50	50	14.1
+72a8ae87.94ea.41e3.b43c.b5337f6a0548	run-1	swab	treatment	B103	10	2.2	0	Rectal	8.1	f	50	50	14.1
+35a8aef7.4bb0.4cab.bc0e.3576bb706571	run-1	swab	treatment	B103	12			Rectal	8.1	f	50	50	14.1
+df4b001a.f4cd.4b71.8ebe.a68b8df2cb80	run-1	swab	treatment	B103	14			Rectal	8.1	f	50	50	14.1
+101c02ce.4f8d.4394.83a3.0c406831d934	run-1	swab	treatment	B103	16			Rectal	8.1	f	50	50	14.1
+8c4ae03d.dd8c.44ec.8336.15e0b031d97f	run-1	swab	treatment	B103	18	1.8	-0.4	Rectal	8.1	f	50	50	14.1
+14c94c5e.aaf2.414f.a72f.74ccc134b294	run-2	swab	treatment	B103	6	2.3	0.1	Rectal	8.1	f	50	50	14.1
+98d36350.175c.439b.a534.27de6e5783ad	run-1	stool	treatment	B105	0	2.6	0	Oral	16.5	m	242	70	35.2
+683047f6.fe17.477f.9950.a6190ca34054	run-1	stool	treatment	B105	3	1.5	-1.1	Oral	16.5	m	242	70	35.2
+7e1f1b3f.4575.458c.9f42.287d03499e25	run-1	stool	treatment	B105	10	1.1	-1.5	Oral	16.5	m	242	70	35.2
+873473f6.eef2.4718.b5f4.e88757055760	run-1	stool	treatment	B105	18	1.6	-1	Oral	16.5	m	242	70	35.2
+11c4be47.fdce.4135.8acf.0894f2da5ede	run-1	swab	treatment	B105	0	2.6	0	Oral	16.5	m	242	70	35.2
+b49ad14d.07c8.454d.82ec.c6fb9c7bcc36	run-1	swab	treatment	B105	2	1.4	-1.2	Oral	16.5	m	242	70	35.2
+11c70d46.e0a4.4797.ad7b.3677fe93d73b	run-1	swab	treatment	B105	3	1.5	-1.1	Oral	16.5	m	242	70	35.2
+c8b831af.2e3c.4aaa.83cf.b66c3016e0f3	run-1	swab	treatment	B105	4	1.6	-1	Oral	16.5	m	242	70	35.2
+ec91140e.0862.4ece.bb4a.d114f4c42bdb	run-1	swab	treatment	B105	6	2.1	-0.5	Oral	16.5	m	242	70	35.2
+e94edb86.8fe0.42b8.a255.c48d4551405b	run-1	swab	treatment	B105	8	1.5	-1.1	Oral	16.5	m	242	70	35.2
+fae97eb5.3264.4211.8ea3.823f547a6f0c	run-1	swab	treatment	B105	10	1.1	-1.5	Oral	16.5	m	242	70	35.2
+e4485061.924a.4f09.9d7e.bfefc780d1a8	run-1	swab	treatment	B105	12			Oral	16.5	m	242	70	35.2
+2a1b28ba.f47e.44b6.bfd7.d3e41e762db3	run-1	swab	treatment	B105	14			Oral	16.5	m	242	70	35.2
+212f0ce6.9123.4e38.abf3.db944de7f1c1	run-1	swab	treatment	B105	16			Oral	16.5	m	242	70	35.2
+d6223d2e.0d62.4658.8eec.ccc9d4ee86a3	run-1	swab	treatment	B105	18	1.6	-1	Oral	16.5	m	242	70	35.2
+cfe0d2d7.c78b.4092.b923.3322b4312c6d	run-2	stool	treatment	B105	3	1.5	-1.1	Oral	16.5	m	242	70	35.2
+90120dc2.ad2e.4916.a660.633ba4b6a7b8	run-1	stool	treatment	B107	0	2.4	0	Oral	8.4	m	56	51	15.4
+c1a66804.c565.448a.8371.0c8e386f4969	run-1	stool	treatment	B107	3	2	-0.4	Oral	8.4	m	56	51	15.4
+558a13e5.f4a8.47bc.a63e.47d6dffe528b	run-1	stool	treatment	B107	10	1.1	-1.2	Oral	8.4	m	56	51	15.4
+d623471b.5a0c.4291.a780.2ae6532752a9	run-1	stool	treatment	B107	18	1	-1.4	Oral	8.4	m	56	51	15.4
+20aa4aaf.8242.48d9.a225.e9f6b3e8938c	run-1	swab	treatment	B107	2	3.7	1.3	Oral	8.4	m	56	51	15.4
+17f96e8a.dc68.4aef.98db.8aaaab702e33	run-1	swab	treatment	B107	3	2	-0.4	Oral	8.4	m	56	51	15.4
+61c3930c.61c4.4c82.8475.7a10ccaeb71c	run-1	swab	treatment	B107	4	1.1	-1.3	Oral	8.4	m	56	51	15.4
+ac7d2af0.9c75.4a32.bb2b.e79380ab8c61	run-1	swab	treatment	B107	6	1	-1.4	Oral	8.4	m	56	51	15.4
+b612f67e.eea8.4e03.81b7.034dbfc44669	run-1	swab	treatment	B107	8	1.1	-1.3	Oral	8.4	m	56	51	15.4
+36b313f7.8a44.4bdc.8034.82260a83d7b9	run-1	swab	treatment	B107	10	1.1	-1.2	Oral	8.4	m	56	51	15.4
+6ecca0ea.049c.41ec.b324.404e504d44c0	run-1	swab	treatment	B107	12			Oral	8.4	m	56	51	15.4
+55b26af1.31a6.4606.8b99.bf415a009311	run-1	swab	treatment	B107	16			Oral	8.4	m	56	51	15.4
+fe826a14.1ed8.4d19.b14d.2233b960e1bc	run-1	stool	treatment	B109	0	2.8	0	Rectal	10.7	m	113	57	24.3
+98c66ce0.1f4c.422c.86e9.3561ea63b612	run-1	stool	treatment	B109	3	1.1	-1.8	Rectal	10.7	m	113	57	24.3
+40112074.09e5.42b1.b332.17c9b89686e5	run-1	stool	treatment	B109	10	1.3	-1.5	Rectal	10.7	m	113	57	24.3
+ea89c98c.42eb.484a.aed3.33711e20a6fe	run-1	stool	treatment	B109	18	1.6	-1.2	Rectal	10.7	m	113	57	24.3
+e5574c01.3027.458d.8f96.d68b66aae40b	run-1	swab	treatment	B109	0	2.8	0	Rectal	10.7	m	113	57	24.3
+dfc347e3.eed7.4592.95eb.374724230326	run-1	swab	treatment	B109	3	1.1	-1.8	Rectal	10.7	m	113	57	24.3
+4b9ad407.fc2f.4463.bccc.0cf3a28d05f6	run-1	swab	treatment	B109	4	1.3	-1.5	Rectal	10.7	m	113	57	24.3
+c18a0367.8148.4450.bf5a.507b6fe30c73	run-1	swab	treatment	B109	6	2.1	-0.8	Rectal	10.7	m	113	57	24.3
+15129220.6eda.44ad.9511.be0f6e027f5d	run-1	swab	treatment	B109	8	1.5	-1.4	Rectal	10.7	m	113	57	24.3
+183645ce.cacd.4744.8440.de4eb377dfea	run-1	swab	treatment	B109	10	1.3	-1.5	Rectal	10.7	m	113	57	24.3
+37f1087f.ae31.4fde.b96b.4b6c1d61351e	run-1	swab	treatment	B109	12			Rectal	10.7	m	113	57	24.3
+a6108908.5ef9.47ef.8f57.b055bc6ee7aa	run-1	swab	treatment	B109	14			Rectal	10.7	m	113	57	24.3
+884e1ddb.8d8b.45cf.8dba.16387520872c	run-1	swab	treatment	B109	18	1.6	-1.2	Rectal	10.7	m	113	57	24.3
+cfc37a70.9ba6.4d25.b541.4c0ff9d1bfeb	run-2	stool	treatment	B109	18	1.6	-1.2	Rectal	10.7	m	113	57	24.3
+593b1c57.09b3.43f2.97b1.7051761e13c9	run-2	stool	control	B141	18				16.1	m	165	65	27.5
+5802a92b.5471.435b.bca9.b03e1cef9a14	run-2	swab	control	B141	0				16.1	m	165	65	27.5
+832ba500.7ff2.4c91.ac33.76a3aca26460	run-2	swab	control	B141	2				16.1	m	165	65	27.5
+08ea0c6b.7a30.4074.bbf6.557480fc5285	run-2	swab	control	B141	6				16.1	m	165	65	27.5
+e9494e22.99d6.4e10.868f.208832eb3104	run-2	swab	control	B141	8				16.1	m	165	65	27.5
+1230c3fd.efa4.4ad9.8f01.499141965b11	run-2	swab	control	B141	10				16.1	m	165	65	27.5
+00954e18.1dcf.40fc.a52e.255f5cda6f9c	run-2	swab	control	B141	12				16.1	m	165	65	27.5
+28e84479.bd9f.4d55.bb03.1411b71bdc9b	run-2	swab	control	B141	14				16.1	m	165	65	27.5
+eb4ece61.6afe.4c88.8a06.d616dab1dd34	run-2	stool	control	B143	18				7.1	m	63	51.5	16.7
+1037164d.a836.4ebe.bf98.92294a0b60ab	run-2	swab	control	B143	0				7.1	m	63	51.5	16.7
+c2072c98.e9a0.4af2.8cc1.c03be62710d8	run-2	swab	control	B143	2				7.1	m	63	51.5	16.7
+7af6e763.ab6a.49e9.ac6d.5da1c74c54bd	run-2	swab	control	B143	4				7.1	m	63	51.5	16.7
+5a8541e7.b0a2.48c0.8fa1.4cba3f011111	run-2	swab	control	B143	6				7.1	m	63	51.5	16.7
+55f8d345.8251.43a1.ab05.c9418f6fefd7	run-2	swab	control	B143	8				7.1	m	63	51.5	16.7
+4f2698fd.665f.4ed1.be97.ffc1529e21b0	run-2	swab	control	B143	10				7.1	m	63	51.5	16.7
+ea68ac1a.53e3.4523.924f.32ca1d2ac988	run-2	swab	control	B143	12				7.1	m	63	51.5	16.7
+c34ddc28.a67b.4478.b42d.7be7542bb228	run-2	swab	control	B143	14				7.1	m	63	51.5	16.7
+c2e216e3.51c4.4894.8352.48d0fef7efc7	run-2	swab	control	B143	16				7.1	m	63	51.5	16.7
+81a16ca3.6299.40f0.ae7b.fe2dd2ac4243	run-2	swab	control	B143	18				7.1	m	63	51.5	16.7
+1fe19636.3708.4a87.8e5a.cf10d8530d4e	run-2	stool	control	B145	18				10.3	f	80	57	17.3
+89d77704.b4a7.497d.be45.7d0612828999	run-2	swab	control	B145	0				10.3	f	80	57	17.3
+fa4e5dcc.7b0a.4fb1.989d.b19aec98e047	run-2	swab	control	B145	2				10.3	f	80	57	17.3
+b35cd9d4.2301.4c7e.bfb9.f4c329d492e0	run-2	swab	control	B145	4				10.3	f	80	57	17.3
+230994e3.5682.432f.b4e4.454ca1901e0f	run-2	swab	control	B145	6				10.3	f	80	57	17.3
+0476f5aa.a4f4.4835.ada1.4e72fb601e0a	run-2	swab	control	B145	8				10.3	f	80	57	17.3
+3b2b88b4.90b1.44d2.a015.e80e723e996f	run-2	swab	control	B145	10				10.3	f	80	57	17.3
+18f853f2.0e63.400e.baac.cad966c6c0a0	run-2	swab	control	B145	12				10.3	f	80	57	17.3
+e423f626.6364.438b.ab33.a76afca3c521	run-2	swab	control	B145	14				10.3	f	80	57	17.3
+5f291738.ae0e.4805.a842.cd2bb5b50f26	run-2	swab	control	B145	16				10.3	f	80	57	17.3
+d8f4038a.7576.4fd3.89c3.60a3f6bc06c0	run-2	swab	control	B145	18				10.3	f	80	57	17.3
+04ea008a.d444.4833.988c.a2a3f5d4ad23	run-2	stool	control	B147	18				12.1	m	100	61	18.9
+e8c5ac44.36bc.41cc.8096.d3090e9b156c	run-2	swab	control	B147	0				12.1	m	100	61	18.9
+1654ccec.557a.40f3.b4d9.b263f9e2ad4e	run-2	swab	control	B147	2				12.1	m	100	61	18.9
+84120710.dd14.4def.90b4.c34cbcedd38e	run-2	swab	control	B147	4				12.1	m	100	61	18.9
+1c4ca381.9cc3.4313.a11e.df350bb73ec9	run-2	swab	control	B147	8				12.1	m	100	61	18.9
+ce5c847c.452d.46fc.96d9.ba2ff164a5ab	run-2	swab	control	B147	10				12.1	m	100	61	18.9
+fadb8582.a342.46ba.8926.98ff97240824	run-2	swab	control	B147	12				12.1	m	100	61	18.9
+c287751e.0263.4fda.8aa2.3b717855e2ee	run-2	stool	control	B159	18				12.6	m	70	53	17.5
+2f79545d.8a5d.4fc5.a0ac.5da133096ee3	run-2	swab	control	B159	2				12.6	m	70	53	17.5
+fa6fda2b.4a99.4231.9325.0d74d8ae451c	run-2	swab	control	B159	4				12.6	m	70	53	17.5
+632924ab.bf85.4b8b.b603.f338294a0d9d	run-2	swab	control	B159	6				12.6	m	70	53	17.5
+ad0865f4.0719.4c22.9a3e.1d5ec2f9ad4c	run-2	swab	control	B159	8				12.6	m	70	53	17.5
+2adb40fd.6824.44f2.b71f.dc73c9f82b16	run-2	swab	control	B159	10				12.6	m	70	53	17.5
+0eb12bd1.4548.4004.8dcd.1a71de8b1df5	run-2	swab	control	B159	12				12.6	m	70	53	17.5
+6519888d.bb69.495b.b4b8.07d0d4333455	run-1	fmt-material	donor	BBT2014-00029	-1								
+8d2746d9.68e2.42e3.acfc.092603ad6ec1	run-1	fmt-material	donor	BBT2014-00035	-1								
+2756472a.03f4.41da.8564.1d7538f949c6	run-1	fmt-material	donor	BBT2014-00036	-1								
+b986755d.b15a.4ad4.b6a2.0c7cdd9b8ced	run-1	fmt-material	donor	BBT2014-00037	-1								
+78ff0b74.3d7e.4ed5.8c2d.a5f77b793718	run-1	fmt-material	donor	BBT2014-00038	-1								

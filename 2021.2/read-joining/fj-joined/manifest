@@ -1,0 +1,3 @@
+sample-id	absolute-filepath	direction
+YUN3856.2	$PWD/fj-joined/YUN3856.2-join.fastq.gz	forward
+BAQ4166.1.1	$PWD/fj-joined/BAQ4166.1.1-join.fastq.gz	forward

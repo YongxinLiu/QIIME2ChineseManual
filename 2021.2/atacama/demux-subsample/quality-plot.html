@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>q2_demux : summarize</title>
+    <link rel="stylesheet" href="./q2templateassets/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="./q2templateassets/css/normalize.css"/>
+    <script src="./q2templateassets/js/jquery-3.2.0.min.js" charset="utf-8"></script>
+    <script src="./q2templateassets/js/child.js"></script>
+    
+<script src="./dist/vendor.bundle.js" charset="utf-8"></script>
+<style media="screen">
+  .table > thead > tr > th{
+    border-right: 1px solid #ddd;
+    border-bottom:0;
+  }
+
+  .table > tbody > tr > td{
+    border-right: 1px solid #ddd;
+  }
+
+  .table > thead > tr > th:last-of-type {
+    border-right: 0px;
+  }
+
+  .table > tbody > tr > td:last-of-type {
+    border-right: 0px;
+  }
+
+  .panel-body {
+    padding: 0;
+  }
+
+  .panel-body > .table{
+    margin-bottom:0px;
+  }
+</style>
+
+  </head>
+  <body>
+    <div class="container-fluid">
+        
+
+
+<div class="row">
+  <div class="col-xs-12 text-center">
+    <p>
+      Click and drag on plot to zoom in. Double click to zoom back out to full size.
+      Hover over a box to see the parametric seven-number summary of the quality scores at the corresponding position.
+    </p>
+  </div>
+  
+  <div id="forwardContainer" class="col-xs-12 col-md-6">
+    <h5 class="text-center">Forward Reads</h5>
+  </div>
+  
+  
+  <div id="reverseContainer" class="col-xs-12 col-md-6">
+    <h5 class="text-center">Reverse Reads</h5>
+  </div>
+  
+
+
+</div>
+
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-3">
+      <h1>Demultiplexed sequence length summary</h1>
+      
+      <div class="col-lg-6">
+          <h4>Forward Reads</h4>
+          <table border="0" class="dataframe table table-striped table-hover">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Total Sequences Sampled</th>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <th>2%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>9%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>50% (Median)</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>91%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>98%</th>
+      <td>151 nts</td>
+    </tr>
+  </tbody>
+</table>
+      </div>
+      
+      
+      <div class="col-lg-6">
+          <h4>Reverse Reads</h4>
+          <table border="0" class="dataframe table table-striped table-hover">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Total Sequences Sampled</th>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <th>2%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>9%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>50% (Median)</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>91%</th>
+      <td>151 nts</td>
+    </tr>
+    <tr>
+      <th>98%</th>
+      <td>151 nts</td>
+    </tr>
+  </tbody>
+</table>
+      </div>
+      
+  </div>
+</div>
+
+<script src="./dist/bundle.js" charset="utf-8"></script>
+<script src="./data.jsonp" charset="utf-8"></script>
+
+    </div>
+    
+    
+  </body>
+</html>
