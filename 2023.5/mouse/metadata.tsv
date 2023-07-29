@@ -1,0 +1,50 @@
+sample_name	barcode	mouse_id	genotype	cage_id	donor	donor_status	days_post_transplant	genotype_and_donor_status
+#q2:types		categorical	categorical	categorical	categorical	categorical	numeric	categorical
+recip.220.WT.OB1.D7	CCTCCGTCATGG	457	wild type	C35	hc_1	Healthy	49	wild type and Healthy
+recip.290.ASO.OB2.D1	AACAGTAAACAA	456	susceptible	C35	hc_1	Healthy	49	susceptible and Healthy
+recip.389.WT.HC2.D21	ATGTATCAATTA	435	susceptible	C31	hc_1	Healthy	21	susceptible and Healthy
+recip.391.ASO.PD2.D14	GTCAGTATGGCT	435	susceptible	C31	hc_1	Healthy	14	susceptible and Healthy
+recip.391.ASO.PD2.D21	AGACAGTAGGAG	437	susceptible	C31	hc_1	Healthy	21	susceptible and Healthy
+recip.391.ASO.PD2.D7	GGTCTTAGCACC	435	susceptible	C31	hc_1	Healthy	7	susceptible and Healthy
+recip.400.ASO.HC2.D14	CGTTCGCTAGCC	437	susceptible	C31	hc_1	Healthy	14	susceptible and Healthy
+recip.401.ASO.HC2.D7	ATTTACAATTGA	437	susceptible	C31	hc_1	Healthy	7	susceptible and Healthy
+recip.403.ASO.PD2.D21	CGCAGATTAGTA	456	susceptible	C35	hc_1	Healthy	21	susceptible and Healthy
+recip.411.ASO.HC2.D14	ATGTTAGGGAAT	456	susceptible	C35	hc_1	Healthy	14	susceptible and Healthy
+recip.411.ASO.HC2.D21	CTCATATGCTAT	457	wild type	C35	hc_1	Healthy	21	wild type and Healthy
+recip.411.ASO.HC2.D49	GCAACGAACGAG	435	susceptible	C31	hc_1	Healthy	49	susceptible and Healthy
+recip.412.ASO.HC2.D14	AAGTGGCTATCC	457	wild type	C35	hc_1	Healthy	14	wild type and Healthy
+recip.412.ASO.HC2.D7	GCATTCGGCGTT	456	susceptible	C35	hc_1	Healthy	7	susceptible and Healthy
+recip.413.WT.HC2.D7	ACCAGTGACTCA	457	wild type	C35	hc_1	Healthy	7	wild type and Healthy
+recip.456.ASO.HC3.D49	ACGGCGTTATGT	468	wild type	C42	hc_1	Healthy	49	wild type and Healthy
+recip.458.ASO.HC3.D21	ACGGCCCTGGAG	468	wild type	C42	hc_1	Healthy	21	wild type and Healthy
+recip.458.ASO.HC3.D49	CATTTGACGACG	469	wild type	C42	hc_1	Healthy	49	wild type and Healthy
+recip.459.WT.HC3.D14	ACATGGGCGGAA	468	wild type	C42	hc_1	Healthy	14	wild type and Healthy
+recip.459.WT.HC3.D21	CATAAATTCTTG	469	wild type	C42	hc_1	Healthy	21	wild type and Healthy
+recip.459.WT.HC3.D49	GCTGCGTATACC	536	susceptible	C43	pd_1	PD	49	susceptible and PD
+recip.460.WT.HC3.D14	CTGCGGATATAC	469	wild type	C42	hc_1	Healthy	14	wild type and Healthy
+recip.460.WT.HC3.D21	GTCAATTAGTGG	536	susceptible	C43	pd_1	PD	21	susceptible and PD
+recip.460.WT.HC3.D49	GAGAAGCTTATA	537	wild type	C43	pd_1	PD	49	wild type and PD
+recip.460.WT.HC3.D7	GACCCGTTTCGC	468	wild type	C42	hc_1	Healthy	7	wild type and Healthy
+recip.461.ASO.HC3.D21	AGCCCGCAAAGG	537	wild type	C43	pd_1	PD	21	wild type and PD
+recip.461.ASO.HC3.D49	GGCGTAACGGCA	538	wild type	C44	pd_1	PD	49	wild type and PD
+recip.461.ASO.HC3.D7	ATTGCCTTGATT	469	wild type	C42	hc_1	Healthy	7	wild type and Healthy
+recip.462.WT.PD3.D14	GTGAGGGCAAGT	536	susceptible	C43	pd_1	PD	14	susceptible and PD
+recip.462.WT.PD3.D21	GGCCTATAAGTC	538	wild type	C44	pd_1	PD	21	wild type and PD
+recip.462.WT.PD3.D49	AATACAGACCTG	539	susceptible	C44	pd_1	PD	49	susceptible and PD
+recip.462.WT.PD3.D7	TTAGGATTCTAT	536	susceptible	C43	pd_1	PD	7	susceptible and PD
+recip.463.WT.PD3.D14	ATATTGGCAGCC	537	wild type	C43	pd_1	PD	14	wild type and PD
+recip.463.WT.PD3.D21	CGCGGCGCAGCT	539	susceptible	C44	pd_1	PD	21	susceptible and PD
+recip.463.WT.PD3.D7	GTTTATCTTAAG	537	wild type	C43	pd_1	PD	7	wild type and PD
+recip.464.WT.PD3.D14	TCATCCGTCGGC	538	wild type	C44	pd_1	PD	14	wild type and PD
+recip.465.ASO.PD3.D14	GGCTTCGGAGCG	539	susceptible	C44	pd_1	PD	14	susceptible and PD
+recip.465.ASO.PD3.D7	CAGTCTAGTACG	538	wild type	C44	pd_1	PD	7	wild type and PD
+recip.466.ASO.PD3.D7	GTGGGACTGCGC	539	susceptible	C44	pd_1	PD	7	susceptible and PD
+recip.467.WT.HC3.D49.a	GTCAGGTGCGGC	437	susceptible	C31	hc_1	Healthy	49	susceptible and Healthy
+recip.467.WT.HC3.D49.b	GTTAACTTACTA	546	susceptible	C49	pd_1	PD	49	susceptible and PD
+recip.536.ASO.PD4.D49	CAAATTCGGGAT	547	wild type	C49	pd_1	PD	49	wild type and PD
+recip.537.WT.PD4.D21	CTCTATTCCACC	546	susceptible	C49	pd_1	PD	21	susceptible and PD
+recip.538.WT.PD4.D21	ATGGATAGCTAA	547	wild type	C49	pd_1	PD	21	wild type and PD
+recip.539.ASO.PD4.D14	GATCCGGCAGGA	546	susceptible	C49	pd_1	PD	14	susceptible and PD
+recip.539.ASO.PD4.D7	GTTCGAGTGAAT	546	susceptible	C49	pd_1	PD	7	susceptible and PD
+recip.540.ASO.HC4.D14	CTTCCAACTCAT	547	wild type	C49	pd_1	PD	14	wild type and PD
+recip.540.ASO.HC4.D7	CGGCCTAAGTTC	547	wild type	C49	pd_1	PD	7	wild type and PD
